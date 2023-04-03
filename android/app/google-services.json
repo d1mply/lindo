@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "608021159788",
+    "project_id": "lindo-951a1",
+    "storage_bucket": "lindo-951a1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:608021159788:android:cffc2a285fd962d5d99d49",
+        "android_client_info": {
+          "package_name": "com.lindo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "608021159788-c1nq5g9h3iev33gvikpqjj0qjeffr8hs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-WbPWKqb0yjb1q3Ce9TAgHLAwpWktPMg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "608021159788-c1nq5g9h3iev33gvikpqjj0qjeffr8hs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

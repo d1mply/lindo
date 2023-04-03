@@ -1,0 +1,72 @@
+name: lindo
+description: Lindo App
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.19.2 <3.0.0"
+
+flutter_localizations:
+  sdk: flutter
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  get: ^4.6.5
+  get_storage: ^2.0.3
+  flutter_screenutil: ^5.5.3+2
+  cupertino_icons: ^1.0.5
+  connectivity_plus: ^3.0.2
+  auto_size_text: ^3.0.0
+  flutter_svg: ^1.1.6
+  cached_network_image: ^3.2.3
+  animations:
+  dio: ^4.0.6
+  image_picker: ^0.8.5+3
+  permission_handler: ^10.2.0
+  expandable_page_view: ^1.0.17
+  persistent_bottom_nav_bar_v2: ^4.2.6
+  firebase_core:
+  firebase_analytics:
+  firebase_crashlytics:
+  firebase_messaging:
+  flutter_local_notifications: ^12.0.4
+  intl:
+  im_stepper: ^1.0.1+1
+
+
+
+  flutter_localizations:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  dio_logger: ^4.0.8+8
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/svg/
+    - assets/fonts/
+
+  fonts:
+    - family: Rubik-Regular
+      fonts:
+        - asset: assets/fonts/Rubik-Regular.ttf
+
+    - family: Rubik-Medium
+      fonts:
+        - asset: assets/fonts/Rubik-Medium.ttf
+
+    - family: Rubik-Bold
+      fonts:
+        - asset: assets/fonts/Rubik-Bold.ttf
+
+    - family: Rubik-Light
+      fonts:
+        - asset: assets/fonts/Rubik-Light.ttf

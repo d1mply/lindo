@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>608021159788-1gf1g36u9llp8jolpvu5i4vscmbt1qpv.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.608021159788-1gf1g36u9llp8jolpvu5i4vscmbt1qpv</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA2fDwnOJzc-zJ4SRJk-hoJomGZ4zt39f4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>608021159788</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.lindo</string>
+	<key>PROJECT_ID</key>
+	<string>lindo-951a1</string>
+	<key>STORAGE_BUCKET</key>
+	<string>lindo-951a1.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:608021159788:ios:09a81cb2318b4b7ad99d49</string>
+</dict>
+</plist>
