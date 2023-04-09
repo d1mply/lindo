@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lindo/app/ui/pages/register_page/register_page.dart';
 import 'package:lindo/core/base/state.dart';
 import 'package:lindo/core/init/theme/color_manager.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
@@ -34,7 +35,12 @@ class LoginPage extends GetView<LoginController> {
                     padding: EdgeInsets.symmetric(vertical: 0.05.sw),
                     child: KButton(
                       color: ColorManager.instance.pink,
-                      onTap: () {},
+                      onTap: () {
+                        pushNewScreen(
+                          context,
+                          screen: const RegisterPage(),
+                        );
+                      },
                       title: "Hadi Başla",
                       textColor: ColorManager.instance.white,
                     ),

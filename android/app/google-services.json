@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "608021159788",
+    "firebase_url": "https://lindo-951a1-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "lindo-951a1",
     "storage_bucket": "lindo-951a1.appspot.com"
   },
@@ -14,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "608021159788-c1nq5g9h3iev33gvikpqjj0qjeffr8hs.apps.googleusercontent.com",
+          "client_id": "608021159788-1bupfkcp50udj2ejdv7a7htk5hdq1prh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,8 +28,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "608021159788-c1nq5g9h3iev33gvikpqjj0qjeffr8hs.apps.googleusercontent.com",
+              "client_id": "608021159788-1bupfkcp50udj2ejdv7a7htk5hdq1prh.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "608021159788-1gf1g36u9llp8jolpvu5i4vscmbt1qpv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.lindo"
+              }
             }
           ]
         }

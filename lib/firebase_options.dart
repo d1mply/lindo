@@ -54,6 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:608021159788:android:cffc2a285fd962d5d99d49',
     messagingSenderId: '608021159788',
     projectId: 'lindo-951a1',
+    databaseURL: 'https://lindo-951a1-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'lindo-951a1.appspot.com',
   );
 
@@ -62,6 +63,7 @@ class DefaultFirebaseOptions {
     appId: '1:608021159788:ios:09a81cb2318b4b7ad99d49',
     messagingSenderId: '608021159788',
     projectId: 'lindo-951a1',
+    databaseURL: 'https://lindo-951a1-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'lindo-951a1.appspot.com',
     iosClientId: '608021159788-1gf1g36u9llp8jolpvu5i4vscmbt1qpv.apps.googleusercontent.com',
     iosBundleId: 'com.lindo',

@@ -17,6 +17,7 @@ class ColorManager {
   Color get secondary => const Color(0xFF7A869A);
   Color get transparent => const Color(0x00000000);
   Color get pink => const Color(0xffFC466B);
+  Color get lightPink => const Color(0xFFFBE9ED);
   Color get very_light_pink => const Color(0xFFd8d8d8);
   Color get light_text => const Color(0xffb9b9b9);
   Color get chip_text => const Color(0xff919191);
