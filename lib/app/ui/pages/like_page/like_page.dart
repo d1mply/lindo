@@ -5,13 +5,15 @@ import '../../../controllers/like_controller.dart';
 
 
 class LikePage extends GetView<LikeController> {
+  const LikePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('LikePage'),
+        title: const Text('LikePage'),
       ),
-      body: SafeArea(
+      body: const SafeArea(
         child: Text('LikeController'),
       ),
     );

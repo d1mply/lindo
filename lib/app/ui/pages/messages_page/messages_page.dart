@@ -5,13 +5,15 @@ import '../../../controllers/messages_controller.dart';
 
 
 class MessagesPage extends GetView<MessagesController> {
+  const MessagesPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('MessagesPage'),
+        title: const Text('MessagesPage'),
       ),
-      body: SafeArea(
+      body: const SafeArea(
         child: Text('MessagesController'),
       ),
     );

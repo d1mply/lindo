@@ -12,6 +12,7 @@ class ColorManager {
   Color get softBlack => const Color(0xFF727272);
   Color get white => const Color(0xffffffff);
   Color get gray => const Color(0xffa5a6ae);
+  Color get gridGray => const Color(0xFFC8C9CC);
   Color get darkGray => const Color(0xff383838);
   Color get black => const Color(0xff020306);
   Color get secondary => const Color(0xFF7A869A);

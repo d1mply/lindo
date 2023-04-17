@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -45,7 +43,7 @@ class _TestState extends State<Test> {
                 height: 1.sh,
                 child: SingleChildScrollView(
                   child: Column(
-                    children: [
+                    children: const [
                       Text("dsf"),
                     ],
                   ),

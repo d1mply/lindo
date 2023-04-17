@@ -88,12 +88,12 @@ class LoginPage extends GetView<LoginController> {
                                             width: 24,
                                           ),
                                         ),
-                                        Expanded(
+                                        const Expanded(
                                           child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 14),
+                                            padding: EdgeInsets.symmetric(horizontal: 14),
                                             child: Text(
                                               "Google ile Giriş Yap",
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),

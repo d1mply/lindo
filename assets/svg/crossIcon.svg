@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="10.96" height="10.96" viewBox="0 0 10.96 10.96">
+    <g data-name="Icon / Add">
+        <path data-name="Stroke 1" d="M.75 14a.844.844 0 0 1-.75-.913V.913A.844.844 0 0 1 .75 0a.844.844 0 0 1 .75.913v12.174A.844.844 0 0 1 .75 14z" transform="rotate(45 4.95 11.95)" style="fill:#383838"/>
+        <path data-name="Stroke 3" d="M13.087 1.5H.913A.844.844 0 0 1 0 .75.844.844 0 0 1 .913 0h12.174A.844.844 0 0 1 14 .75a.844.844 0 0 1-.913.75z" transform="rotate(45 .531 1.28)" style="fill:#383838"/>
+    </g>
+</svg>

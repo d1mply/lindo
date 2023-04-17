@@ -1,20 +1,533 @@
-
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
+import 'package:lindo/app/ui/utils/custom_dialog.dart';
+import 'package:lindo/app/ui/utils/k_textformfield.dart';
+import 'package:lindo/core/init/theme/color_manager.dart';
+import 'package:story_view/story_view.dart';
+import '../../../../core/base/state.dart';
 import '../../../controllers/explore_controller.dart';
-
+import '../../utils/k_bottom_sheet.dart';
+import '../../utils/k_button.dart';
 
 class ExplorePage extends GetView<ExploreController> {
+  const ExplorePage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('ExplorePage'),
-      ),
-      body: SafeArea(
-        child: Text('ExploreController'),
-      ),
+    return GetBuilder<ExploreController>(
+      init: ExploreController(),
+      builder: (c) {
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      "assets/images/notification.png",
+                      height: 26,
+                      width: 26,
+                    ),
+                    IconButton(
+                      icon: Image.asset(
+                        "assets/images/settings.png",
+                        height: 24,
+                        width: 24,
+                      ),
+                      onPressed: () {
+                        KBottomSheet.show(
+                          context: context,
+                          title: "Filtrele",
+                          content: GetBuilder<ExploreController>(
+                            builder: (c) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "Sadece doğrulanmış hesaplar",
+                                              style: TextStyle(color: ColorManager.instance.softBlack),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 6),
+                                              child: Image.asset(
+                                                "assets/images/tick-circle.png",
+                                                height: 18,
+                                                width: 18,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      FlutterSwitch(
+                                        width: 55,
+                                        height: 30,
+                                        toggleSize: 30,
+                                        value: c.onlyValidatedUsers,
+                                        borderRadius: 30,
+                                        toggleColor: ColorManager.instance.pink,
+                                        activeColor: ColorManager.instance.pink.withOpacity(0.3),
+                                        inactiveColor: ColorManager.instance.pink.withOpacity(0.1),
+                                        padding: 3.0,
+                                        showOnOff: false,
+                                        onToggle: (val) {
+                                          c.onlyValidatedUsers = val;
+                                          c.update();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: 12.0),
+                                          child: Text(
+                                            "Yaş aralığı (${c.currentRangeValue.start.round()}-${c.currentRangeValue.end.round()})",
+                                            style: TextStyle(color: ColorManager.instance.softBlack),
+                                          ),
+                                        ),
+                                      ),
+                                      RangeSlider(
+                                        values: c.currentRangeValue,
+                                        min: 18,
+                                        max: 100,
+                                        divisions: 82,
+                                        activeColor: ColorManager.instance.pink,
+                                        inactiveColor: ColorManager.instance.pink.withOpacity(0.3),
+                                        labels: RangeLabels(
+                                          c.currentRangeValue.start.round().toString(),
+                                          c.currentRangeValue.end.round().toString(),
+                                        ),
+                                        onChanged: (RangeValues values) {
+                                          c.currentRangeValue = values;
+                                          c.update();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: 12.0),
+                                          child: Text(
+                                            "Bulunduğu Şehir",
+                                            style: TextStyle(color: ColorManager.instance.softBlack),
+                                          ),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return Material(
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          width: double.infinity,
+                                                          color: ColorManager.instance.gray_spacer,
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.of(context, rootNavigator: true).pop("Discard");
+                                                                    c.selectedCity = null;
+                                                                    c.update();
+                                                                  },
+                                                                  child: Text(
+                                                                    'Temizle',
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.red,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.of(context, rootNavigator: true).pop("Discard");
+                                                                  },
+                                                                  child: Text(
+                                                                    "Tamam",
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.darkGray,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          decoration: const BoxDecoration(),
+                                                          width: double.infinity,
+                                                          height: Utility.dynamicHeightPixel(250),
+                                                          child: CupertinoPicker(
+                                                            backgroundColor: ColorManager.instance.white,
+                                                            itemExtent: 40,
+                                                            scrollController: FixedExtentScrollController(initialItem: 4),
+                                                            children: c.cities.map((item) => Text(item)).toList(),
+                                                            onSelectedItemChanged: (value) {
+                                                              setState(
+                                                                () {
+                                                                  c.selectedCity = c.cities[value];
+                                                                  c.update();
+                                                                },
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: ColorManager.instance.pink,
+                                            ),
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                          child: Text(
+                                            c.selectedCity ?? "Şehir Seç",
+                                            style: TextStyle(
+                                              color: ColorManager.instance.pink,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 12,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: 12.0),
+                                          child: Text(
+                                            "Cinsiyet",
+                                            style: TextStyle(color: ColorManager.instance.softBlack),
+                                          ),
+                                        ),
+                                      ),
+                                      ToggleButtons(
+                                        fillColor: ColorManager.instance.pink,
+                                        isSelected: c.genderSelections,
+                                        onPressed: (index) {
+                                          if (index == 0) {
+                                            if (c.genderSelections[0] == true) {
+                                              c.genderSelections[0] = false;
+                                            } else {
+                                              c.genderSelections[0] = true;
+                                            }
+                                            c.update();
+                                          }
+                                          if (index == 1) {
+                                            if (c.genderSelections[1] == true) {
+                                              c.genderSelections[1] = false;
+                                            } else {
+                                              c.genderSelections[1] = true;
+                                            }
+                                            c.update();
+                                          }
+                                        },
+                                        children: [
+                                          Text(
+                                            "Kadın",
+                                            style: TextStyle(
+                                              color: c.genderSelections[0] == true ? ColorManager.instance.white : ColorManager.instance.pink,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Erkek",
+                                            style: TextStyle(
+                                              color: c.genderSelections[1] == true ? ColorManager.instance.white : ColorManager.instance.pink,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      top: Utility.dynamicWidthPixel(35),
+                                      bottom: Utility.dynamicWidthPixel(20),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: [
+                                        KButton(
+                                          color: ColorManager.instance.white,
+                                          onTap: () {
+                                            c.selectedCity = null;
+                                            c.genderSelections = [false, false];
+                                            c.currentRangeValue = const RangeValues(18, 100);
+                                            c.onlyValidatedUsers = false;
+                                            c.update();
+                                          },
+                                          title: "Temizle",
+                                          borderColor: ColorManager.instance.border_color,
+                                          textColor: ColorManager.instance.gridGray,
+                                        ),
+                                        KButton(
+                                          color: ColorManager.instance.pink,
+                                          onTap: () {},
+                                          title: "Filtrele",
+                                          borderColor: ColorManager.instance.pink,
+                                          textColor: ColorManager.instance.white,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 30),
+                  child: Image.asset(
+                    "assets/images/lindo.png",
+                    width: 79,
+                    height: 54,
+                  ),
+                ),
+                Image.asset(
+                  "assets/images/shop.png",
+                  height: 24,
+                  width: 24,
+                ),
+              ],
+            ),
+          ),
+          body: SafeArea(
+            child: GridView.builder(
+              itemCount: c.usersList.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 4.0,
+                mainAxisSpacing: 4.0,
+                mainAxisExtent: 202,
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: InkWell(
+                    onTap: () {
+                      StoryController controller = StoryController();
+
+                      List<StoryItem> storyItems = [];
+                      if (c.usersList[index]["images"] != null) {
+                        List items = c.usersList[index]["images"];
+                        for (var e in items) {
+                          storyItems.add(
+                            StoryItem.inlineImage(
+                              url: e,
+                              controller: StoryController(),
+                              duration: const Duration(seconds: 6),
+                            ),
+                          );
+                        }
+                      }
+
+                      CustomDialog().showGeneralDialog(
+                        context,
+                        icon: const SizedBox(),
+                        body: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              storyItems.isNotEmpty
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: SizedBox(
+                                        height: Get.height / 2,
+                                        width: Get.width,
+                                        child: StoryView(
+                                          storyItems: storyItems,
+                                          controller: controller,
+                                          inline: true,
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      c.usersList[index]["name"],
+                                      style: TextStyle(
+                                        color: ColorManager.instance.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${DateTime.now().year - int.parse(c.usersList[index]["birth"].toString().split("-").first.toString())}",
+                                      style: TextStyle(
+                                        color: ColorManager.instance.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              c.usersList[index]["location"] != null
+                                  ? Text(
+                                      c.usersList[index]["location"],
+                                      style: TextStyle(
+                                        color: ColorManager.instance.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 0.05.sw),
+                                child: KButton(
+                                  color: ColorManager.instance.pink,
+                                  onTap: () {
+                                    Get.back();
+                                  },
+                                  title: "Mesaj Gönder",
+                                  textColor: ColorManager.instance.white,
+                                ),
+                              ),
+                              KTextFormField.instance.widget(context: context, labelText: "Biyografi", readOnly: true, controller: TextEditingController()..text = "${c.usersList[index]["bio"] ?? ""}"),
+                              c.usersList[index]["tags"] != null
+                                  ? Wrap(
+                                      spacing: 10,
+                                      runSpacing: 10,
+                                      children: c.usersList[index]["tags"].map(
+                                        (e) {
+                                          return Chip(
+                                            label: Text("#$e"),
+                                          );
+                                        },
+                                      ).toList(),
+                                    )
+                                  : const SizedBox(),
+                              Text(
+                                "Şikayet et veya Engelle",
+                                style: TextStyle(
+                                  color: ColorManager.instance.gray_text,
+                                  decoration: TextDecoration.underline,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: kElevationToShadow[2],
+                        color: ColorManager.instance.gridGray,
+                      ),
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: c.usersList[index]["images"] == null
+                                ? Image.asset(
+                                    "assets/images/camera-slash.png",
+                                    height: 40,
+                                    width: 40,
+                                  )
+                                : ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: CachedNetworkImage(
+                                      imageUrl: c.usersList[index]["images"].first,
+                                      height: 202,
+                                      width: Get.width,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      c.usersList[index]["name"],
+                                      style: TextStyle(
+                                        color: ColorManager.instance.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${DateTime.now().year - int.parse(c.usersList[index]["birth"].toString().split("-").first.toString())}",
+                                      style: TextStyle(
+                                        color: ColorManager.instance.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                c.usersList[index]["location"] != null
+                                    ? Text(
+                                        c.usersList[index]["location"],
+                                        style: TextStyle(
+                                          color: ColorManager.instance.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }
-  

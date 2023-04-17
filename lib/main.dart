@@ -9,9 +9,7 @@ import 'package:get/get.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:get_storage/get_storage.dart';
-import 'package:lindo/app/ui/pages/register_page/register_page.dart';
 
-import 'app/ui/pages/login_page/login_page.dart';
 import 'app/ui/pages/root_page/root_page.dart';
 import 'core/init/theme/app_theme_light.dart';
 import 'firebase_options.dart';
@@ -65,8 +63,8 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        supportedLocales: [
-          const Locale('tr'),
+        supportedLocales: const [
+          Locale('tr'),
         ],
         locale: const Locale('tr'),
       ),

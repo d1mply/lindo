@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -464,6 +463,7 @@ class RegisterPage extends GetView<RegisterController> {
                                                     "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
                                                     "birth": c.selectedDateTime.toString(),
                                                     "images": c.images,
+                                                    "birthYear": c.selectedDateTime?.year,
                                                     "gender": c.selectedGender,
                                                     "uid": credential.user?.uid,
                                                   },

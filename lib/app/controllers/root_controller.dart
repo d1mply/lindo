@@ -12,10 +12,10 @@ class RootController extends GetxController {
   PersistentTabController get controller => _controller;
   int selectedIndex = 0;
   List<Widget> buildScreens = [
-    ExplorePage(),
-    LikePage(),
-    MessagesPage(),
-    ProfilePage(),
-    ProfilePage(),
+    const ExplorePage(),
+    const LikePage(),
+    const MessagesPage(),
+    const ProfilePage(),
+    const ProfilePage(),
   ];
 }

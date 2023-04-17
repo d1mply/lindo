@@ -10,11 +10,11 @@ class ProfilePage extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ProfilePage'),
+        title: const Text('ProfilePage'),
       ),
       body: SafeArea(
         child: InkWell(
-          child: Text('Çıkış Yap'),
+          child: const Text('Çıkış Yap'),
           onTap: () {
             FirebaseAuth.instance.signOut();
           },
