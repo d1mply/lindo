@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
+import 'package:lindo/app/controllers/usercontroller.dart';
+import 'package:lindo/app/ui/pages/chat_page/chat_page.dart';
 import 'package:lindo/app/ui/utils/custom_dialog.dart';
 import 'package:lindo/app/ui/utils/k_textformfield.dart';
 import 'package:lindo/core/init/theme/color_manager.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:story_view/story_view.dart';
 import '../../../../core/base/state.dart';
 import '../../../controllers/explore_controller.dart';
@@ -422,6 +425,11 @@ class ExplorePage extends GetView<ExploreController> {
                                   color: ColorManager.instance.pink,
                                   onTap: () {
                                     Get.back();
+                                    pushNewScreen(
+                                      context,
+                                      screen: ChatPage(uid: c.usersList[index]["uid"]),
+                                      withNavBar: false,
+                                    );
                                   },
                                   title: "Mesaj Gönder",
                                   textColor: ColorManager.instance.white,
@@ -441,12 +449,138 @@ class ExplorePage extends GetView<ExploreController> {
                                       ).toList(),
                                     )
                                   : const SizedBox(),
-                              Text(
-                                "Şikayet et veya Engelle",
-                                style: TextStyle(
-                                  color: ColorManager.instance.gray_text,
-                                  decoration: TextDecoration.underline,
-                                  fontSize: 13,
+                              InkWell(
+                                onTap: () {
+                                  CustomDialog().showGeneralDialog(
+                                    context,
+                                    icon: const SizedBox(),
+                                    body: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 0.05.sw),
+                                                child: KButton(
+                                                  color: ColorManager.instance.pink,
+                                                  onTap: () {
+                                                    Get.back();
+                                                    Get.back();
+                                                    TextEditingController con = TextEditingController();
+                                                    KBottomSheet.show(
+                                                      context: context,
+                                                      withoutHeader: true,
+                                                      content: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          const Padding(
+                                                            padding: EdgeInsets.all(8.0),
+                                                            child: Text(
+                                                              "Şikayet sebebiniz;",
+                                                              style: TextStyle(
+                                                                fontWeight: FontWeight.w600,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          KTextFormField.instance.widget(
+                                                            context: context,
+                                                            maxLines: 4,
+                                                            controller: con,
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(
+                                                              left: 8.0,
+                                                              right: 8,
+                                                              bottom: 8,
+                                                            ),
+                                                            child: Text(
+                                                              "Şikayetinizden ${c.usersList[index]["name"]} kullanıcısının haberi olmayacak.",
+                                                              style: TextStyle(color: ColorManager.instance.secondary),
+                                                            ),
+                                                          ),
+                                                          KButton(
+                                                            color: ColorManager.instance.pink,
+                                                            onTap: () async {
+                                                              if (con.text.isNotEmpty) {
+                                                                UserController userController = Get.find();
+                                                                await userController.report(
+                                                                  "${c.usersList[index]["uid"]}",
+                                                                  con.text,
+                                                                );
+                                                              }
+
+                                                              Get.back();
+                                                              Get.back();
+                                                              Get.snackbar(
+                                                                "Şikayetiniz alınmıştır.",
+                                                                "${c.usersList[index]["name"]} kullanıcısı bundan haberdar olmayacak.",
+                                                                backgroundColor: ColorManager.instance.white,
+                                                                duration: const Duration(seconds: 5),
+                                                              );
+                                                            },
+                                                            title: "Şikayet Et",
+                                                            textColor: ColorManager.instance.white,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                  title: "Şikayet Et",
+                                                  textColor: ColorManager.instance.white,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 0.05.sw),
+                                                child: GetBuilder<UserController>(
+                                                  builder: (userController) {
+                                                    return KButton(
+                                                      color: ColorManager.instance.pink,
+                                                      onTap: () async {
+                                                        await userController.addBlock("${c.usersList[index]["uid"]}");
+                                                        Get.back();
+                                                        Get.back();
+                                                        Get.snackbar(
+                                                          !userController.blockedUsers.contains("${c.usersList[index]["uid"]}") ? "Engellendi" : "Engel kaldırıldı",
+                                                          !userController.blockedUsers.contains("${c.usersList[index]["uid"]}") ? "${c.usersList[index]["name"]} kullanıcısı engellendi." : "${c.usersList[index]["name"]} kullanıcısının engeli kaldırıldı.",
+                                                          backgroundColor: ColorManager.instance.white,
+                                                          duration: const Duration(seconds: 5),
+                                                        );
+                                                      },
+                                                      title: userController.blockedUsers.contains("${c.usersList[index]["uid"]}") ? "Engeli Kaldır" : "Engelle",
+                                                      textColor: ColorManager.instance.white,
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        KButton(
+                                          color: ColorManager.instance.white,
+                                          onTap: () {
+                                            Get.back();
+                                          },
+                                          title: "Vazgeç",
+                                          textColor: ColorManager.instance.pink,
+                                          borderColor: ColorManager.instance.pink,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  "Şikayet et veya Engelle",
+                                  style: TextStyle(
+                                    color: ColorManager.instance.gray_text,
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 13,
+                                  ),
                                 ),
                               ),
                             ],

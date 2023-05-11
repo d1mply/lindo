@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lindo/app/controllers/usercontroller.dart';
 
 import '../../core/init/network/network_manager.dart';
 
@@ -19,11 +20,13 @@ class ExploreController extends GetxController {
       (DatabaseEvent snapshot) {
         usersList = [];
         Object? vals = snapshot.snapshot.value;
+
         if (vals != null) {
           Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
+          UserController userController = Get.find();
           values.forEach(
             (key, value) {
-              if (value["uid"] != FirebaseAuth.instance.currentUser!.uid) {
+              if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
                 usersList.add(value);
               }
             },
@@ -56,9 +59,11 @@ class ExploreController extends GetxController {
           Object? vals = snapshot.snapshot.value;
           if (vals != null) {
             Map<dynamic, dynamic>? values = snapshot.snapshot.value as Map<dynamic, dynamic>;
+            UserController userController = Get.find();
+
             values.forEach(
               (key, value) {
-                if (value["uid"] != FirebaseAuth.instance.currentUser!.uid) {
+                if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
                   x.add(value);
                 }
               },
@@ -72,9 +77,10 @@ class ExploreController extends GetxController {
           Object? vals = snapshot.snapshot.value;
           if (vals != null) {
             Map<dynamic, dynamic>? values = snapshot.snapshot.value as Map<dynamic, dynamic>;
+            UserController userController = Get.find();
             values.forEach(
               (key, value) {
-                if (value["uid"] != FirebaseAuth.instance.currentUser!.uid) {
+                if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
                   x.add(value);
                 }
               },

@@ -10,9 +10,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:get_storage/get_storage.dart';
 
+import 'app/controllers/usercontroller.dart';
 import 'app/ui/pages/root_page/root_page.dart';
 import 'core/init/theme/app_theme_light.dart';
 import 'firebase_options.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +22,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  timeago.setLocaleMessages('tr', timeago.TrMessages());
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp],
   );
@@ -34,6 +37,7 @@ Future<void> main() async {
   }).onError((err) {
     debugPrint(err.toString());
   });
+  Get.put(UserController(), permanent: true);
 
   runApp(
     const MyApp(),

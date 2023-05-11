@@ -6,6 +6,8 @@ import 'package:lindo/app/ui/pages/messages_page/messages_page.dart';
 import 'package:lindo/app/ui/pages/profile_page/profile_page.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
+import '../ui/pages/swipe_page/swipe_page.dart';
+
 class RootController extends GetxController {
   final PersistentTabController _controller = PersistentTabController(initialIndex: 0);
   int previousIndex = 0;
@@ -14,8 +16,8 @@ class RootController extends GetxController {
   List<Widget> buildScreens = [
     const ExplorePage(),
     const LikePage(),
+    const SwipePage(),
     const MessagesPage(),
-    const ProfilePage(),
     const ProfilePage(),
   ];
 }
