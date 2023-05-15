@@ -24,30 +24,30 @@ PODS:
   - Firebase/Storage (10.7.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 10.7.0)
-  - firebase_analytics (10.3.0):
+  - firebase_analytics (10.4.0):
     - Firebase/Analytics (= 10.7.0)
     - firebase_core
     - Flutter
-  - firebase_auth (4.2.2):
+  - firebase_auth (4.6.0):
     - Firebase/Auth (= 10.7.0)
     - firebase_core
     - Flutter
-  - firebase_core (2.11.0):
+  - firebase_core (2.12.0):
     - Firebase/CoreOnly (= 10.7.0)
     - Flutter
-  - firebase_crashlytics (3.2.0):
+  - firebase_crashlytics (3.3.0):
     - Firebase/Crashlytics (= 10.7.0)
     - firebase_core
     - Flutter
-  - firebase_database (10.1.2):
+  - firebase_database (10.2.0):
     - Firebase/Database (= 10.7.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (14.5.0):
+  - firebase_messaging (14.6.0):
     - Firebase/Messaging (= 10.7.0)
     - firebase_core
     - Flutter
-  - firebase_storage (11.1.2):
+  - firebase_storage (11.2.0):
     - Firebase/Storage (= 10.7.0)
     - firebase_core
     - Flutter
@@ -208,7 +208,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
@@ -264,7 +264,7 @@ EXTERNAL SOURCES:
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/ios"
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   sqflite:
@@ -275,13 +275,13 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   Firebase: 0219acf760880eeec8ce479895bd7767466d9f81
-  firebase_analytics: 216977fc8c05f54c2c4935181e3f1a368949c5cd
-  firebase_auth: 66041d972b0c93a4f146573e5c6c9a030d92e2e1
-  firebase_core: dee76ded6c693fdb38b8ea39aef7129e32e587a3
-  firebase_crashlytics: 450dc80dcb167d04714c147336dd04a7230d20e4
-  firebase_database: 00acc7a76fddd02fcf148b89b562e5cf5b8554e7
-  firebase_messaging: 67fbcdaf6a7c81849590e542eff2409dc49d9fa5
-  firebase_storage: f6fb3e54e886182b5ab5cf514da1d9ceb196fa2f
+  firebase_analytics: 843839cfcab326b37cca084009045a8fc287ef74
+  firebase_auth: 6608b43809305e8d82957dffd6419b04ee4a31e5
+  firebase_core: 312d0d81b346ec20540822c8498e626d6918ef48
+  firebase_crashlytics: 869c43dd16f650004bb312ff9eff8d068406b939
+  firebase_database: d9a18917c36dd0793310b8e144c716324d429361
+  firebase_messaging: 8432ce73100171cab1707fad998a89590276bb4d
+  firebase_storage: d093441a28c685ff955d87f710588b83e1a4815f
   FirebaseAnalytics: f8133442ee6f8512e28ff19e62ce15398bfaeace
   FirebaseAppCheckInterop: e69dde5cd51b88ee1b4339d6766b691272256f9b
   FirebaseAuth: dd64c01631df724b09f33e584625775c52f7d71f

@@ -18,7 +18,7 @@ class KBottomSheet {
     return showModalBottomSheet(
       context: context,
       isDismissible: isDismissible ?? true,
-      isScrollControlled: true,
+      isScrollControlled: false,
       useRootNavigator: useRootNavigator,
       constraints: BoxConstraints(
         maxHeight: Utility.dynamicHeight(0.9),
@@ -31,53 +31,55 @@ class KBottomSheet {
       ),
       backgroundColor: bottomSheetColor ?? ColorManager.instance.white,
       builder: (context) {
-        return StatefulBuilder(builder: (context, setState) {
-          return Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: Utility.dynamicWidthPixel(16),
-                  right: Utility.dynamicWidthPixel(16),
-                  top: Utility.dynamicWidthPixel(24),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    withoutHeader != true
-                        ? Padding(
-                            padding: EdgeInsets.only(
-                              bottom: Utility.dynamicWidthPixel(16),
-                            ),
-                            child: SizedBox(
-                              height: Utility.dynamicWidthPixel(36),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: AutoSizeText(
-                                      title ?? "",
-                                      style: TextStyle(
-                                        fontFamily: "Rubik-Medium",
-                                        fontSize: Utility.dynamicTextSize(18),
-                                        fontWeight: FontWeight.w600,
-                                        color: ColorManager.instance.darkGray,
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: Utility.dynamicWidthPixel(16),
+                    right: Utility.dynamicWidthPixel(16),
+                    top: Utility.dynamicWidthPixel(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      withoutHeader != true
+                          ? Padding(
+                              padding: EdgeInsets.only(
+                                bottom: Utility.dynamicWidthPixel(16),
+                              ),
+                              child: SizedBox(
+                                height: Utility.dynamicWidthPixel(36),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: AutoSizeText(
+                                        title ?? "",
+                                        style: TextStyle(
+                                          fontFamily: "Rubik-Medium",
+                                          fontSize: Utility.dynamicTextSize(18),
+                                          fontWeight: FontWeight.w600,
+                                          color: ColorManager.instance.darkGray,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
-                        : const SizedBox(),
-                    Flexible(child: content),
-                  ],
+                            )
+                          : const SizedBox(),
+                      content,
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        });
+            );
+          },
+        );
       },
     );
   }

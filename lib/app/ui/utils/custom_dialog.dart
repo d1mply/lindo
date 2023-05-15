@@ -11,8 +11,10 @@ class CustomDialog {
     bool? dismissible,
     required Widget body,
     Widget? icon,
+    bool? isExpanded,
   }) {
     return showModal(
+      
       context: context,
       configuration: FadeScaleTransitionConfiguration(barrierDismissible: dismissible ?? true),
       // barrierDismissible: dismissible ?? true,
@@ -69,7 +71,11 @@ class CustomDialog {
                     ),
                   ],
                 ),
-                body
+                isExpanded == true
+                    ? Flexible(
+                        child: body,
+                      )
+                    : body
               ],
             ),
           ),
