@@ -6,6 +6,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:lindo/app/controllers/usercontroller.dart';
 import 'package:lindo/app/ui/pages/chat_page/chat_page.dart';
+import 'package:lindo/app/ui/pages/notification_page/notification_page.dart';
 import 'package:lindo/app/ui/utils/custom_dialog.dart';
 import 'package:lindo/app/ui/utils/k_textformfield.dart';
 import 'package:lindo/core/init/theme/color_manager.dart';
@@ -32,10 +33,15 @@ class ExplorePage extends GetView<ExploreController> {
               children: [
                 Row(
                   children: [
-                    Image.asset(
-                      "assets/images/notification.png",
-                      height: 26,
-                      width: 26,
+                    InkWell(
+                      onTap: () {
+                        pushNewScreen(context, screen: const NotificationPage(), withNavBar: false);
+                      },
+                      child: Image.asset(
+                        "assets/images/notification.png",
+                        height: 26,
+                        width: 26,
+                      ),
                     ),
                     IconButton(
                       icon: Image.asset(
@@ -349,6 +355,10 @@ class ExplorePage extends GetView<ExploreController> {
                   padding: const EdgeInsets.all(10),
                   child: InkWell(
                     onTap: () {
+                      addNotification(
+                        c.usersList[index]["uid"],
+                        "Keşfette profilinizi görüntüledi.",
+                      );
                       StoryController controller = StoryController();
 
                       List<StoryItem> storyItems = [];

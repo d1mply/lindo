@@ -12,6 +12,7 @@ class MessagesController extends GetxController {
   }
 
   List<Map<dynamic, dynamic>> chatRooms = [];
+  List<Map<dynamic, dynamic>> chatRoomsForSwiped = [];
 
   init() async {
     await NetworkManager.instance.getUserReference(FirebaseAuth.instance.currentUser!.uid).child("chatrooms").get().then(
@@ -23,7 +24,11 @@ class MessagesController extends GetxController {
 
             values.forEach(
               (key, value) {
-                chatRooms.add(value);
+                if (value["liked"] == true) {
+                  chatRoomsForSwiped.add(value);
+                } else {
+                  chatRooms.add(value);
+                }
               },
             );
           }

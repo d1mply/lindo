@@ -27,9 +27,9 @@ dependencies:
   permission_handler: ^10.2.0
   expandable_page_view: ^1.0.17
   persistent_bottom_nav_bar_v2: ^4.2.6
-  firebase_core:
-  firebase_auth:
-  firebase_database:
+  firebase_core: ^2.7.0
+  firebase_auth: ^4.2.9
+  firebase_database: ^10.0.14
   firebase_analytics:
   firebase_crashlytics:
   firebase_messaging:

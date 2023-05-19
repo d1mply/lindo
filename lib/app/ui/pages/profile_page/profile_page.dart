@@ -1303,11 +1303,16 @@ class ProfilePage extends GetView<ProfileController> {
                                 onTap: () {},
                               ),
                             ),
-                            InkWell(
-                              child: const Text('Çıkış Yap'),
-                              onTap: () {
-                                FirebaseAuth.instance.signOut();
-                              },
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 32),
+                              child: KButton(
+                                color: ColorManager.instance.pink,
+                                textColor: ColorManager.instance.white,
+                                onTap: () {
+                                  FirebaseAuth.instance.signOut();
+                                },
+                                title: "Çıkış Yap",
+                              ),
                             ),
                           ],
                         ),

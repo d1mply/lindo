@@ -184,3 +184,45 @@ class ExploreController extends GetxController {
     'Düzce'
   ];
 }
+
+addNotification(String? uid, String message) async {
+  DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+  final data = user.value as Map<Object?, Object?>;
+
+  if (uid == FirebaseAuth.instance.currentUser!.uid) {
+    return;
+  }
+
+  NetworkManager.instance.notificationRef.push().set(
+    {
+      "uid": uid,
+      "image": (data["images"] as List).first ?? "",
+      "senderUid": FirebaseAuth.instance.currentUser!.uid,
+      "sender": data["name"],
+      "message": message,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "isRead": false,
+    },
+  );
+}
+
+swipeRight(String? uid) async {
+  DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+  final data = user.value as Map<Object?, Object?>;
+
+  if (uid == FirebaseAuth.instance.currentUser!.uid) {
+    return;
+  }
+
+  NetworkManager.instance.swipe.push().set(
+    {
+      "uid": uid,
+      "image": (data["images"] as List).first ?? "",
+      "senderUid": FirebaseAuth.instance.currentUser!.uid,
+      "sender": data["name"],
+      "location": data["location"],
+      "birth": "${DateTime.now().year - int.parse(data["birth"].toString().split("-").first.toString())}",
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+    },
+  );
+}

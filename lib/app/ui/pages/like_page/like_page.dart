@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lindo/core/init/theme/color_manager.dart';
+import '../../../../core/init/network/network_manager.dart';
 import '../../../controllers/like_controller.dart';
 
 class LikePage extends GetView<LikeController> {
@@ -54,7 +57,7 @@ class LikePage extends GetView<LikeController> {
                     init: LikeController(),
                     builder: (c) {
                       return GridView.builder(
-                        itemCount: 10,
+                        itemCount: c.messages.length,
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 2.0,
@@ -71,12 +74,21 @@ class LikePage extends GetView<LikeController> {
                               child: Column(
                                 children: [
                                   Expanded(
-                                    child: SizedBox(),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(12),
+                                        topRight: Radius.circular(12),
+                                      ),
+                                      child: CachedNetworkImage(
+                                        imageUrl: c.messages[index]["image"],
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   ),
                                   Container(
                                     decoration: BoxDecoration(
                                       color: ColorManager.instance.white,
-                                      borderRadius: BorderRadius.only(
+                                      borderRadius: const BorderRadius.only(
                                         bottomLeft: Radius.circular(12),
                                         bottomRight: Radius.circular(12),
                                       ),
@@ -86,11 +98,40 @@ class LikePage extends GetView<LikeController> {
                                       children: [
                                         IconButton(
                                           icon: SvgPicture.asset("assets/svg/love_off.svg"),
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            await NetworkManager.instance.notificationRef.child(c.keys[index]).remove();
+                                            c.keys.removeAt(index);
+                                            c.messages.removeAt(index);
+                                            c.update();
+                                          },
                                         ),
                                         IconButton(
                                           icon: SvgPicture.asset("assets/svg/love.svg"),
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            DateTime now = DateTime.now();
+                                            String chatRoomId = calculateChatRoomId(c.messages[index]["uid"], c.messages[index]["senderUid"]);
+                                            NetworkManager.instance.getUserReference(c.messages[index]["uid"]).child("chatrooms").child(chatRoomId).set(
+                                              {
+                                                "timestamp": now.millisecondsSinceEpoch,
+                                                "uid": c.messages[index]["senderUid"],
+                                                "chatroomId": chatRoomId,
+                                                "liked": true,
+                                              },
+                                            );
+                                            NetworkManager.instance.getUserReference(c.messages[index]["senderUid"]).child("chatrooms").child(chatRoomId).set(
+                                              {
+                                                "timestamp": now.millisecondsSinceEpoch,
+                                                "uid": c.messages[index]["uid"],
+                                                "chatroomId": chatRoomId,
+                                                "liked": true,
+                                              },
+                                            );
+
+                                            await NetworkManager.instance.notificationRef.child(c.keys[index]).remove();
+                                            c.keys.removeAt(index);
+                                            c.messages.removeAt(index);
+                                            c.update();
+                                          },
                                         )
                                       ],
                                     ),
@@ -111,4 +152,13 @@ class LikePage extends GetView<LikeController> {
       ),
     );
   }
+}
+
+String calculateChatRoomId(String uid1, String uid2) {
+  String chatRoomId = "";
+  List<String> uidList = [uid1];
+  uidList.add(FirebaseAuth.instance.currentUser!.uid);
+  uidList.sort();
+  chatRoomId = "${uidList.first}-${uidList.last}";
+  return chatRoomId;
 }

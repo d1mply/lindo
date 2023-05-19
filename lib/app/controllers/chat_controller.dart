@@ -15,7 +15,6 @@ class ChatController extends GetxController {
 
   String chatRoomId = "";
   TextEditingController textEditingController = TextEditingController();
-  final ScrollController scrollController = ScrollController();
 
   String calculateChatRoomId() {
     List<String> uidList = [uid];
@@ -26,9 +25,11 @@ class ChatController extends GetxController {
   }
 
   List<Map<dynamic, dynamic>> messages = [];
+  List<String> keys = [];
 
-  int? lastKey;
   StreamSubscription<DatabaseEvent>? messageAddedSubscription;
+  final ScrollController scrollController = ScrollController();
+  int? lastKey;
 
   Future<void> getMessages() async {
     DatabaseReference chatRef = NetworkManager.instance.chatRooms.child(chatRoomId);
@@ -72,7 +73,6 @@ class ChatController extends GetxController {
 
   int page = 1;
 
-  List<String> keys = [];
   Future<void> loadMoreMessages() async {
     page = page + 1;
     DatabaseReference chatRef = NetworkManager.instance.chatRooms.child(chatRoomId);
@@ -113,7 +113,7 @@ class ChatController extends GetxController {
 
   Map<dynamic, dynamic>? user;
 
-  getUser() async {
+  Future<Map<dynamic, dynamic>?> getUser() async {
     DataSnapshot _user = await NetworkManager.instance.getUserDetailsWithId(uid);
     if (_user.exists) {
       Object? vals = _user.value;
@@ -122,9 +122,10 @@ class ChatController extends GetxController {
       }
       update();
     }
+    return user;
   }
 
-  sendMessage() async {
+  sendMessage({bool? isLiked}) async {
     if (textEditingController.text.replaceAll(" ", "").isNotEmpty) {
       DateTime now = DateTime.now();
 
@@ -134,6 +135,7 @@ class ChatController extends GetxController {
             "timestamp": now.millisecondsSinceEpoch,
             "uid": FirebaseAuth.instance.currentUser!.uid,
             "chatroomId": chatRoomId,
+            "liked": isLiked == null ? false : true,
           },
         );
         NetworkManager.instance.getUserReference(FirebaseAuth.instance.currentUser!.uid).child("chatrooms").child(chatRoomId).set(
@@ -141,6 +143,7 @@ class ChatController extends GetxController {
             "timestamp": now.millisecondsSinceEpoch,
             "uid": uid,
             "chatroomId": chatRoomId,
+            "liked": isLiked == null ? false : true,
           },
         );
 

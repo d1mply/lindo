@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 import '../../core/init/network/network_manager.dart';
 
-class LikeController extends GetxController {
+class NotificationController extends GetxController {
   final ScrollController scrollController = ScrollController();
   int? lastKey;
 
@@ -34,7 +34,7 @@ class LikeController extends GetxController {
 
   Future<void> getMessages() async {
     String myUid = FirebaseAuth.instance.currentUser!.uid;
-    await NetworkManager.instance.swipe.orderByChild("uid").equalTo(myUid).limitToLast(20).once().then(
+    await NetworkManager.instance.notificationRef.orderByChild("uid").equalTo(myUid).limitToLast(20).once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
         if (vals != null) {
@@ -69,7 +69,7 @@ class LikeController extends GetxController {
     page = page + 1;
     String myUid = FirebaseAuth.instance.currentUser!.uid;
 
-    await NetworkManager.instance.swipe.orderByChild("uid").equalTo(myUid).orderByChild("uid").endAt(lastKey).limitToLast(20 * page).once().then(
+    await NetworkManager.instance.notificationRef.orderByChild("uid").equalTo(myUid).orderByChild("uid").endAt(lastKey).limitToLast(20 * page).once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
         if (vals != null) {

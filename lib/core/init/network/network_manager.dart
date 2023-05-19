@@ -12,6 +12,8 @@ class NetworkManager {
   NetworkManager._init();
 
   DatabaseReference usersRef = FirebaseDatabase.instance.ref().child('users');
+  DatabaseReference notificationRef = FirebaseDatabase.instance.ref().child('notifications');
+  DatabaseReference swipe = FirebaseDatabase.instance.ref().child('swipe');
   DatabaseReference messagesRef = FirebaseDatabase.instance.ref().child('messages');
   DatabaseReference chatRooms = FirebaseDatabase.instance.ref().child('chat_rooms');
 
