@@ -190,6 +190,7 @@ class ChatController extends GetxController {
             keys.add(event.snapshot.key ?? "");
           }
         } finally {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
           update();
         }
       },

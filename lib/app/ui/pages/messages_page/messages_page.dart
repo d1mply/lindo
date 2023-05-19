@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lindo/core/base/state.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import '../../../../core/init/network/network_manager.dart';
 import '../../../../core/init/theme/color_manager.dart';
@@ -24,139 +25,248 @@ class MessagesPage extends GetView<MessagesController> {
           init: MessagesController(),
           builder: (c) {
             return Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                  onPressed: () {},
+                  icon: Image.asset(
+                    "assets/images/shop.png",
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                elevation: 0,
+                backgroundColor: ColorManager.instance.background_gray,
+                actions: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 12.w),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          "assets/images/coin.png",
+                          height: 24,
+                          width: 24,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.w),
+                          child: Text(
+                            "250",
+                            style: TextStyle(
+                              color: ColorManager.instance.black,
+                              fontSize: 16,
+                              fontFamily: "Bold",
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+                title: Image.asset(
+                  "assets/images/lindo.png",
+                  width: 79,
+                  height: 54,
+                ),
+              ),
               backgroundColor: ColorManager.instance.background_gray,
               body: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: c.chatRooms.length,
-                      itemBuilder: (context, index) {
-                        String uid = c.chatRooms[index]["chatroomId"].replaceAll("-", "").replaceAll(FirebaseAuth.instance.currentUser!.uid, "");
-                        return FutureBuilder(
-                          future: NetworkManager.instance.getUserDetailsWithId(uid),
-                          builder: (BuildContext context, AsyncSnapshot<DataSnapshot> snapshot) {
-                            if (snapshot.hasData) {
-                              Map<dynamic, dynamic> user = snapshot.data!.value as Map<dynamic, dynamic>;
-                              return InkWell(
-                                onTap: () {
-                                  pushNewScreen(
-                                    context,
-                                    screen: ChatPage(
-                                      uid: uid,
-                                    ),
-                                    withNavBar: false,
-                                  );
-                                },
-                                child: FutureBuilder(
-                                    future: NetworkManager.instance.getUserLastMessages(uid),
-                                    builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
-                                      return Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.w),
-                                        child: Container(
-                                          decoration: BoxDecoration(color: ColorManager.instance.white, borderRadius: BorderRadius.circular(8)),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(4.0.w),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(500),
-                                                    child: user["images"] == null
-                                                        ? SvgPicture.asset(
-                                                            "assets/svg/no_gender.svg",
-                                                            width: 40.w,
-                                                            height: 40.w,
-                                                            fit: BoxFit.cover,
-                                                          )
-                                                        : CachedNetworkImage(
-                                                            imageUrl: user["images"].first,
-                                                            width: 40.w,
-                                                            height: 40.w,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(left: 8.0.w, right: 8.w),
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          user["name"] ?? "",
-                                                          maxLines: 1,
-                                                          style: TextStyle(
-                                                            color: ColorManager.instance.primary,
-                                                            fontWeight: FontWeight.w600,
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          snapshot.hasData ? (snapshot.data!["message"]) : "",
-                                                          maxLines: 1,
-                                                          style: TextStyle(
-                                                            color: ColorManager.instance.primary,
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Text(
-                                                      snapshot.hasData ? (snapshot.data!["time"]) : "",
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                        color: ColorManager.instance.gray,
-                                                        fontWeight: FontWeight.w400,
-                                                        fontSize: 14,
-                                                      ),
-                                                    ),
-                                                    snapshot.hasData
-                                                        ? snapshot.data!["count"] != 0
-                                                            ? Container(
-                                                                decoration: BoxDecoration(
-                                                                  shape: BoxShape.circle,
-                                                                  color: ColorManager.instance.pink,
-                                                                ),
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets.all(5.0),
-                                                                  child: Text(
-                                                                    snapshot.data!["count"].toString(),
-                                                                    maxLines: 1,
-                                                                    style: TextStyle(
-                                                                      color: ColorManager.instance.white,
-                                                                      fontWeight: FontWeight.w600,
-                                                                      fontSize: 14,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            : const SizedBox()
-                                                        : const Text(""),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              );
-                            } else {
-                              return const CupertinoActivityIndicator();
-                            }
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 16.w,
+                      top: 16.w,
+                      bottom: 16.w,
+                    ),
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            c.flag = false;
+                            c.update();
                           },
-                        );
-                      },
+                          child: Text(
+                            "Mesajlar",
+                            style: TextStyle(
+                              color: c.flag == false ? ColorManager.instance.black : ColorManager.instance.softBlack,
+                              fontSize: 16,
+                              decoration: c.flag == false ? TextDecoration.underline : null,
+                              fontFamily: "Medium",
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 12.w,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            c.flag = true;
+                            c.update();
+                          },
+                          child: Text(
+                            "Eşleşmeler",
+                            style: TextStyle(
+                              color: c.flag == true ? ColorManager.instance.black : ColorManager.instance.softBlack,
+                              fontSize: 16,
+                              decoration: c.flag == true ? TextDecoration.underline : null,
+                              fontFamily: "Medium",
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: c.flag == false ? c.chatRooms.length : c.chatRoomsForSwiped.length,
+                            itemBuilder: (context, index) {
+                              String uid = c.flag == false ? c.chatRooms[index]["chatroomId"].replaceAll("-", "").replaceAll(FirebaseAuth.instance.currentUser!.uid, "") : c.chatRoomsForSwiped[index]["chatroomId"].replaceAll("-", "").replaceAll(FirebaseAuth.instance.currentUser!.uid, "");
+                              return FutureBuilder(
+                                future: NetworkManager.instance.getUserDetailsWithId(uid),
+                                builder: (BuildContext context, AsyncSnapshot<DataSnapshot> snapshot) {
+                                  if (snapshot.hasData) {
+                                    Map<dynamic, dynamic> user = snapshot.data!.value as Map<dynamic, dynamic>;
+                                    return InkWell(
+                                      onTap: () {
+                                        String uid = c.flag == false ? c.chatRooms[index]["chatroomId"].replaceAll("-", "").replaceAll(FirebaseAuth.instance.currentUser!.uid, "") : c.chatRoomsForSwiped[index]["chatroomId"].replaceAll("-", "").replaceAll(FirebaseAuth.instance.currentUser!.uid, "");
+
+                                        pushNewScreen(
+                                          context,
+                                          screen: ChatPage(
+                                            uid: uid,
+                                          ),
+                                          withNavBar: false,
+                                        );
+                                      },
+                                      child: FutureBuilder(
+                                          future: NetworkManager.instance.getUserLastMessages(uid),
+                                          builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+                                            return Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.w),
+                                              child: Container(
+                                                decoration: BoxDecoration(color: ColorManager.instance.white, borderRadius: BorderRadius.circular(8)),
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(4.0.w),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Stack(
+                                                          children: [
+                                                            ClipRRect(
+                                                              borderRadius: BorderRadius.circular(500),
+                                                              child: user["images"] == null
+                                                                  ? SvgPicture.asset(
+                                                                      "assets/svg/no_gender.svg",
+                                                                      width: 40.w,
+                                                                      height: 40.w,
+                                                                      fit: BoxFit.cover,
+                                                                    )
+                                                                  : CachedNetworkImage(
+                                                                      imageUrl: user["images"].first,
+                                                                      width: 40.w,
+                                                                      height: 40.w,
+                                                                      fit: BoxFit.cover,
+                                                                    ),
+                                                            ),
+                                                            c.flag == true
+                                                                ? Positioned(
+                                                                    left: 0,
+                                                                    bottom: 0,
+                                                                    child: Icon(
+                                                                      Icons.favorite,
+                                                                      size: Utility.dynamicWidthPixel(16),
+                                                                      color: ColorManager.instance.pink,
+                                                                    ),
+                                                                  )
+                                                                : const SizedBox(),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Padding(
+                                                          padding: EdgeInsets.only(left: 8.0.w, right: 8.w),
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                user["name"] ?? "",
+                                                                maxLines: 1,
+                                                                style: TextStyle(
+                                                                  color: ColorManager.instance.primary,
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                snapshot.hasData ? (snapshot.data!["message"]) : "",
+                                                                maxLines: 1,
+                                                                style: TextStyle(
+                                                                  color: ColorManager.instance.primary,
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Column(
+                                                        children: [
+                                                          Text(
+                                                            snapshot.hasData ? (snapshot.data!["time"]) : "",
+                                                            maxLines: 1,
+                                                            style: TextStyle(
+                                                              color: ColorManager.instance.gray,
+                                                              fontWeight: FontWeight.w400,
+                                                              fontSize: 14,
+                                                            ),
+                                                          ),
+                                                          snapshot.hasData
+                                                              ? snapshot.data!["count"] != 0
+                                                                  ? Container(
+                                                                      decoration: BoxDecoration(
+                                                                        shape: BoxShape.circle,
+                                                                        color: ColorManager.instance.pink,
+                                                                      ),
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.all(5.0),
+                                                                        child: Text(
+                                                                          snapshot.data!["count"].toString(),
+                                                                          maxLines: 1,
+                                                                          style: TextStyle(
+                                                                            color: ColorManager.instance.white,
+                                                                            fontWeight: FontWeight.w600,
+                                                                            fontSize: 14,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  : const SizedBox()
+                                                              : const Text(""),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                    );
+                                  } else {
+                                    return const CupertinoActivityIndicator();
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

@@ -33,12 +33,14 @@ class ProfilePage extends GetView<ProfileController> {
                 backgroundColor: ColorManager.instance.background_gray,
                 title: SvgPicture.asset("assets/svg/l_lindo.svg"),
                 elevation: 0,
+                /*
                 actions: [
                   IconButton(
                     icon: SvgPicture.asset("assets/svg/settings.svg"),
                     onPressed: () {},
                   ),
                 ],
+                */
                 centerTitle: false,
               ),
               body: c.userDetails != null

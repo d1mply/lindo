@@ -7,6 +7,7 @@ import '../../../../core/init/theme/color_manager.dart';
 import '../../../controllers/chat_controller.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../../controllers/messages_controller.dart';
 import '../../utils/k_textformfield.dart';
 
 class ChatPage extends GetView<ChatController> {
@@ -21,6 +22,7 @@ class ChatPage extends GetView<ChatController> {
           color: ColorManager.instance.white,
           child: SafeArea(
             child: Scaffold(
+              resizeToAvoidBottomInset: true,
               backgroundColor: ColorManager.instance.greyBG,
               appBar: AppBar(
                 leading: IconButton(
@@ -28,7 +30,12 @@ class ChatPage extends GetView<ChatController> {
                     Icons.chevron_left,
                     color: ColorManager.instance.secondary,
                   ),
-                  onPressed: () => Get.back(),
+                  onPressed: () {
+                    MessagesController s = Get.find();
+                    s.update();
+                    print("sssss");
+                    Get.back();
+                  },
                 ),
                 elevation: 1,
                 actions: [

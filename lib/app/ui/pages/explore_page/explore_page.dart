@@ -24,6 +24,7 @@ class ExplorePage extends GetView<ExploreController> {
   Widget build(BuildContext context) {
     return GetBuilder<ExploreController>(
       init: ExploreController(),
+      autoRemove: false,
       builder: (c) {
         return Scaffold(
           appBar: AppBar(
@@ -54,6 +55,8 @@ class ExplorePage extends GetView<ExploreController> {
                           context: context,
                           title: "Filtrele",
                           content: GetBuilder<ExploreController>(
+                            init: ExploreController(),
+                            autoRemove: false,
                             builder: (c) {
                               return Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -308,7 +311,9 @@ class ExplorePage extends GetView<ExploreController> {
                                         ),
                                         KButton(
                                           color: ColorManager.instance.pink,
-                                          onTap: () {},
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
                                           title: "Filtrele",
                                           borderColor: ColorManager.instance.pink,
                                           textColor: ColorManager.instance.white,

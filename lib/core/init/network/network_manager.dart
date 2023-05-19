@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
@@ -30,7 +32,7 @@ class NetworkManager {
     int count = 0;
     String time = "";
 
-    await FirebaseDatabase.instance.ref().child('chat_rooms').child(calculateChatRoomId(uid)).orderByChild("timestamp").limitToLast(15).once().then(
+    await FirebaseDatabase.instance.ref().child('chat_rooms').child(calculateChatRoomId(uid)).orderByChild("timestamp").limitToLast(1).once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
         if (vals != null) {
@@ -39,15 +41,16 @@ class NetworkManager {
           values.forEach(
             (key, value) {
               if (value["isRead"] != null) {
-                print(value["isRead"]);
-                if (value["isRead"] == false) {
-                  count += 1;
+                if (value["receiver_uid"] == FirebaseAuth.instance.currentUser!.uid) {
+                  if (value["isRead"] == false) {
+                    count += 1;
+                  }
                 }
               }
               text = value["message"];
               tim = value["timestamp"];
               try {
-                time = "${DateFormat('hh:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(tim.toString())))}";
+                time = DateFormat('hh:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(tim.toString())));
               } catch (e) {}
             },
           );

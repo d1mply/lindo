@@ -462,6 +462,7 @@ class RegisterPage extends GetView<RegisterController> {
                                                     "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
                                                     "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
                                                     "birth": c.selectedDateTime.toString(),
+                                                    "year": DateTime.now().year - c.selectedDateTime!.year,
                                                     "images": c.images,
                                                     "birthYear": c.selectedDateTime?.year,
                                                     "gender": c.selectedGender,

@@ -11,6 +11,8 @@ class MessagesController extends GetxController {
     super.onReady();
   }
 
+  bool noMessage = false;
+  bool flag = false;
   List<Map<dynamic, dynamic>> chatRooms = [];
   List<Map<dynamic, dynamic>> chatRoomsForSwiped = [];
 
