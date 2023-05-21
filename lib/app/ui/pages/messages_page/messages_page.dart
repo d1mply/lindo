@@ -12,6 +12,7 @@ import '../../../../core/init/network/network_manager.dart';
 import '../../../../core/init/theme/color_manager.dart';
 import '../../../controllers/messages_controller.dart';
 import '../chat_page/chat_page.dart';
+import '../explore_page/explore_page.dart';
 
 class MessagesPage extends GetView<MessagesController> {
   const MessagesPage({super.key});
@@ -26,14 +27,7 @@ class MessagesPage extends GetView<MessagesController> {
           builder: (c) {
             return Scaffold(
               appBar: AppBar(
-                leading: IconButton(
-                  onPressed: () {},
-                  icon: Image.asset(
-                    "assets/images/shop.png",
-                    height: 24,
-                    width: 24,
-                  ),
-                ),
+                leading:   ShopWidget(),
                 elevation: 0,
                 backgroundColor: ColorManager.instance.background_gray,
                 actions: [

@@ -331,20 +331,18 @@ class ExplorePage extends GetView<ExploreController> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 30),
+                  padding: EdgeInsets.only(right: (Get.width / 2) - 100),
                   child: Image.asset(
                     "assets/images/lindo.png",
                     width: 79,
                     height: 54,
                   ),
                 ),
-                Image.asset(
-                  "assets/images/shop.png",
-                  height: 24,
-                  width: 24,
-                ),
               ],
             ),
+            actions: [
+              ShopWidget(),
+            ],
           ),
           body: SafeArea(
             child: GridView.builder(
@@ -677,6 +675,27 @@ class ExplorePage extends GetView<ExploreController> {
           ),
         );
       },
+    );
+  }
+}
+
+class ShopWidget extends StatelessWidget {
+  const ShopWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        Get.closeAllSnackbars();
+        Get.snackbar("Çok yakında", "Market çok yakında aktif olacaktır.", backgroundColor: ColorManager.instance.white);
+      },
+      icon: Image.asset(
+        "assets/images/shop.png",
+        height: 24,
+        width: 24,
+      ),
     );
   }
 }

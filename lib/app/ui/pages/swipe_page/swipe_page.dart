@@ -18,6 +18,7 @@ import '../../utils/k_bottom_sheet.dart';
 import '../../utils/k_button.dart';
 import '../../utils/k_textformfield.dart';
 import '../chat_page/chat_page.dart';
+import '../explore_page/explore_page.dart';
 import '../profile_page/profile_page.dart';
 
 class SwipePage extends GetView<SwipeController> {
@@ -41,15 +42,8 @@ class SwipePage extends GetView<SwipeController> {
             ),
             elevation: 0,
             backgroundColor: ColorManager.instance.background_gray,
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: Image.asset(
-                  "assets/images/shop.png",
-                  height: 24,
-                  width: 24,
-                ),
-              ),
+            actions: const [
+              ShopWidget(),
             ],
             title: Image.asset(
               "assets/images/lindo.png",

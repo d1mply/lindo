@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:lindo/core/init/theme/color_manager.dart';
 import '../../../../core/init/network/network_manager.dart';
 import '../../../controllers/like_controller.dart';
+import '../explore_page/explore_page.dart';
 
 class LikePage extends GetView<LikeController> {
   const LikePage({super.key});
@@ -19,14 +20,7 @@ class LikePage extends GetView<LikeController> {
         backgroundColor: ColorManager.instance.background_gray,
         elevation: 0,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Image.asset(
-              "assets/images/shop.png",
-              height: 24,
-              width: 24,
-            ),
-          ),
+          ShopWidget(),
         ],
         title: Text(
           "Beğeniler",
