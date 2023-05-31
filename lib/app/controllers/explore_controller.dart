@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lindo/app/controllers/usercontroller.dart';
+import 'package:lindo/config.dart';
 
 import '../../core/init/network/network_manager.dart';
 
@@ -186,24 +188,65 @@ class ExploreController extends GetxController {
 }
 
 addNotification(String? uid, String message) async {
-  DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
-  final data = user.value as Map<Object?, Object?>;
+  try {
+    DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+    final data = user.value as Map<Object?, Object?>;
 
-  if (uid == FirebaseAuth.instance.currentUser!.uid) {
-    return;
+    if (uid == FirebaseAuth.instance.currentUser!.uid) {
+      return;
+    }
+    String? image;
+    if (data["images"] != null) {
+      image = (data["images"] as List).first;
+    }
+    NetworkManager.instance.notificationRef.push().set(
+      {
+        "uid": uid,
+        "image": image,
+        "senderUid": FirebaseAuth.instance.currentUser!.uid,
+        "sender": data["name"],
+        "message": message,
+        "timestamp": DateTime.now().millisecondsSinceEpoch,
+        "isRead": false,
+      },
+    );
+    if (uid != null) {
+      Map<dynamic, dynamic>? sendUser = await getUser(uid);
+      if (sendUser?["token"] != null) {
+        Dio dio = Dio();
+        dio.post(
+          "https://fcm.googleapis.com/fcm/send",
+          options: Options(
+            headers: {
+              "Authorization": "key=$firebasePushServerKey",
+              "Content-Type": "application/json",
+            },
+          ),
+          data: {
+            "to": sendUser?["token"],
+            "notification": {
+              "body": message,
+              "priority": "high",
+              "title": data["name"],
+            }
+          },
+        );
+      }
+    }
+  } finally {}
+}
+
+Future<Map<dynamic, dynamic>?> getUser(String uid) async {
+  Map<dynamic, dynamic>? user;
+
+  DataSnapshot _user = await NetworkManager.instance.getUserDetailsWithId(uid);
+  if (_user.exists) {
+    Object? vals = _user.value;
+    if (vals != null) {
+      user = _user.value as Map<dynamic, dynamic>;
+    }
   }
-
-  NetworkManager.instance.notificationRef.push().set(
-    {
-      "uid": uid,
-      "image": (data["images"] as List).first ?? "",
-      "senderUid": FirebaseAuth.instance.currentUser!.uid,
-      "sender": data["name"],
-      "message": message,
-      "timestamp": DateTime.now().millisecondsSinceEpoch,
-      "isRead": false,
-    },
-  );
+  return user;
 }
 
 swipeRight(String? uid) async {

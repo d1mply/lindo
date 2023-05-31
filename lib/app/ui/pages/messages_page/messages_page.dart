@@ -27,10 +27,11 @@ class MessagesPage extends GetView<MessagesController> {
           builder: (c) {
             return Scaffold(
               appBar: AppBar(
-                leading:   ShopWidget(),
+                leading: ShopWidget(),
                 elevation: 0,
                 backgroundColor: ColorManager.instance.background_gray,
                 actions: [
+                  /*
                   Padding(
                     padding: EdgeInsets.only(right: 12.w),
                     child: Row(
@@ -54,6 +55,7 @@ class MessagesPage extends GetView<MessagesController> {
                       ],
                     ),
                   )
+                  */
                 ],
                 title: Image.asset(
                   "assets/images/lindo.png",

@@ -172,83 +172,80 @@ class SwipePage extends GetView<SwipeController> {
                                         ),
                                       ),
                                       KTextFormField.instance.widget(context: context, labelText: "Biyografi", readOnly: true, controller: TextEditingController()..text = "${c.usersList[index - 1]["bio"] ?? ""}"),
-                                      InkWell(
-                                        child: Container(
-                                          width: Get.width,
-                                          decoration: BoxDecoration(
-                                            color: ColorManager.instance.white,
-                                            borderRadius: BorderRadius.circular(20),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: Column(
-                                              children: [
-                                                const Align(
-                                                  alignment: Alignment.centerLeft,
-                                                  child: Text(
-                                                    "Bilgi",
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 16,
-                                                    ),
+                                      Container(
+                                        width: Get.width,
+                                        decoration: BoxDecoration(
+                                          color: ColorManager.instance.white,
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Column(
+                                            children: [
+                                              const Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  "Bilgi",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
                                                   ),
                                                 ),
-                                                const SizedBox(
-                                                  height: 6,
-                                                ),
-                                                Info(
-                                                  img: "assets/images/height.png",
-                                                  title: "Boy",
-                                                  desc: c.usersList[index - 1]["height"] == null ? "" : "${c.usersList[index - 1]["height"]} cm",
-                                                  onTap: () {},
-                                                ),
-                                                Info(
-                                                  img: "assets/images/weight.png",
-                                                  title: "Ağırlık",
-                                                  desc: c.usersList[index - 1]["weight"] == null ? "" : "${c.usersList[index - 1]["weight"]} kg",
-                                                  onTap: () {},
-                                                ),
-                                                Info(
-                                                  img: "assets/images/smoking.png",
-                                                  title: "Sigara",
-                                                  desc: c.usersList[index - 1]["smoking"] == null ? "" : "${c.usersList[index - 1]["smoking"]}",
-                                                  onTap: () {},
-                                                ),
-                                                Info(
-                                                  img: "assets/images/wine-bottle.png",
-                                                  title: "Alkol",
-                                                  desc: c.usersList[index - 1]["wine-bottle"] == null ? "" : "${c.usersList[index - 1]["wine-bottle"]}",
-                                                  onTap: () {},
-                                                ),
-                                                Info(
-                                                  img: "assets/images/heart.png",
-                                                  title: "İlişki Beklentim",
-                                                  desc: c.usersList[index - 1]["hearth"] == null ? "" : "${c.usersList[index - 1]["hearth"]}",
-                                                  onTap: () {},
-                                                ),
-                                                Info(
-                                                  img: "assets/images/gender.png",
-                                                  title: "Cinsellik",
-                                                  desc: c.usersList[index - 1]["sex"] == null ? "" : "${c.usersList[index - 1]["sex"]}",
-                                                  onTap: () {},
-                                                ),
-                                                Info(
-                                                  img: "assets/images/personality.png",
-                                                  title: "Kişilik",
-                                                  desc: c.usersList[index - 1]["personality"] == null ? "" : "${c.usersList[index - 1]["personality"]}",
-                                                  onTap: () {},
-                                                ),
-                                                Info(
-                                                  img: "assets/images/money.png",
-                                                  title: "İlgi Alanları",
-                                                  desc: c.usersList[index - 1]["money"] == null ? "" : "${c.usersList[index - 1]["money"]}",
-                                                  onTap: () {},
-                                                ),
-                                              ],
-                                            ),
+                                              ),
+                                              const SizedBox(
+                                                height: 6,
+                                              ),
+                                              Info(
+                                                img: "assets/images/height.png",
+                                                title: "Boy",
+                                                desc: c.usersList[index - 1]["height"] == null ? "" : "${c.usersList[index - 1]["height"]} cm",
+                                                onTap: () {},
+                                              ),
+                                              Info(
+                                                img: "assets/images/weight.png",
+                                                title: "Ağırlık",
+                                                desc: c.usersList[index - 1]["weight"] == null ? "" : "${c.usersList[index - 1]["weight"]} kg",
+                                                onTap: () {},
+                                              ),
+                                              Info(
+                                                img: "assets/images/smoking.png",
+                                                title: "Sigara",
+                                                desc: c.usersList[index - 1]["smoking"] == null ? "" : "${c.usersList[index - 1]["smoking"]}",
+                                                onTap: () {},
+                                              ),
+                                              Info(
+                                                img: "assets/images/wine-bottle.png",
+                                                title: "Alkol",
+                                                desc: c.usersList[index - 1]["wine-bottle"] == null ? "" : "${c.usersList[index - 1]["wine-bottle"]}",
+                                                onTap: () {},
+                                              ),
+                                              Info(
+                                                img: "assets/images/heart.png",
+                                                title: "İlişki Beklentim",
+                                                desc: c.usersList[index - 1]["hearth"] == null ? "" : "${c.usersList[index - 1]["hearth"]}",
+                                                onTap: () {},
+                                              ),
+                                              Info(
+                                                img: "assets/images/gender.png",
+                                                title: "Cinsellik",
+                                                desc: c.usersList[index - 1]["sex"] == null ? "" : "${c.usersList[index - 1]["sex"]}",
+                                                onTap: () {},
+                                              ),
+                                              Info(
+                                                img: "assets/images/personality.png",
+                                                title: "Kişilik",
+                                                desc: c.usersList[index - 1]["personality"] == null ? "" : "${c.usersList[index - 1]["personality"]}",
+                                                onTap: () {},
+                                              ),
+                                              Info(
+                                                img: "assets/images/money.png",
+                                                title: "İlgi Alanları",
+                                                desc: c.usersList[index - 1]["money"] == null ? "" : "${c.usersList[index - 1]["money"]}",
+                                                onTap: () {},
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        onTap: () {},
                                       ),
                                       InkWell(
                                         onTap: () {

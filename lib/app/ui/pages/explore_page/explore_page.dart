@@ -16,6 +16,7 @@ import '../../../../core/base/state.dart';
 import '../../../controllers/explore_controller.dart';
 import '../../utils/k_bottom_sheet.dart';
 import '../../utils/k_button.dart';
+import '../profile_page/profile_page.dart';
 
 class ExplorePage extends GetView<ExploreController> {
   const ExplorePage({super.key});
@@ -44,6 +45,7 @@ class ExplorePage extends GetView<ExploreController> {
                         width: 26,
                       ),
                     ),
+                    /*
                     IconButton(
                       icon: Image.asset(
                         "assets/images/settings.png",
@@ -328,6 +330,7 @@ class ExplorePage extends GetView<ExploreController> {
                         );
                       },
                     ),
+                    */
                   ],
                 ),
                 Padding(
@@ -358,6 +361,8 @@ class ExplorePage extends GetView<ExploreController> {
                   padding: const EdgeInsets.all(10),
                   child: InkWell(
                     onTap: () {
+                      print(index);
+                      print(c.usersList[index]);
                       addNotification(
                         c.usersList[index]["uid"],
                         "Keşfette profilinizi görüntüledi.",
@@ -381,6 +386,7 @@ class ExplorePage extends GetView<ExploreController> {
                       CustomDialog().showGeneralDialog(
                         context,
                         icon: const SizedBox(),
+                        isExpanded: true,
                         body: SingleChildScrollView(
                           child: Column(
                             children: [
@@ -404,7 +410,7 @@ class ExplorePage extends GetView<ExploreController> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      c.usersList[index]["name"],
+                                      c.usersList[index]["name"] ?? "",
                                       style: TextStyle(
                                         color: ColorManager.instance.black,
                                         fontSize: 16,
@@ -412,7 +418,7 @@ class ExplorePage extends GetView<ExploreController> {
                                       ),
                                     ),
                                     Text(
-                                      "${DateTime.now().year - int.parse(c.usersList[index]["birth"].toString().split("-").first.toString())}",
+                                      "${c.usersList[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.usersList[index]["birthTimestamp"]).year)}",
                                       style: TextStyle(
                                         color: ColorManager.instance.black,
                                         fontSize: 16,
@@ -462,6 +468,81 @@ class ExplorePage extends GetView<ExploreController> {
                                       ).toList(),
                                     )
                                   : const SizedBox(),
+                              Container(
+                                width: Get.width,
+                                decoration: BoxDecoration(
+                                  color: ColorManager.instance.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    children: [
+                                      const Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Bilgi",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      Info(
+                                        img: "assets/images/height.png",
+                                        title: "Boy",
+                                        desc: c.usersList[index]["height"] == null ? "" : "${c.usersList[index]["height"]} cm",
+                                        onTap: () {},
+                                      ),
+                                      Info(
+                                        img: "assets/images/weight.png",
+                                        title: "Ağırlık",
+                                        desc: c.usersList[index]["weight"] == null ? "" : "${c.usersList[index]["weight"]} kg",
+                                        onTap: () {},
+                                      ),
+                                      Info(
+                                        img: "assets/images/smoking.png",
+                                        title: "Sigara",
+                                        desc: c.usersList[index]["smoking"] == null ? "" : "${c.usersList[index]["smoking"]}",
+                                        onTap: () {},
+                                      ),
+                                      Info(
+                                        img: "assets/images/wine-bottle.png",
+                                        title: "Alkol",
+                                        desc: c.usersList[index]["wine-bottle"] == null ? "" : "${c.usersList[index]["wine-bottle"]}",
+                                        onTap: () {},
+                                      ),
+                                      Info(
+                                        img: "assets/images/heart.png",
+                                        title: "İlişki Beklentim",
+                                        desc: c.usersList[index]["hearth"] == null ? "" : "${c.usersList[index]["hearth"]}",
+                                        onTap: () {},
+                                      ),
+                                      Info(
+                                        img: "assets/images/gender.png",
+                                        title: "Cinsellik",
+                                        desc: c.usersList[index]["sex"] == null ? "" : "${c.usersList[index]["sex"]}",
+                                        onTap: () {},
+                                      ),
+                                      Info(
+                                        img: "assets/images/personality.png",
+                                        title: "Kişilik",
+                                        desc: c.usersList[index]["personality"] == null ? "" : "${c.usersList[index]["personality"]}",
+                                        onTap: () {},
+                                      ),
+                                      Info(
+                                        img: "assets/images/money.png",
+                                        title: "İlgi Alanları",
+                                        desc: c.usersList[index]["money"] == null ? "" : "${c.usersList[index]["money"]}",
+                                        onTap: () {},
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                               InkWell(
                                 onTap: () {
                                   CustomDialog().showGeneralDialog(
@@ -635,7 +716,7 @@ class ExplorePage extends GetView<ExploreController> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      c.usersList[index]["name"],
+                                      c.usersList[index]["name"] ?? "",
                                       style: TextStyle(
                                         color: ColorManager.instance.white,
                                         fontSize: 16,
@@ -643,7 +724,7 @@ class ExplorePage extends GetView<ExploreController> {
                                       ),
                                     ),
                                     Text(
-                                      "${DateTime.now().year - int.parse(c.usersList[index]["birth"].toString().split("-").first.toString())}",
+                                      "${c.usersList[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.usersList[index]["birthTimestamp"]).year)}",
                                       style: TextStyle(
                                         color: ColorManager.instance.white,
                                         fontSize: 16,
