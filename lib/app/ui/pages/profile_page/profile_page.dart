@@ -602,6 +602,8 @@ class ProfilePage extends GetView<ProfileController> {
                                           KTextFormField.instance.widget(
                                             context: context,
                                             controller: textEditingController..text = c.user?["bio"] == null ? "" : c.user?["bio"],
+                                            maxLines: 5,
+                                            minLines: 1,
                                           ),
                                           KButton(
                                             color: ColorManager.instance.pink,
@@ -626,6 +628,688 @@ class ProfilePage extends GetView<ProfileController> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 30, right: 30, top: 16),
+                              child: Container(
+                                width: Get.width,
+                                decoration: BoxDecoration(
+                                  color: ColorManager.instance.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    children: [
+                                      const Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Bilgi",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
+                                      Info(
+                                        img: "assets/images/height.png",
+                                        title: "Boy",
+                                        desc: c.user?["height"] == null ? "" : "${c.user?["height"]} cm",
+                                        onTap: () {
+                                          showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return Material(
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          width: double.infinity,
+                                                          color: ColorManager.instance.gray_spacer,
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    'Vazgeç',
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.red,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                InkWell(
+                                                                  onTap: () async {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                    if (c.height != null) {
+                                                                      await NetworkManager.instance.currentUserRef().update(
+                                                                        {
+                                                                          "height": c.height,
+                                                                        },
+                                                                      );
+                                                                      c.getFirstData();
+                                                                    }
+                                                                  },
+                                                                  child: Text(
+                                                                    "Tamam",
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.darkGray,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          decoration: const BoxDecoration(),
+                                                          width: double.infinity,
+                                                          height: Utility.dynamicHeightPixel(250),
+                                                          child: CupertinoPicker(
+                                                            backgroundColor: ColorManager.instance.white,
+                                                            itemExtent: 40,
+                                                            scrollController: FixedExtentScrollController(initialItem: 4),
+                                                            children: List.generate(240, (i) => Text("$i cm")).toList(),
+                                                            onSelectedItemChanged: (value) {
+                                                              c.height = value.toString();
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      Info(
+                                        img: "assets/images/weight.png",
+                                        title: "Ağırlık",
+                                        desc: c.user?["weight"] == null ? "" : "${c.user?["weight"]} kg",
+                                        onTap: () {
+                                          showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return Material(
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          width: double.infinity,
+                                                          color: ColorManager.instance.gray_spacer,
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    'Vazgeç',
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.red,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                InkWell(
+                                                                  onTap: () async {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                    if (c.height != null) {
+                                                                      await NetworkManager.instance.currentUserRef().update(
+                                                                        {
+                                                                          "weight": c.weight,
+                                                                        },
+                                                                      );
+                                                                      c.getFirstData();
+                                                                    }
+                                                                  },
+                                                                  child: Text(
+                                                                    "Tamam",
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.darkGray,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          decoration: const BoxDecoration(),
+                                                          width: double.infinity,
+                                                          height: Utility.dynamicHeightPixel(250),
+                                                          child: CupertinoPicker(
+                                                            backgroundColor: ColorManager.instance.white,
+                                                            itemExtent: 40,
+                                                            scrollController: FixedExtentScrollController(initialItem: 4),
+                                                            children: List.generate(200, (i) => Text("$i kg")).toList(),
+                                                            onSelectedItemChanged: (value) {
+                                                              c.weight = value.toString();
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      Info(
+                                        img: "assets/images/smoking.png",
+                                        title: "Sigara",
+                                        desc: c.user?["smoking"] == null ? "" : "${c.user?["smoking"]}",
+                                        onTap: () {
+                                          showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return Material(
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          width: double.infinity,
+                                                          color: ColorManager.instance.gray_spacer,
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    'Vazgeç',
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.red,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                InkWell(
+                                                                  onTap: () async {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                    if (c.smoking != null) {
+                                                                      await NetworkManager.instance.currentUserRef().update(
+                                                                        {
+                                                                          "smoking": c.smoking,
+                                                                        },
+                                                                      );
+                                                                      c.getFirstData();
+                                                                    }
+                                                                  },
+                                                                  child: Text(
+                                                                    "Tamam",
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.darkGray,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          decoration: const BoxDecoration(),
+                                                          width: double.infinity,
+                                                          height: Utility.dynamicHeightPixel(250),
+                                                          child: CupertinoPicker(
+                                                            backgroundColor: ColorManager.instance.white,
+                                                            itemExtent: 40,
+                                                            scrollController: FixedExtentScrollController(initialItem: 4),
+                                                            children: List.generate(c.sigara.length, (i) => Text(c.sigara[i])).toList(),
+                                                            onSelectedItemChanged: (value) {
+                                                              c.smoking = c.sigara[value];
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      Info(
+                                        img: "assets/images/wine-bottle.png",
+                                        title: "Alkol",
+                                        desc: c.user?["wine-bottle"] == null ? "" : "${c.user?["wine-bottle"]}",
+                                        onTap: () {
+                                          showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return Material(
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          width: double.infinity,
+                                                          color: ColorManager.instance.gray_spacer,
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    'Vazgeç',
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.red,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                InkWell(
+                                                                  onTap: () async {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                    if (c.wineBottle != null) {
+                                                                      await NetworkManager.instance.currentUserRef().update(
+                                                                        {
+                                                                          "wine-bottle": c.wineBottle,
+                                                                        },
+                                                                      );
+                                                                      c.getFirstData();
+                                                                    }
+                                                                  },
+                                                                  child: Text(
+                                                                    "Tamam",
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.darkGray,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          decoration: const BoxDecoration(),
+                                                          width: double.infinity,
+                                                          height: Utility.dynamicHeightPixel(250),
+                                                          child: CupertinoPicker(
+                                                            backgroundColor: ColorManager.instance.white,
+                                                            itemExtent: 40,
+                                                            scrollController: FixedExtentScrollController(initialItem: 4),
+                                                            children: List.generate(c.alkol.length, (i) => Text(c.alkol[i])).toList(),
+                                                            onSelectedItemChanged: (value) {
+                                                              c.wineBottle = c.alkol[value];
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      Info(
+                                        img: "assets/images/heart.png",
+                                        title: "İlişki Beklentim",
+                                        desc: c.user?["hearth"] == null ? "" : "${c.user?["hearth"]}",
+                                        onTap: () {
+                                          showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return Material(
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          width: double.infinity,
+                                                          color: ColorManager.instance.gray_spacer,
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    'Vazgeç',
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.red,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                InkWell(
+                                                                  onTap: () async {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                    if (c.hearth != null) {
+                                                                      await NetworkManager.instance.currentUserRef().update(
+                                                                        {
+                                                                          "hearth": c.hearth,
+                                                                        },
+                                                                      );
+                                                                      c.getFirstData();
+                                                                    }
+                                                                  },
+                                                                  child: Text(
+                                                                    "Tamam",
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.darkGray,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          decoration: const BoxDecoration(),
+                                                          width: double.infinity,
+                                                          height: Utility.dynamicHeightPixel(250),
+                                                          child: CupertinoPicker(
+                                                            backgroundColor: ColorManager.instance.white,
+                                                            itemExtent: 40,
+                                                            scrollController: FixedExtentScrollController(initialItem: 4),
+                                                            children: List.generate(c.iliski.length, (i) => Text(c.iliski[i])).toList(),
+                                                            onSelectedItemChanged: (value) {
+                                                              c.hearth = c.iliski[value];
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      Info(
+                                        img: "assets/images/gender.png",
+                                        title: "Cinsellik",
+                                        desc: c.user?["sex"] == null ? "" : "${c.user?["sex"]}",
+                                        onTap: () {
+                                          showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return Material(
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          width: double.infinity,
+                                                          color: ColorManager.instance.gray_spacer,
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    'Vazgeç',
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.red,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                InkWell(
+                                                                  onTap: () async {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                    if (c.sex != null) {
+                                                                      await NetworkManager.instance.currentUserRef().update(
+                                                                        {
+                                                                          "sex": c.sex,
+                                                                        },
+                                                                      );
+                                                                      c.getFirstData();
+                                                                    }
+                                                                  },
+                                                                  child: Text(
+                                                                    "Tamam",
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.darkGray,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          decoration: const BoxDecoration(),
+                                                          width: double.infinity,
+                                                          height: Utility.dynamicHeightPixel(250),
+                                                          child: CupertinoPicker(
+                                                            backgroundColor: ColorManager.instance.white,
+                                                            itemExtent: 40,
+                                                            scrollController: FixedExtentScrollController(initialItem: 4),
+                                                            children: List.generate(c.cinsellik.length, (i) => Text(c.cinsellik[i])).toList(),
+                                                            onSelectedItemChanged: (value) {
+                                                              c.sex = c.cinsellik[value];
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      Info(
+                                        img: "assets/images/personality.png",
+                                        title: "Kişilik",
+                                        desc: c.user?["personality"] == null ? "" : "${c.user?["personality"]}",
+                                        onTap: () {
+                                          showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return Material(
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          width: double.infinity,
+                                                          color: ColorManager.instance.gray_spacer,
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    'Vazgeç',
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.red,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                InkWell(
+                                                                  onTap: () async {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                    if (c.personality != null) {
+                                                                      await NetworkManager.instance.currentUserRef().update(
+                                                                        {
+                                                                          "personality": c.personality,
+                                                                        },
+                                                                      );
+                                                                      c.getFirstData();
+                                                                    }
+                                                                  },
+                                                                  child: Text(
+                                                                    "Tamam",
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.darkGray,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          decoration: const BoxDecoration(),
+                                                          width: double.infinity,
+                                                          height: Utility.dynamicHeightPixel(250),
+                                                          child: CupertinoPicker(
+                                                            backgroundColor: ColorManager.instance.white,
+                                                            itemExtent: 40,
+                                                            scrollController: FixedExtentScrollController(initialItem: 4),
+                                                            children: List.generate(c.kisilik.length, (i) => Text(c.kisilik[i])).toList(),
+                                                            onSelectedItemChanged: (value) {
+                                                              c.personality = c.kisilik[value];
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      Info(
+                                        img: "assets/images/money.png",
+                                        title: "İlgi Alanları",
+                                        desc: c.user?["money"] == null ? "" : "${c.user?["money"]}",
+                                        onTap: () {
+                                          showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return Material(
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                          width: double.infinity,
+                                                          color: ColorManager.instance.gray_spacer,
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    'Vazgeç',
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.red,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                InkWell(
+                                                                  onTap: () async {
+                                                                    Navigator.of(context, rootNavigator: true).pop();
+                                                                    if (c.money != null) {
+                                                                      await NetworkManager.instance.currentUserRef().update(
+                                                                        {
+                                                                          "money": c.money,
+                                                                        },
+                                                                      );
+                                                                      c.getFirstData();
+                                                                    }
+                                                                  },
+                                                                  child: Text(
+                                                                    "Tamam",
+                                                                    style: TextStyle(
+                                                                      fontSize: Utility.dynamicTextSize(14),
+                                                                      color: ColorManager.instance.darkGray,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          decoration: const BoxDecoration(),
+                                                          width: double.infinity,
+                                                          height: Utility.dynamicHeightPixel(250),
+                                                          child: CupertinoPicker(
+                                                            backgroundColor: ColorManager.instance.white,
+                                                            itemExtent: 40,
+                                                            scrollController: FixedExtentScrollController(initialItem: 4),
+                                                            children: List.generate(c.ilgiAlanlari.length, (i) => Text(c.ilgiAlanlari[i])).toList(),
+                                                            onSelectedItemChanged: (value) {
+                                                              c.money = c.ilgiAlanlari[value];
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 30,
+                                right: 30,
+                                top: 24,
+                              ),
                               child: InkWell(
                                 child: Container(
                                   width: Get.width,
@@ -635,674 +1319,70 @@ class ProfilePage extends GetView<ProfileController> {
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
-                                    child: Column(
+                                    child: Row(
                                       children: [
-                                        const Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            "Bilgi",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
+                                        Image.asset("assets/images/insta.png", height: 32, width: 32),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                "Instagram",
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                c.user?["instagram"] == null ? "" : c.user?["instagram"],
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: ColorManager.instance.softBlack,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        Info(
-                                          img: "assets/images/height.png",
-                                          title: "Boy",
-                                          desc: c.user?["height"] == null ? "" : "${c.user?["height"]} cm",
-                                          onTap: () {
-                                            showCupertinoModalPopup(
-                                              context: context,
-                                              builder: (_) => StatefulBuilder(
-                                                builder: (context, setState) {
-                                                  return Material(
-                                                    child: SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Container(
-                                                            width: double.infinity,
-                                                            color: ColorManager.instance.gray_spacer,
-                                                            child: Padding(
-                                                              padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                    },
-                                                                    child: Text(
-                                                                      'Vazgeç',
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.red,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  InkWell(
-                                                                    onTap: () async {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                      if (c.height != null) {
-                                                                        await NetworkManager.instance.currentUserRef().update(
-                                                                          {
-                                                                            "height": c.height,
-                                                                          },
-                                                                        );
-                                                                        c.getFirstData();
-                                                                      }
-                                                                    },
-                                                                    child: Text(
-                                                                      "Tamam",
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.darkGray,
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            decoration: const BoxDecoration(),
-                                                            width: double.infinity,
-                                                            height: Utility.dynamicHeightPixel(250),
-                                                            child: CupertinoPicker(
-                                                              backgroundColor: ColorManager.instance.white,
-                                                              itemExtent: 40,
-                                                              scrollController: FixedExtentScrollController(initialItem: 4),
-                                                              children: List.generate(240, (i) => Text("$i cm")).toList(),
-                                                              onSelectedItemChanged: (value) {
-                                                                c.height = value.toString();
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        Info(
-                                          img: "assets/images/weight.png",
-                                          title: "Ağırlık",
-                                          desc: c.user?["weight"] == null ? "" : "${c.user?["weight"]} kg",
-                                          onTap: () {
-                                            showCupertinoModalPopup(
-                                              context: context,
-                                              builder: (_) => StatefulBuilder(
-                                                builder: (context, setState) {
-                                                  return Material(
-                                                    child: SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Container(
-                                                            width: double.infinity,
-                                                            color: ColorManager.instance.gray_spacer,
-                                                            child: Padding(
-                                                              padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                    },
-                                                                    child: Text(
-                                                                      'Vazgeç',
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.red,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  InkWell(
-                                                                    onTap: () async {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                      if (c.height != null) {
-                                                                        await NetworkManager.instance.currentUserRef().update(
-                                                                          {
-                                                                            "weight": c.weight,
-                                                                          },
-                                                                        );
-                                                                        c.getFirstData();
-                                                                      }
-                                                                    },
-                                                                    child: Text(
-                                                                      "Tamam",
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.darkGray,
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            decoration: const BoxDecoration(),
-                                                            width: double.infinity,
-                                                            height: Utility.dynamicHeightPixel(250),
-                                                            child: CupertinoPicker(
-                                                              backgroundColor: ColorManager.instance.white,
-                                                              itemExtent: 40,
-                                                              scrollController: FixedExtentScrollController(initialItem: 4),
-                                                              children: List.generate(200, (i) => Text("$i kg")).toList(),
-                                                              onSelectedItemChanged: (value) {
-                                                                c.weight = value.toString();
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        Info(
-                                          img: "assets/images/smoking.png",
-                                          title: "Sigara",
-                                          desc: c.user?["smoking"] == null ? "" : "${c.user?["smoking"]}",
-                                          onTap: () {
-                                            showCupertinoModalPopup(
-                                              context: context,
-                                              builder: (_) => StatefulBuilder(
-                                                builder: (context, setState) {
-                                                  return Material(
-                                                    child: SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Container(
-                                                            width: double.infinity,
-                                                            color: ColorManager.instance.gray_spacer,
-                                                            child: Padding(
-                                                              padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                    },
-                                                                    child: Text(
-                                                                      'Vazgeç',
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.red,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  InkWell(
-                                                                    onTap: () async {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                      if (c.smoking != null) {
-                                                                        await NetworkManager.instance.currentUserRef().update(
-                                                                          {
-                                                                            "smoking": c.smoking,
-                                                                          },
-                                                                        );
-                                                                        c.getFirstData();
-                                                                      }
-                                                                    },
-                                                                    child: Text(
-                                                                      "Tamam",
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.darkGray,
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            decoration: const BoxDecoration(),
-                                                            width: double.infinity,
-                                                            height: Utility.dynamicHeightPixel(250),
-                                                            child: CupertinoPicker(
-                                                              backgroundColor: ColorManager.instance.white,
-                                                              itemExtent: 40,
-                                                              scrollController: FixedExtentScrollController(initialItem: 4),
-                                                              children: List.generate(c.sigara.length, (i) => Text(c.sigara[i])).toList(),
-                                                              onSelectedItemChanged: (value) {
-                                                                c.smoking = c.sigara[value];
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        Info(
-                                          img: "assets/images/wine-bottle.png",
-                                          title: "Alkol",
-                                          desc: c.user?["wine-bottle"] == null ? "" : "${c.user?["wine-bottle"]}",
-                                          onTap: () {
-                                            showCupertinoModalPopup(
-                                              context: context,
-                                              builder: (_) => StatefulBuilder(
-                                                builder: (context, setState) {
-                                                  return Material(
-                                                    child: SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Container(
-                                                            width: double.infinity,
-                                                            color: ColorManager.instance.gray_spacer,
-                                                            child: Padding(
-                                                              padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                    },
-                                                                    child: Text(
-                                                                      'Vazgeç',
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.red,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  InkWell(
-                                                                    onTap: () async {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                      if (c.wineBottle != null) {
-                                                                        await NetworkManager.instance.currentUserRef().update(
-                                                                          {
-                                                                            "wine-bottle": c.wineBottle,
-                                                                          },
-                                                                        );
-                                                                        c.getFirstData();
-                                                                      }
-                                                                    },
-                                                                    child: Text(
-                                                                      "Tamam",
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.darkGray,
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            decoration: const BoxDecoration(),
-                                                            width: double.infinity,
-                                                            height: Utility.dynamicHeightPixel(250),
-                                                            child: CupertinoPicker(
-                                                              backgroundColor: ColorManager.instance.white,
-                                                              itemExtent: 40,
-                                                              scrollController: FixedExtentScrollController(initialItem: 4),
-                                                              children: List.generate(c.alkol.length, (i) => Text(c.alkol[i])).toList(),
-                                                              onSelectedItemChanged: (value) {
-                                                                c.wineBottle = c.alkol[value];
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        Info(
-                                          img: "assets/images/heart.png",
-                                          title: "İlişki Beklentim",
-                                          desc: c.user?["hearth"] == null ? "" : "${c.user?["hearth"]}",
-                                          onTap: () {
-                                            showCupertinoModalPopup(
-                                              context: context,
-                                              builder: (_) => StatefulBuilder(
-                                                builder: (context, setState) {
-                                                  return Material(
-                                                    child: SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Container(
-                                                            width: double.infinity,
-                                                            color: ColorManager.instance.gray_spacer,
-                                                            child: Padding(
-                                                              padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                    },
-                                                                    child: Text(
-                                                                      'Vazgeç',
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.red,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  InkWell(
-                                                                    onTap: () async {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                      if (c.hearth != null) {
-                                                                        await NetworkManager.instance.currentUserRef().update(
-                                                                          {
-                                                                            "hearth": c.hearth,
-                                                                          },
-                                                                        );
-                                                                        c.getFirstData();
-                                                                      }
-                                                                    },
-                                                                    child: Text(
-                                                                      "Tamam",
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.darkGray,
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            decoration: const BoxDecoration(),
-                                                            width: double.infinity,
-                                                            height: Utility.dynamicHeightPixel(250),
-                                                            child: CupertinoPicker(
-                                                              backgroundColor: ColorManager.instance.white,
-                                                              itemExtent: 40,
-                                                              scrollController: FixedExtentScrollController(initialItem: 4),
-                                                              children: List.generate(c.iliski.length, (i) => Text(c.iliski[i])).toList(),
-                                                              onSelectedItemChanged: (value) {
-                                                                c.hearth = c.iliski[value];
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        Info(
-                                          img: "assets/images/gender.png",
-                                          title: "Cinsellik",
-                                          desc: c.user?["sex"] == null ? "" : "${c.user?["sex"]}",
-                                          onTap: () {
-                                            showCupertinoModalPopup(
-                                              context: context,
-                                              builder: (_) => StatefulBuilder(
-                                                builder: (context, setState) {
-                                                  return Material(
-                                                    child: SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Container(
-                                                            width: double.infinity,
-                                                            color: ColorManager.instance.gray_spacer,
-                                                            child: Padding(
-                                                              padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                    },
-                                                                    child: Text(
-                                                                      'Vazgeç',
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.red,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  InkWell(
-                                                                    onTap: () async {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                      if (c.sex != null) {
-                                                                        await NetworkManager.instance.currentUserRef().update(
-                                                                          {
-                                                                            "sex": c.sex,
-                                                                          },
-                                                                        );
-                                                                        c.getFirstData();
-                                                                      }
-                                                                    },
-                                                                    child: Text(
-                                                                      "Tamam",
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.darkGray,
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            decoration: const BoxDecoration(),
-                                                            width: double.infinity,
-                                                            height: Utility.dynamicHeightPixel(250),
-                                                            child: CupertinoPicker(
-                                                              backgroundColor: ColorManager.instance.white,
-                                                              itemExtent: 40,
-                                                              scrollController: FixedExtentScrollController(initialItem: 4),
-                                                              children: List.generate(c.cinsellik.length, (i) => Text(c.cinsellik[i])).toList(),
-                                                              onSelectedItemChanged: (value) {
-                                                                c.sex = c.cinsellik[value];
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        Info(
-                                          img: "assets/images/personality.png",
-                                          title: "Kişilik",
-                                          desc: c.user?["personality"] == null ? "" : "${c.user?["personality"]}",
-                                          onTap: () {
-                                            showCupertinoModalPopup(
-                                              context: context,
-                                              builder: (_) => StatefulBuilder(
-                                                builder: (context, setState) {
-                                                  return Material(
-                                                    child: SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Container(
-                                                            width: double.infinity,
-                                                            color: ColorManager.instance.gray_spacer,
-                                                            child: Padding(
-                                                              padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                    },
-                                                                    child: Text(
-                                                                      'Vazgeç',
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.red,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  InkWell(
-                                                                    onTap: () async {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                      if (c.personality != null) {
-                                                                        await NetworkManager.instance.currentUserRef().update(
-                                                                          {
-                                                                            "personality": c.personality,
-                                                                          },
-                                                                        );
-                                                                        c.getFirstData();
-                                                                      }
-                                                                    },
-                                                                    child: Text(
-                                                                      "Tamam",
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.darkGray,
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            decoration: const BoxDecoration(),
-                                                            width: double.infinity,
-                                                            height: Utility.dynamicHeightPixel(250),
-                                                            child: CupertinoPicker(
-                                                              backgroundColor: ColorManager.instance.white,
-                                                              itemExtent: 40,
-                                                              scrollController: FixedExtentScrollController(initialItem: 4),
-                                                              children: List.generate(c.kisilik.length, (i) => Text(c.kisilik[i])).toList(),
-                                                              onSelectedItemChanged: (value) {
-                                                                c.personality = c.kisilik[value];
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        Info(
-                                          img: "assets/images/money.png",
-                                          title: "İlgi Alanları",
-                                          desc: c.user?["money"] == null ? "" : "${c.user?["money"]}",
-                                          onTap: () {
-                                            showCupertinoModalPopup(
-                                              context: context,
-                                              builder: (_) => StatefulBuilder(
-                                                builder: (context, setState) {
-                                                  return Material(
-                                                    child: SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Container(
-                                                            width: double.infinity,
-                                                            color: ColorManager.instance.gray_spacer,
-                                                            child: Padding(
-                                                              padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  InkWell(
-                                                                    onTap: () {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                    },
-                                                                    child: Text(
-                                                                      'Vazgeç',
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.red,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  InkWell(
-                                                                    onTap: () async {
-                                                                      Navigator.of(context, rootNavigator: true).pop();
-                                                                      if (c.money != null) {
-                                                                        await NetworkManager.instance.currentUserRef().update(
-                                                                          {
-                                                                            "money": c.money,
-                                                                          },
-                                                                        );
-                                                                        c.getFirstData();
-                                                                      }
-                                                                    },
-                                                                    child: Text(
-                                                                      "Tamam",
-                                                                      style: TextStyle(
-                                                                        fontSize: Utility.dynamicTextSize(14),
-                                                                        color: ColorManager.instance.darkGray,
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            decoration: const BoxDecoration(),
-                                                            width: double.infinity,
-                                                            height: Utility.dynamicHeightPixel(250),
-                                                            child: CupertinoPicker(
-                                                              backgroundColor: ColorManager.instance.white,
-                                                              itemExtent: 40,
-                                                              scrollController: FixedExtentScrollController(initialItem: 4),
-                                                              children: List.generate(c.ilgiAlanlari.length, (i) => Text(c.ilgiAlanlari[i])).toList(),
-                                                              onSelectedItemChanged: (value) {
-                                                                c.money = c.ilgiAlanlari[value];
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
+                                        const Icon(
+                                          Icons.chevron_right,
+                                        )
                                       ],
                                     ),
                                   ),
                                 ),
-                                onTap: () {},
+                                onTap: () {
+                                  TextEditingController textEditingController = TextEditingController();
+                                  KBottomSheet.show(
+                                    context: context,
+                                    title: "Instagram Kullanıcı Adı",
+                                    content: SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          KTextFormField.instance.widget(
+                                            context: context,
+                                            controller: textEditingController..text = c.user?["instagram"] == null ? "" : c.user?["instagram"],
+                                          ),
+                                          KButton(
+                                            color: ColorManager.instance.pink,
+                                            onTap: () async {
+                                              Navigator.of(context).pop();
+                                              await NetworkManager.instance.currentUserRef().update(
+                                                {
+                                                  "instagram": textEditingController.text,
+                                                },
+                                              );
+                                              c.getFirstData();
+                                            },
+                                            title: "Kaydet",
+                                            textColor: ColorManager.instance.white,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                             Padding(

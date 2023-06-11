@@ -15,7 +15,7 @@ class ProfileController extends GetxController {
   DataSnapshot? userDetails;
   Map<dynamic, dynamic>? user;
   List<String?> images = [null, null, null, null, null, null, null];
-  String? height, weight, smoking, wineBottle, hearth, sex, personality, money;
+  String? height, weight, smoking, wineBottle, hearth, sex, personality, money,instagram;
   List<String> sigara = ["İçiyorum", "İçmiyorum", "Bazen İçiyorum"];
   List<String> alkol = ["İçiyorum", "İçmiyorum", "Bazen İçiyorum"];
   List<String> iliski = ["Flört", "Sevgili", "Evlilik", "Tanışma", "Arkadaş"];
@@ -77,4 +77,21 @@ class ProfileController extends GetxController {
     }
     return null;
   }
+}
+
+Future<String?> uploadImage(XFile? image) async {
+  if (image != null) {
+    String downloadUrl = "";
+    var uuid = const Uuid();
+    String filename = uuid.v1();
+    try {
+      Reference ref = FirebaseStorage.instance.ref().child(filename);
+      await ref.putFile(File(image.path));
+      downloadUrl = await FirebaseStorage.instance.ref(filename).getDownloadURL();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return downloadUrl;
+  }
+  return null;
 }

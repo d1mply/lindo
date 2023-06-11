@@ -15,11 +15,11 @@ class NotificationController extends GetxController {
   Future<Map<dynamic, dynamic>?> getUser(String uid) async {
     Map<dynamic, dynamic>? user;
 
-    DataSnapshot _user = await NetworkManager.instance.getUserDetailsWithId(uid);
-    if (_user.exists) {
-      Object? vals = _user.value;
+    DataSnapshot user0 = await NetworkManager.instance.getUserDetailsWithId(uid);
+    if (user0.exists) {
+      Object? vals = user0.value;
       if (vals != null) {
-        user = _user.value as Map<dynamic, dynamic>;
+        user = user0.value as Map<dynamic, dynamic>;
       }
       update();
     }

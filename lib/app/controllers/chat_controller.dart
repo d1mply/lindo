@@ -125,8 +125,12 @@ class ChatController extends GetxController {
     return user;
   }
 
-  sendMessage({bool? isLiked}) async {
-    if (textEditingController.text.replaceAll(" ", "").isNotEmpty) {
+  sendMessage({
+    bool? isLiked,
+    required String type,
+    required String message,
+  }) async {
+    if (message.replaceAll(" ", "").isNotEmpty) {
       DateTime now = DateTime.now();
 
       if (messages.isEmpty) {
@@ -146,14 +150,18 @@ class ChatController extends GetxController {
             "liked": isLiked == null ? false : true,
           },
         );
-
+        NetworkManager.instance.getUserReference(uid).update(
+          {
+            "lastMessage": DateTime.now().millisecondsSinceEpoch,
+          },
+        );
         await NetworkManager.instance.chatRooms.child(chatRoomId).push().set(
           {
             "timestamp": now.millisecondsSinceEpoch,
             "sender_uid": FirebaseAuth.instance.currentUser!.uid,
             "receiver_uid": uid,
-            "type": "text",
-            "message": textEditingController.text,
+            "type": type,
+            "message": message,
             "isRead": false,
           },
         );
@@ -166,8 +174,8 @@ class ChatController extends GetxController {
             "timestamp": now.millisecondsSinceEpoch,
             "sender_uid": FirebaseAuth.instance.currentUser!.uid,
             "receiver_uid": uid,
-            "type": "text",
-            "message": textEditingController.text,
+            "type": type,
+            "message": message,
             "isRead": false,
           },
         );

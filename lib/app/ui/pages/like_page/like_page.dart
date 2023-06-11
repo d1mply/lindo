@@ -1,9 +1,15 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lindo/app/controllers/usercontroller.dart';
+import 'package:lindo/app/ui/pages/market_page/market_page.dart';
+import 'package:lindo/app/ui/utils/k_bottom_sheet.dart';
+import 'package:lindo/app/ui/utils/k_button.dart';
 import 'package:lindo/core/init/theme/color_manager.dart';
 import '../../../../core/init/network/network_manager.dart';
 import '../../../controllers/like_controller.dart';
@@ -19,7 +25,7 @@ class LikePage extends GetView<LikeController> {
       appBar: AppBar(
         backgroundColor: ColorManager.instance.background_gray,
         elevation: 0,
-        actions: [
+        actions: const [
           ShopWidget(),
         ],
         title: Text(
@@ -65,69 +71,199 @@ class LikePage extends GetView<LikeController> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Column(
+                              child: Stack(
                                 children: [
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(12),
-                                        topRight: Radius.circular(12),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        imageUrl: c.messages[index]["image"],
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
+                                  GetBuilder<UserController>(
+                                    builder: (userController) {
+                                      return Center(
+                                        child: userController.isPremium == true
+                                            ? ClipRRect(
+                                                clipBehavior: Clip.hardEdge,
+                                                borderRadius: const BorderRadius.only(
+                                                  topLeft: Radius.circular(12),
+                                                  topRight: Radius.circular(12),
+                                                ),
+                                                child: CachedNetworkImage(
+                                                  height: 150,
+                                                  width: Get.width,
+                                                  imageUrl: c.messages[index]["image"],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              )
+                                            : InkWell(
+                                                onTap: () {
+                                                  KBottomSheet.show(
+                                                    context: context,
+                                                    title: "Beğeniler",
+                                                    content: Column(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        const Padding(
+                                                          padding: EdgeInsets.all(8.0),
+                                                          child: Text(
+                                                            "Size beğeni gönderen profili görüntülemek için premium olmanız gerekmektedir.",
+                                                          ),
+                                                        ),
+                                                        KButton(
+                                                          color: ColorManager.instance.pink,
+                                                          onTap: () {
+                                                            Navigator.pop(context);
+                                                            Get.to(() => const MarketPage());
+                                                          },
+                                                          title: "Premium Ol",
+                                                          borderColor: ColorManager.instance.pink,
+                                                          textColor: ColorManager.instance.white,
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 24,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                                child: ImageFiltered(
+                                                  imageFilter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0, tileMode: TileMode.decal),
+                                                  child: ClipRRect(
+                                                    clipBehavior: Clip.hardEdge,
+                                                    borderRadius: const BorderRadius.only(
+                                                      topLeft: Radius.circular(12),
+                                                      topRight: Radius.circular(12),
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: 2.0, right: 2),
+                                                      child: CachedNetworkImage(
+                                                        height: 150,
+                                                        width: Get.width,
+                                                        imageUrl: c.messages[index]["image"],
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                      );
+                                    },
                                   ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: ColorManager.instance.white,
-                                      borderRadius: const BorderRadius.only(
-                                        bottomLeft: Radius.circular(12),
-                                        bottomRight: Radius.circular(12),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: [
-                                        IconButton(
-                                          icon: SvgPicture.asset("assets/svg/love_off.svg"),
-                                          onPressed: () async {
-                                            await NetworkManager.instance.notificationRef.child(c.keys[index]).remove();
-                                            c.keys.removeAt(index);
-                                            c.messages.removeAt(index);
-                                            c.update();
-                                          },
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Container(
+                                      height: 52,
+                                      width: Get.width,
+                                      decoration: BoxDecoration(
+                                        color: ColorManager.instance.white,
+                                        borderRadius: const BorderRadius.only(
+                                          bottomLeft: Radius.circular(12),
+                                          bottomRight: Radius.circular(12),
                                         ),
-                                        IconButton(
-                                          icon: SvgPicture.asset("assets/svg/love.svg"),
-                                          onPressed: () async {
-                                            DateTime now = DateTime.now();
-                                            String chatRoomId = calculateChatRoomId(c.messages[index]["uid"], c.messages[index]["senderUid"]);
-                                            NetworkManager.instance.getUserReference(c.messages[index]["uid"]).child("chatrooms").child(chatRoomId).set(
-                                              {
-                                                "timestamp": now.millisecondsSinceEpoch,
-                                                "uid": c.messages[index]["senderUid"],
-                                                "chatroomId": chatRoomId,
-                                                "liked": true,
-                                              },
-                                            );
-                                            NetworkManager.instance.getUserReference(c.messages[index]["senderUid"]).child("chatrooms").child(chatRoomId).set(
-                                              {
-                                                "timestamp": now.millisecondsSinceEpoch,
-                                                "uid": c.messages[index]["uid"],
-                                                "chatroomId": chatRoomId,
-                                                "liked": true,
-                                              },
-                                            );
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: [
+                                          IconButton(
+                                            icon: SvgPicture.asset("assets/svg/love_off.svg"),
+                                            onPressed: () async {
+                                              UserController userController = Get.find();
+                                              if (userController.isPremium) {
+                                                await NetworkManager.instance.notificationRef.child(c.keys[index]).remove();
+                                                c.keys.removeAt(index);
+                                                c.messages.removeAt(index);
+                                                c.update();
+                                              } else {
+                                                KBottomSheet.show(
+                                                  context: context,
+                                                  title: "Beğeniler",
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      const Padding(
+                                                        padding: EdgeInsets.all(8.0),
+                                                        child: Text(
+                                                          "Beğenilere karşılık verip sohbet başlatabilmek için premium olmanız gerekmektedir.",
+                                                        ),
+                                                      ),
+                                                      KButton(
+                                                        color: ColorManager.instance.pink,
+                                                        onTap: () {
+                                                          Navigator.pop(context);
+                                                          Get.to(() => const MarketPage());
+                                                        },
+                                                        title: "Premium Ol",
+                                                        borderColor: ColorManager.instance.pink,
+                                                        textColor: ColorManager.instance.white,
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 24,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: SvgPicture.asset("assets/svg/love.svg"),
+                                            onPressed: () async {
+                                              UserController userController = Get.find();
+                                              if (userController.isPremium) {
+                                                DateTime now = DateTime.now();
+                                                String chatRoomId = calculateChatRoomId(c.messages[index]["uid"], c.messages[index]["senderUid"]);
+                                                NetworkManager.instance.getUserReference(c.messages[index]["uid"]).child("chatrooms").child(chatRoomId).set(
+                                                  {
+                                                    "timestamp": now.millisecondsSinceEpoch,
+                                                    "uid": c.messages[index]["senderUid"],
+                                                    "chatroomId": chatRoomId,
+                                                    "liked": true,
+                                                  },
+                                                );
+                                                NetworkManager.instance.getUserReference(c.messages[index]["senderUid"]).child("chatrooms").child(chatRoomId).set(
+                                                  {
+                                                    "timestamp": now.millisecondsSinceEpoch,
+                                                    "uid": c.messages[index]["uid"],
+                                                    "chatroomId": chatRoomId,
+                                                    "liked": true,
+                                                  },
+                                                );
 
-                                            await NetworkManager.instance.notificationRef.child(c.keys[index]).remove();
-                                            c.keys.removeAt(index);
-                                            c.messages.removeAt(index);
-                                            c.update();
-                                          },
-                                        )
-                                      ],
+                                                await NetworkManager.instance.notificationRef.child(c.keys[index]).remove();
+                                                c.keys.removeAt(index);
+                                                c.messages.removeAt(index);
+                                                c.update();
+                                              } else {
+                                                KBottomSheet.show(
+                                                  context: context,
+                                                  title: "Beğeniler",
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      const Padding(
+                                                        padding: EdgeInsets.all(8.0),
+                                                        child: Text(
+                                                          "Beğenilere karşılık verip sohbet başlatabilmek için premium olmanız gerekmektedir.",
+                                                        ),
+                                                      ),
+                                                      KButton(
+                                                        color: ColorManager.instance.pink,
+                                                        onTap: () {
+                                                          Navigator.pop(context);
+                                                          Get.to(() => const MarketPage());
+                                                        },
+                                                        title: "Premium Ol",
+                                                        borderColor: ColorManager.instance.pink,
+                                                        textColor: ColorManager.instance.white,
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 24,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],

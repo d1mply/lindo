@@ -467,6 +467,7 @@ class RegisterPage extends GetView<RegisterController> {
                                                     "birthYear": c.selectedDateTime?.year,
                                                     "gender": c.selectedGender,
                                                     "uid": credential.user?.uid,
+                                                    "account_verify": true,
                                                   },
                                                 );
                                                 Get.offAll(() => const RootPage());

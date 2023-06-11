@@ -5,8 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lindo/app/controllers/usercontroller.dart';
 import 'package:lindo/config.dart';
+import 'package:lindo/core/init/cache/cache_manager.dart';
 
 import '../../core/init/network/network_manager.dart';
+import '../../core/init/theme/color_manager.dart';
+import '../ui/pages/market_page/market_page.dart';
+import '../ui/utils/k_bottom_sheet.dart';
+import '../ui/utils/k_button.dart';
 
 class ExploreController extends GetxController {
   TextEditingController searchController = TextEditingController();
@@ -239,33 +244,113 @@ addNotification(String? uid, String message) async {
 Future<Map<dynamic, dynamic>?> getUser(String uid) async {
   Map<dynamic, dynamic>? user;
 
-  DataSnapshot _user = await NetworkManager.instance.getUserDetailsWithId(uid);
-  if (_user.exists) {
-    Object? vals = _user.value;
+  DataSnapshot user0 = await NetworkManager.instance.getUserDetailsWithId(uid);
+  if (user0.exists) {
+    Object? vals = user0.value;
     if (vals != null) {
-      user = _user.value as Map<dynamic, dynamic>;
+      user = user0.value as Map<dynamic, dynamic>;
     }
   }
   return user;
 }
 
-swipeRight(String? uid) async {
-  DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
-  final data = user.value as Map<Object?, Object?>;
+bool swipaAble = true;
+swipeRight(String? uid, context, cc) async {
+  String key = "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}";
+  int? cacheKey = CacheManager.instance.getValue(key);
+  if (cacheKey != null) {
+    swipaAble = true;
+    CacheManager.instance.setValue(key, (cacheKey + 1));
+    if (cacheKey + 1 <= 6) {
+      DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+      final data = user.value as Map<Object?, Object?>;
 
-  if (uid == FirebaseAuth.instance.currentUser!.uid) {
-    return;
+      if (uid == FirebaseAuth.instance.currentUser!.uid) {
+        return;
+      }
+
+      NetworkManager.instance.swipe.push().set(
+        {
+          "uid": uid,
+          "image": (data["images"] as List).first ?? "",
+          "senderUid": FirebaseAuth.instance.currentUser!.uid,
+          "sender": data["name"],
+          "location": data["location"],
+          "birth": "${DateTime.now().year - int.parse(data["birth"].toString().split("-").first.toString())}",
+          "timestamp": DateTime.now().millisecondsSinceEpoch,
+        },
+      );
+    } else {
+      UserController userController = Get.find();
+      if (!userController.isPremium) {
+        swipaAble = false;
+        KBottomSheet.show(
+          context: context,
+          title: "Kaydırma",
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  "Premium olmayan kullanıcılar günde sadece 6 tane sağa kaydırma yapabilir. Daha fazla kaydırma yapabilmek için premium olmalısınız.",
+                ),
+              ),
+              KButton(
+                color: ColorManager.instance.pink,
+                onTap: () {
+                  Navigator.pop(context);
+                  Get.to(() => const MarketPage());
+                },
+                title: "Premium Ol",
+                borderColor: ColorManager.instance.pink,
+                textColor: ColorManager.instance.white,
+              ),
+            ],
+          ),
+        );
+      } else {
+        swipaAble = true;
+        DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+        final data = user.value as Map<Object?, Object?>;
+
+        if (uid == FirebaseAuth.instance.currentUser!.uid) {
+          return;
+        }
+
+        NetworkManager.instance.swipe.push().set(
+          {
+            "uid": uid,
+            "image": (data["images"] as List).first ?? "",
+            "senderUid": FirebaseAuth.instance.currentUser!.uid,
+            "sender": data["name"],
+            "location": data["location"],
+            "birth": "${DateTime.now().year - int.parse(data["birth"].toString().split("-").first.toString())}",
+            "timestamp": DateTime.now().millisecondsSinceEpoch,
+          },
+        );
+      }
+    }
+  } else {
+    CacheManager.instance.setValue(key, 1);
+    DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+    final data = user.value as Map<Object?, Object?>;
+
+    if (uid == FirebaseAuth.instance.currentUser!.uid) {
+      return;
+    }
+
+    NetworkManager.instance.swipe.push().set(
+      {
+        "uid": uid,
+        "image": (data["images"] as List).first ?? "",
+        "senderUid": FirebaseAuth.instance.currentUser!.uid,
+        "sender": data["name"],
+        "location": data["location"],
+        "birth": "${DateTime.now().year - int.parse(data["birth"].toString().split("-").first.toString())}",
+        "timestamp": DateTime.now().millisecondsSinceEpoch,
+      },
+    );
   }
-
-  NetworkManager.instance.swipe.push().set(
-    {
-      "uid": uid,
-      "image": (data["images"] as List).first ?? "",
-      "senderUid": FirebaseAuth.instance.currentUser!.uid,
-      "sender": data["name"],
-      "location": data["location"],
-      "birth": "${DateTime.now().year - int.parse(data["birth"].toString().split("-").first.toString())}",
-      "timestamp": DateTime.now().millisecondsSinceEpoch,
-    },
-  );
+  print(cacheKey);
 }

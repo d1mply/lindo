@@ -8,7 +8,7 @@ import 'package:lindo/app/ui/pages/messages_page/messages_page.dart';
 import 'package:lindo/app/ui/pages/profile_page/profile_page.dart';
 import 'package:lindo/core/init/network/network_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../ui/pages/swipe_page/swipe_page.dart';
 

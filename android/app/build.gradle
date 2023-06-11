@@ -54,19 +54,13 @@ android {
 
     defaultConfig {
         applicationId "com.lindo"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
     }
-
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
-        }
-    }
-
+    
     signingConfigs {
        release {
            keyAlias keystoreProperties['keyAlias']
@@ -75,6 +69,13 @@ android {
            storePassword keystoreProperties['storePassword']
        }
    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+
+   
 }
 
 flutter {

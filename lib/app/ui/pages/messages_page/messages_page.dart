@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lindo/core/base/state.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import '../../../../core/init/network/network_manager.dart';
 import '../../../../core/init/theme/color_manager.dart';
 import '../../../controllers/messages_controller.dart';
@@ -26,11 +25,12 @@ class MessagesPage extends GetView<MessagesController> {
           init: MessagesController(),
           builder: (c) {
             return Scaffold(
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
-                leading: ShopWidget(),
+                leading: const ShopWidget(),
                 elevation: 0,
                 backgroundColor: ColorManager.instance.background_gray,
-                actions: [
+                actions: const [
                   /*
                   Padding(
                     padding: EdgeInsets.only(right: 12.w),
@@ -129,13 +129,8 @@ class MessagesPage extends GetView<MessagesController> {
                                     return InkWell(
                                       onTap: () {
                                         String uid = c.flag == false ? c.chatRooms[index]["chatroomId"].replaceAll("-", "").replaceAll(FirebaseAuth.instance.currentUser!.uid, "") : c.chatRoomsForSwiped[index]["chatroomId"].replaceAll("-", "").replaceAll(FirebaseAuth.instance.currentUser!.uid, "");
-
-                                        pushNewScreen(
-                                          context,
-                                          screen: ChatPage(
-                                            uid: uid,
-                                          ),
-                                          withNavBar: false,
+                                        Get.to(
+                                          () => ChatPage(uid: uid),
                                         );
                                       },
                                       child: FutureBuilder(

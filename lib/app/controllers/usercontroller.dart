@@ -10,6 +10,7 @@ class UserController extends GetxController {
   @override
   void onInit() {
     getBlockedUsers();
+    getCurrentUserData();
     super.onInit();
   }
 
@@ -61,5 +62,33 @@ class UserController extends GetxController {
     );
 
     return true;
+  }
+
+  bool isPremium = false;
+  bool boosted = false;
+
+  int coin = 0;
+
+  getCurrentUserData() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+      final data = user.value as Map<Object?, Object?>;
+      if (data["premiumEndDate"] != null) {
+        int premiumDate = data["premiumEndDate"] as int;
+        if (DateTime.now().millisecondsSinceEpoch < premiumDate) {
+          isPremium = true;
+        }
+      }
+      if (data["boostEndDate"] != null) {
+        int boostEndDate = data["boostEndDate"] as int;
+        if (DateTime.now().millisecondsSinceEpoch < boostEndDate) {
+          boosted = true;
+        }
+      }
+      if (data["coin"] != null) {
+        coin = data["coin"] as int;
+      }
+      update();
+    }
   }
 }

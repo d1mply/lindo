@@ -15,11 +15,11 @@ class LikeController extends GetxController {
   Future<Map<dynamic, dynamic>?> getUser(String uid) async {
     Map<dynamic, dynamic>? user;
 
-    DataSnapshot _user = await NetworkManager.instance.getUserDetailsWithId(uid);
-    if (_user.exists) {
-      Object? vals = _user.value;
+    DataSnapshot user0 = await NetworkManager.instance.getUserDetailsWithId(uid);
+    if (user0.exists) {
+      Object? vals = user0.value;
       if (vals != null) {
-        user = _user.value as Map<dynamic, dynamic>;
+        user = user0.value as Map<dynamic, dynamic>;
       }
       update();
     }
@@ -40,6 +40,7 @@ class LikeController extends GetxController {
         if (vals != null) {
           Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
           List<Map<dynamic, dynamic>> temp = [];
+
           values.forEach(
             (key, value) {
               if (!keys.contains(key)) {
@@ -48,7 +49,14 @@ class LikeController extends GetxController {
               }
             },
           );
+          Map<dynamic, int> counter = {};
 
+          for (var element in temp) {
+            final senderUid = element["senderUid"];
+            counter[senderUid] = (counter[senderUid] ?? 0) + 1;
+          }
+
+          temp.removeWhere((element) => counter[element["senderUid"]]! > 1);
           messages = temp;
           messages.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
           update();
@@ -83,6 +91,14 @@ class LikeController extends GetxController {
               }
             },
           );
+          Map<dynamic, int> counter = {};
+
+          for (var element in temp) {
+            final senderUid = element["senderUid"];
+            counter[senderUid] = (counter[senderUid] ?? 0) + 1;
+          }
+
+          temp.removeWhere((element) => counter[element["senderUid"]]! > 1);
 
           messages = temp;
           messages.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));

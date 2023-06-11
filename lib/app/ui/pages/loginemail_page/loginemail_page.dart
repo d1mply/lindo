@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:lindo/app/ui/pages/root_page/root_page.dart';
 import 'package:lindo/app/ui/utils/k_textformfield.dart';
 import 'package:translator/translator.dart';
 import '../../../../core/init/theme/color_manager.dart';
@@ -63,6 +64,7 @@ class LoginemailPage extends GetView<LoginemailController> {
                             KTextFormField.instance.widget(
                               context: context,
                               labelText: "E-posta",
+                              controller: emailControllerForLogin,
                               leadingIcon: Padding(
                                 padding: const EdgeInsets.all(12),
                                 child: SvgPicture.asset(
@@ -74,6 +76,7 @@ class LoginemailPage extends GetView<LoginemailController> {
                               context: context,
                               labelText: "Şifre",
                               obscureText: true,
+                              controller: passwordControllerForLogin,
                               leadingIcon: Padding(
                                 padding: const EdgeInsets.all(12),
                                 child: SvgPicture.asset("assets/svg/lock.svg"),
@@ -90,6 +93,7 @@ class LoginemailPage extends GetView<LoginemailController> {
                                         email: emailControllerForLogin.text,
                                         password: passwordControllerForLogin.text,
                                       );
+                                      Get.offAll(() => const RootPage());
                                     }
                                   } on FirebaseAuthException catch (e) {
                                     Get.closeAllSnackbars();

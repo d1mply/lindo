@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lindo/app/controllers/root_controller.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import '../../../../core/base/state.dart';
 import '../../../../core/init/theme/color_manager.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 import '../login_page/login_page.dart';
 
@@ -128,7 +128,7 @@ class RootPage extends GetView<RootController> {
                     ),
                   ],
                   confineInSafeArea: true,
-                  resizeToAvoidBottomInset: true,
+                  resizeToAvoidBottomInset: false,
                   stateManagement: true,
                   hideNavigationBarWhenKeyboardShows: true,
                   decoration: NavBarDecoration(

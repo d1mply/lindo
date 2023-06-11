@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,13 +8,14 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:lindo/app/controllers/usercontroller.dart';
 import 'package:lindo/app/ui/pages/chat_page/chat_page.dart';
+import 'package:lindo/app/ui/pages/market_page/market_page.dart';
 import 'package:lindo/app/ui/pages/notification_page/notification_page.dart';
 import 'package:lindo/app/ui/utils/custom_dialog.dart';
 import 'package:lindo/app/ui/utils/k_textformfield.dart';
+import 'package:lindo/core/base/state.dart';
 import 'package:lindo/core/init/theme/color_manager.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:story_view/story_view.dart';
-import '../../../../core/base/state.dart';
 import '../../../controllers/explore_controller.dart';
 import '../../utils/k_bottom_sheet.dart';
 import '../../utils/k_button.dart';
@@ -37,7 +40,7 @@ class ExplorePage extends GetView<ExploreController> {
                   children: [
                     InkWell(
                       onTap: () {
-                        pushNewScreen(context, screen: const NotificationPage(), withNavBar: false);
+                        PersistentNavBarNavigator.pushNewScreen(context, screen: const NotificationPage(), withNavBar: false);
                       },
                       child: Image.asset(
                         "assets/images/notification.png",
@@ -45,7 +48,6 @@ class ExplorePage extends GetView<ExploreController> {
                         width: 26,
                       ),
                     ),
-                    /*
                     IconButton(
                       icon: Image.asset(
                         "assets/images/settings.png",
@@ -53,284 +55,312 @@ class ExplorePage extends GetView<ExploreController> {
                         width: 24,
                       ),
                       onPressed: () {
-                        KBottomSheet.show(
-                          context: context,
-                          title: "Filtrele",
-                          content: GetBuilder<ExploreController>(
-                            init: ExploreController(),
-                            autoRemove: false,
-                            builder: (c) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Sadece doğrulanmış hesaplar",
+                        UserController userController = Get.find();
+                        if (!userController.isPremium) {
+                          KBottomSheet.show(
+                            context: context,
+                            title: "Filtrele",
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Yaş, Şehir, Cinsiyet filtrelemesi yapabilmek için premium hesaba geçiş yapmanız gerekmektedir.",
+                                  ),
+                                ),
+                                KButton(
+                                  color: ColorManager.instance.pink,
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    Get.to(() => const MarketPage());
+                                  },
+                                  title: "Premium Ol",
+                                  borderColor: ColorManager.instance.pink,
+                                  textColor: ColorManager.instance.white,
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          KBottomSheet.show(
+                            context: context,
+                            title: "Filtrele",
+                            content: GetBuilder<ExploreController>(
+                              init: ExploreController(),
+                              autoRemove: false,
+                              builder: (c) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "Sadece doğrulanmış hesaplar",
+                                                style: TextStyle(color: ColorManager.instance.softBlack),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 6),
+                                                child: Image.asset(
+                                                  "assets/images/tick-circle.png",
+                                                  height: 18,
+                                                  width: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        FlutterSwitch(
+                                          width: 55,
+                                          height: 30,
+                                          toggleSize: 30,
+                                          value: c.onlyValidatedUsers,
+                                          borderRadius: 30,
+                                          toggleColor: ColorManager.instance.pink,
+                                          activeColor: ColorManager.instance.pink.withOpacity(0.3),
+                                          inactiveColor: ColorManager.instance.pink.withOpacity(0.1),
+                                          padding: 3.0,
+                                          showOnOff: false,
+                                          onToggle: (val) {
+                                            c.onlyValidatedUsers = val;
+                                            c.update();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(right: 12.0),
+                                            child: Text(
+                                              "Yaş aralığı (${c.currentRangeValue.start.round()}-${c.currentRangeValue.end.round()})",
                                               style: TextStyle(color: ColorManager.instance.softBlack),
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(left: 6),
-                                              child: Image.asset(
-                                                "assets/images/tick-circle.png",
-                                                height: 18,
-                                                width: 18,
+                                          ),
+                                        ),
+                                        RangeSlider(
+                                          values: c.currentRangeValue,
+                                          min: 18,
+                                          max: 100,
+                                          divisions: 82,
+                                          activeColor: ColorManager.instance.pink,
+                                          inactiveColor: ColorManager.instance.pink.withOpacity(0.3),
+                                          labels: RangeLabels(
+                                            c.currentRangeValue.start.round().toString(),
+                                            c.currentRangeValue.end.round().toString(),
+                                          ),
+                                          onChanged: (RangeValues values) {
+                                            c.currentRangeValue = values;
+                                            c.update();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(right: 12.0),
+                                            child: Text(
+                                              "Bulunduğu Şehir",
+                                              style: TextStyle(color: ColorManager.instance.softBlack),
+                                            ),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            showCupertinoModalPopup(
+                                              context: context,
+                                              builder: (_) => StatefulBuilder(
+                                                builder: (context, setState) {
+                                                  return Material(
+                                                    child: SingleChildScrollView(
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                        children: [
+                                                          Container(
+                                                            width: double.infinity,
+                                                            color: ColorManager.instance.gray_spacer,
+                                                            child: Padding(
+                                                              padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  InkWell(
+                                                                    onTap: () {
+                                                                      Navigator.of(context, rootNavigator: true).pop("Discard");
+                                                                      c.selectedCity = null;
+                                                                      c.update();
+                                                                    },
+                                                                    child: Text(
+                                                                      'Temizle',
+                                                                      style: TextStyle(
+                                                                        fontSize: Utility.dynamicTextSize(14),
+                                                                        color: ColorManager.instance.red,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  InkWell(
+                                                                    onTap: () {
+                                                                      Navigator.of(context, rootNavigator: true).pop("Discard");
+                                                                    },
+                                                                    child: Text(
+                                                                      "Tamam",
+                                                                      style: TextStyle(
+                                                                        fontSize: Utility.dynamicTextSize(14),
+                                                                        color: ColorManager.instance.darkGray,
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            decoration: const BoxDecoration(),
+                                                            width: double.infinity,
+                                                            height: Utility.dynamicHeightPixel(250),
+                                                            child: CupertinoPicker(
+                                                              backgroundColor: ColorManager.instance.white,
+                                                              itemExtent: 40,
+                                                              scrollController: FixedExtentScrollController(initialItem: 4),
+                                                              children: c.cities.map((item) => Text(item)).toList(),
+                                                              onSelectedItemChanged: (value) {
+                                                                setState(
+                                                                  () {
+                                                                    c.selectedCity = c.cities[value];
+                                                                    c.update();
+                                                                  },
+                                                                );
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.all(4),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: ColorManager.instance.pink,
+                                              ),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                            child: Text(
+                                              c.selectedCity ?? "Şehir Seç",
+                                              style: TextStyle(
+                                                color: ColorManager.instance.pink,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(right: 12.0),
+                                            child: Text(
+                                              "Cinsiyet",
+                                              style: TextStyle(color: ColorManager.instance.softBlack),
+                                            ),
+                                          ),
+                                        ),
+                                        ToggleButtons(
+                                          fillColor: ColorManager.instance.pink,
+                                          isSelected: c.genderSelections,
+                                          onPressed: (index) {
+                                            if (index == 0) {
+                                              if (c.genderSelections[0] == true) {
+                                                c.genderSelections[0] = false;
+                                              } else {
+                                                c.genderSelections[0] = true;
+                                              }
+                                              c.update();
+                                            }
+                                            if (index == 1) {
+                                              if (c.genderSelections[1] == true) {
+                                                c.genderSelections[1] = false;
+                                              } else {
+                                                c.genderSelections[1] = true;
+                                              }
+                                              c.update();
+                                            }
+                                          },
+                                          children: [
+                                            Text(
+                                              "Kadın",
+                                              style: TextStyle(
+                                                color: c.genderSelections[0] == true ? ColorManager.instance.white : ColorManager.instance.pink,
+                                              ),
+                                            ),
+                                            Text(
+                                              "Erkek",
+                                              style: TextStyle(
+                                                color: c.genderSelections[1] == true ? ColorManager.instance.white : ColorManager.instance.pink,
                                               ),
                                             ),
                                           ],
                                         ),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: Utility.dynamicWidthPixel(35),
+                                        bottom: Utility.dynamicWidthPixel(20),
                                       ),
-                                      FlutterSwitch(
-                                        width: 55,
-                                        height: 30,
-                                        toggleSize: 30,
-                                        value: c.onlyValidatedUsers,
-                                        borderRadius: 30,
-                                        toggleColor: ColorManager.instance.pink,
-                                        activeColor: ColorManager.instance.pink.withOpacity(0.3),
-                                        inactiveColor: ColorManager.instance.pink.withOpacity(0.1),
-                                        padding: 3.0,
-                                        showOnOff: false,
-                                        onToggle: (val) {
-                                          c.onlyValidatedUsers = val;
-                                          c.update();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(right: 12.0),
-                                          child: Text(
-                                            "Yaş aralığı (${c.currentRangeValue.start.round()}-${c.currentRangeValue.end.round()})",
-                                            style: TextStyle(color: ColorManager.instance.softBlack),
-                                          ),
-                                        ),
-                                      ),
-                                      RangeSlider(
-                                        values: c.currentRangeValue,
-                                        min: 18,
-                                        max: 100,
-                                        divisions: 82,
-                                        activeColor: ColorManager.instance.pink,
-                                        inactiveColor: ColorManager.instance.pink.withOpacity(0.3),
-                                        labels: RangeLabels(
-                                          c.currentRangeValue.start.round().toString(),
-                                          c.currentRangeValue.end.round().toString(),
-                                        ),
-                                        onChanged: (RangeValues values) {
-                                          c.currentRangeValue = values;
-                                          c.update();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(right: 12.0),
-                                          child: Text(
-                                            "Bulunduğu Şehir",
-                                            style: TextStyle(color: ColorManager.instance.softBlack),
-                                          ),
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          showCupertinoModalPopup(
-                                            context: context,
-                                            builder: (_) => StatefulBuilder(
-                                              builder: (context, setState) {
-                                                return Material(
-                                                  child: SingleChildScrollView(
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                      children: [
-                                                        Container(
-                                                          width: double.infinity,
-                                                          color: ColorManager.instance.gray_spacer,
-                                                          child: Padding(
-                                                            padding: EdgeInsets.all(Utility.dynamicWidthPixel(16)),
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              children: [
-                                                                InkWell(
-                                                                  onTap: () {
-                                                                    Navigator.of(context, rootNavigator: true).pop("Discard");
-                                                                    c.selectedCity = null;
-                                                                    c.update();
-                                                                  },
-                                                                  child: Text(
-                                                                    'Temizle',
-                                                                    style: TextStyle(
-                                                                      fontSize: Utility.dynamicTextSize(14),
-                                                                      color: ColorManager.instance.red,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                InkWell(
-                                                                  onTap: () {
-                                                                    Navigator.of(context, rootNavigator: true).pop("Discard");
-                                                                  },
-                                                                  child: Text(
-                                                                    "Tamam",
-                                                                    style: TextStyle(
-                                                                      fontSize: Utility.dynamicTextSize(14),
-                                                                      color: ColorManager.instance.darkGray,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          decoration: const BoxDecoration(),
-                                                          width: double.infinity,
-                                                          height: Utility.dynamicHeightPixel(250),
-                                                          child: CupertinoPicker(
-                                                            backgroundColor: ColorManager.instance.white,
-                                                            itemExtent: 40,
-                                                            scrollController: FixedExtentScrollController(initialItem: 4),
-                                                            children: c.cities.map((item) => Text(item)).toList(),
-                                                            onSelectedItemChanged: (value) {
-                                                              setState(
-                                                                () {
-                                                                  c.selectedCity = c.cities[value];
-                                                                  c.update();
-                                                                },
-                                                              );
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: ColorManager.instance.pink,
-                                            ),
-                                            borderRadius: BorderRadius.circular(4),
-                                          ),
-                                          child: Text(
-                                            c.selectedCity ?? "Şehir Seç",
-                                            style: TextStyle(
-                                              color: ColorManager.instance.pink,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 12,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(right: 12.0),
-                                          child: Text(
-                                            "Cinsiyet",
-                                            style: TextStyle(color: ColorManager.instance.softBlack),
-                                          ),
-                                        ),
-                                      ),
-                                      ToggleButtons(
-                                        fillColor: ColorManager.instance.pink,
-                                        isSelected: c.genderSelections,
-                                        onPressed: (index) {
-                                          if (index == 0) {
-                                            if (c.genderSelections[0] == true) {
-                                              c.genderSelections[0] = false;
-                                            } else {
-                                              c.genderSelections[0] = true;
-                                            }
-                                            c.update();
-                                          }
-                                          if (index == 1) {
-                                            if (c.genderSelections[1] == true) {
-                                              c.genderSelections[1] = false;
-                                            } else {
-                                              c.genderSelections[1] = true;
-                                            }
-                                            c.update();
-                                          }
-                                        },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: [
-                                          Text(
-                                            "Kadın",
-                                            style: TextStyle(
-                                              color: c.genderSelections[0] == true ? ColorManager.instance.white : ColorManager.instance.pink,
-                                            ),
+                                          KButton(
+                                            color: ColorManager.instance.white,
+                                            onTap: () {
+                                              c.selectedCity = null;
+                                              c.genderSelections = [false, false];
+                                              c.currentRangeValue = const RangeValues(18, 100);
+                                              c.onlyValidatedUsers = false;
+                                              c.update();
+                                            },
+                                            title: "Temizle",
+                                            borderColor: ColorManager.instance.border_color,
+                                            textColor: ColorManager.instance.gridGray,
                                           ),
-                                          Text(
-                                            "Erkek",
-                                            style: TextStyle(
-                                              color: c.genderSelections[1] == true ? ColorManager.instance.white : ColorManager.instance.pink,
-                                            ),
+                                          KButton(
+                                            color: ColorManager.instance.pink,
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            title: "Filtrele",
+                                            borderColor: ColorManager.instance.pink,
+                                            textColor: ColorManager.instance.white,
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      top: Utility.dynamicWidthPixel(35),
-                                      bottom: Utility.dynamicWidthPixel(20),
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: [
-                                        KButton(
-                                          color: ColorManager.instance.white,
-                                          onTap: () {
-                                            c.selectedCity = null;
-                                            c.genderSelections = [false, false];
-                                            c.currentRangeValue = const RangeValues(18, 100);
-                                            c.onlyValidatedUsers = false;
-                                            c.update();
-                                          },
-                                          title: "Temizle",
-                                          borderColor: ColorManager.instance.border_color,
-                                          textColor: ColorManager.instance.gridGray,
-                                        ),
-                                        KButton(
-                                          color: ColorManager.instance.pink,
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          },
-                                          title: "Filtrele",
-                                          borderColor: ColorManager.instance.pink,
-                                          textColor: ColorManager.instance.white,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        );
+                                  ],
+                                );
+                              },
+                            ),
+                          );
+                        }
                       },
                     ),
-                    */
                   ],
                 ),
                 Padding(
@@ -343,7 +373,7 @@ class ExplorePage extends GetView<ExploreController> {
                 ),
               ],
             ),
-            actions: [
+            actions: const [
               ShopWidget(),
             ],
           ),
@@ -361,8 +391,6 @@ class ExplorePage extends GetView<ExploreController> {
                   padding: const EdgeInsets.all(10),
                   child: InkWell(
                     onTap: () {
-                      print(index);
-                      print(c.usersList[index]);
                       addNotification(
                         c.usersList[index]["uid"],
                         "Keşfette profilinizi görüntüledi.",
@@ -388,367 +416,430 @@ class ExplorePage extends GetView<ExploreController> {
                         icon: const SizedBox(),
                         isExpanded: true,
                         body: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              storyItems.isNotEmpty
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: SizedBox(
-                                        height: Get.height / 2,
-                                        width: Get.width,
-                                        child: StoryView(
-                                          storyItems: storyItems,
-                                          controller: controller,
-                                          inline: true,
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox(),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      c.usersList[index]["name"] ?? "",
-                                      style: TextStyle(
-                                        color: ColorManager.instance.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "${c.usersList[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.usersList[index]["birthTimestamp"]).year)}",
-                                      style: TextStyle(
-                                        color: ColorManager.instance.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              c.usersList[index]["location"] != null
-                                  ? Text(
-                                      c.usersList[index]["location"],
-                                      style: TextStyle(
-                                        color: ColorManager.instance.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )
-                                  : const SizedBox(),
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: 0.05.sw),
-                                child: KButton(
-                                  color: ColorManager.instance.pink,
-                                  onTap: () {
-                                    Get.back();
-                                    pushNewScreen(
-                                      context,
-                                      screen: ChatPage(uid: c.usersList[index]["uid"]),
-                                      withNavBar: false,
-                                    );
-                                  },
-                                  title: "Mesaj Gönder",
-                                  textColor: ColorManager.instance.white,
-                                ),
-                              ),
-                              KTextFormField.instance.widget(context: context, labelText: "Biyografi", readOnly: true, controller: TextEditingController()..text = "${c.usersList[index]["bio"] ?? ""}"),
-                              c.usersList[index]["tags"] != null
-                                  ? Wrap(
-                                      spacing: 10,
-                                      runSpacing: 10,
-                                      children: c.usersList[index]["tags"].map(
-                                        (e) {
-                                          return Chip(
-                                            label: Text("#$e"),
-                                          );
-                                        },
-                                      ).toList(),
-                                    )
-                                  : const SizedBox(),
-                              Container(
-                                width: Get.width,
-                                decoration: BoxDecoration(
-                                  color: ColorManager.instance.white,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Column(
-                                    children: [
-                                      const Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "Bilgi",
+                          child: GetBuilder<UserController>(
+                            builder: (userController) {
+                              return Column(
+                                children: [
+                                  storyItems.isNotEmpty
+                                      ? userController.isPremium
+                                          ? ClipRRect(
+                                              borderRadius: BorderRadius.circular(20),
+                                              child: SizedBox(
+                                                height: Get.height / 2,
+                                                width: Get.width,
+                                                child: StoryView(
+                                                  storyItems: storyItems,
+                                                  controller: controller,
+                                                  inline: true,
+                                                ),
+                                              ),
+                                            )
+                                          : InkWell(
+                                              onTap: () {
+                                                Get.to(() => const MarketPage());
+                                              },
+                                              child: const Text("Kullanıcı görsellerini sadece premium kullanıcılar görüntüleyebilir. Premium olmak için tıkla."),
+                                            )
+                                      : const SizedBox(),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          c.usersList[index]["name"] ?? "",
                                           style: TextStyle(
-                                            fontWeight: FontWeight.bold,
+                                            color: ColorManager.instance.black,
                                             fontSize: 16,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        height: 6,
-                                      ),
-                                      Info(
-                                        img: "assets/images/height.png",
-                                        title: "Boy",
-                                        desc: c.usersList[index]["height"] == null ? "" : "${c.usersList[index]["height"]} cm",
-                                        onTap: () {},
-                                      ),
-                                      Info(
-                                        img: "assets/images/weight.png",
-                                        title: "Ağırlık",
-                                        desc: c.usersList[index]["weight"] == null ? "" : "${c.usersList[index]["weight"]} kg",
-                                        onTap: () {},
-                                      ),
-                                      Info(
-                                        img: "assets/images/smoking.png",
-                                        title: "Sigara",
-                                        desc: c.usersList[index]["smoking"] == null ? "" : "${c.usersList[index]["smoking"]}",
-                                        onTap: () {},
-                                      ),
-                                      Info(
-                                        img: "assets/images/wine-bottle.png",
-                                        title: "Alkol",
-                                        desc: c.usersList[index]["wine-bottle"] == null ? "" : "${c.usersList[index]["wine-bottle"]}",
-                                        onTap: () {},
-                                      ),
-                                      Info(
-                                        img: "assets/images/heart.png",
-                                        title: "İlişki Beklentim",
-                                        desc: c.usersList[index]["hearth"] == null ? "" : "${c.usersList[index]["hearth"]}",
-                                        onTap: () {},
-                                      ),
-                                      Info(
-                                        img: "assets/images/gender.png",
-                                        title: "Cinsellik",
-                                        desc: c.usersList[index]["sex"] == null ? "" : "${c.usersList[index]["sex"]}",
-                                        onTap: () {},
-                                      ),
-                                      Info(
-                                        img: "assets/images/personality.png",
-                                        title: "Kişilik",
-                                        desc: c.usersList[index]["personality"] == null ? "" : "${c.usersList[index]["personality"]}",
-                                        onTap: () {},
-                                      ),
-                                      Info(
-                                        img: "assets/images/money.png",
-                                        title: "İlgi Alanları",
-                                        desc: c.usersList[index]["money"] == null ? "" : "${c.usersList[index]["money"]}",
-                                        onTap: () {},
-                                      ),
-                                    ],
+                                        Text(
+                                          "${c.usersList[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.usersList[index]["birthTimestamp"]).year)}",
+                                          style: TextStyle(
+                                            color: ColorManager.instance.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  CustomDialog().showGeneralDialog(
-                                    context,
-                                    icon: const SizedBox(),
-                                    body: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Padding(
-                                                padding: EdgeInsets.symmetric(vertical: 0.05.sw),
-                                                child: KButton(
-                                                  color: ColorManager.instance.pink,
-                                                  onTap: () {
-                                                    Get.back();
-                                                    Get.back();
-                                                    TextEditingController con = TextEditingController();
-                                                    KBottomSheet.show(
-                                                      context: context,
-                                                      withoutHeader: true,
-                                                      content: Column(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          const Padding(
-                                                            padding: EdgeInsets.all(8.0),
-                                                            child: Text(
-                                                              "Şikayet sebebiniz;",
-                                                              style: TextStyle(
-                                                                fontWeight: FontWeight.w600,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          KTextFormField.instance.widget(
-                                                            context: context,
-                                                            maxLines: 4,
-                                                            controller: con,
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.only(
-                                                              left: 8.0,
-                                                              right: 8,
-                                                              bottom: 8,
-                                                            ),
-                                                            child: Text(
-                                                              "Şikayetinizden ${c.usersList[index]["name"]} kullanıcısının haberi olmayacak.",
-                                                              style: TextStyle(color: ColorManager.instance.secondary),
-                                                            ),
-                                                          ),
-                                                          KButton(
-                                                            color: ColorManager.instance.pink,
-                                                            onTap: () async {
-                                                              if (con.text.isNotEmpty) {
-                                                                UserController userController = Get.find();
-                                                                await userController.report(
-                                                                  "${c.usersList[index]["uid"]}",
-                                                                  con.text,
-                                                                );
-                                                              }
-
-                                                              Get.back();
-                                                              Get.back();
-                                                              Get.snackbar(
-                                                                "Şikayetiniz alınmıştır.",
-                                                                "${c.usersList[index]["name"]} kullanıcısı bundan haberdar olmayacak.",
-                                                                backgroundColor: ColorManager.instance.white,
-                                                                duration: const Duration(seconds: 5),
-                                                              );
-                                                            },
-                                                            title: "Şikayet Et",
-                                                            textColor: ColorManager.instance.white,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  },
-                                                  title: "Şikayet Et",
-                                                  textColor: ColorManager.instance.white,
-                                                ),
+                                  c.usersList[index]["location"] != null
+                                      ? Text(
+                                          c.usersList[index]["location"],
+                                          style: TextStyle(
+                                            color: ColorManager.instance.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 0.05.sw),
+                                    child: KButton(
+                                      color: ColorManager.instance.pink,
+                                      onTap: () {
+                                        Get.back();
+                                        Get.to(
+                                          () => ChatPage(uid: c.usersList[index]["uid"]),
+                                        );
+                                      },
+                                      title: "Mesaj Gönder",
+                                      textColor: ColorManager.instance.white,
+                                    ),
+                                  ),
+                                  KTextFormField.instance.widget(
+                                    context: context,
+                                    labelText: "Biyografi",
+                                    readOnly: true,
+                                    controller: TextEditingController()..text = "${c.usersList[index]["bio"] ?? ""}",
+                                    maxLines: 5,
+                                    minLines: 1,
+                                  ),
+                                  c.usersList[index]["tags"] != null
+                                      ? Wrap(
+                                          spacing: 10,
+                                          runSpacing: 10,
+                                          children: c.usersList[index]["tags"].map(
+                                            (e) {
+                                              return Chip(
+                                                label: Text("#$e"),
+                                              );
+                                            },
+                                          ).toList(),
+                                        )
+                                      : const SizedBox(),
+                                  Container(
+                                    width: Get.width,
+                                    decoration: BoxDecoration(
+                                      color: ColorManager.instance.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        children: [
+                                          const Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              "Bilgi",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
                                               ),
                                             ),
-                                            const SizedBox(
-                                              width: 20,
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding: EdgeInsets.symmetric(vertical: 0.05.sw),
-                                                child: GetBuilder<UserController>(
-                                                  builder: (userController) {
-                                                    return KButton(
+                                          ),
+                                          const SizedBox(
+                                            height: 6,
+                                          ),
+                                          Info(
+                                            img: "assets/images/height.png",
+                                            title: "Boy",
+                                            desc: c.usersList[index]["height"] == null ? "" : "${c.usersList[index]["height"]} cm",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/weight.png",
+                                            title: "Ağırlık",
+                                            desc: c.usersList[index]["weight"] == null ? "" : "${c.usersList[index]["weight"]} kg",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/smoking.png",
+                                            title: "Sigara",
+                                            desc: c.usersList[index]["smoking"] == null ? "" : "${c.usersList[index]["smoking"]}",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/wine-bottle.png",
+                                            title: "Alkol",
+                                            desc: c.usersList[index]["wine-bottle"] == null ? "" : "${c.usersList[index]["wine-bottle"]}",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/heart.png",
+                                            title: "İlişki Beklentim",
+                                            desc: c.usersList[index]["hearth"] == null ? "" : "${c.usersList[index]["hearth"]}",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/gender.png",
+                                            title: "Cinsellik",
+                                            desc: c.usersList[index]["sex"] == null ? "" : "${c.usersList[index]["sex"]}",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/personality.png",
+                                            title: "Kişilik",
+                                            desc: c.usersList[index]["personality"] == null ? "" : "${c.usersList[index]["personality"]}",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/money.png",
+                                            title: "İlgi Alanları",
+                                            desc: c.usersList[index]["money"] == null ? "" : "${c.usersList[index]["money"]}",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/insta.png",
+                                            title: "Instagram",
+                                            desc: c.usersList[index]["instagram"] == null
+                                                ? ""
+                                                : userController.isPremium == false
+                                                    ? "@*********"
+                                                    : "${c.usersList[index]["instagram"]}",
+                                            onTap: () {
+                                              if (userController.isPremium == false) {
+                                                Get.to(() => const MarketPage());
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      CustomDialog().showGeneralDialog(
+                                        context,
+                                        icon: const SizedBox(),
+                                        body: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 0.05.sw),
+                                                    child: KButton(
                                                       color: ColorManager.instance.pink,
-                                                      onTap: () async {
-                                                        await userController.addBlock("${c.usersList[index]["uid"]}");
+                                                      onTap: () {
                                                         Get.back();
                                                         Get.back();
-                                                        Get.snackbar(
-                                                          !userController.blockedUsers.contains("${c.usersList[index]["uid"]}") ? "Engellendi" : "Engel kaldırıldı",
-                                                          !userController.blockedUsers.contains("${c.usersList[index]["uid"]}") ? "${c.usersList[index]["name"]} kullanıcısı engellendi." : "${c.usersList[index]["name"]} kullanıcısının engeli kaldırıldı.",
-                                                          backgroundColor: ColorManager.instance.white,
-                                                          duration: const Duration(seconds: 5),
+                                                        TextEditingController con = TextEditingController();
+                                                        KBottomSheet.show(
+                                                          context: context,
+                                                          withoutHeader: true,
+                                                          content: Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              const Padding(
+                                                                padding: EdgeInsets.all(8.0),
+                                                                child: Text(
+                                                                  "Şikayet sebebiniz;",
+                                                                  style: TextStyle(
+                                                                    fontWeight: FontWeight.w600,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              KTextFormField.instance.widget(
+                                                                context: context,
+                                                                maxLines: 4,
+                                                                controller: con,
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(
+                                                                  left: 8.0,
+                                                                  right: 8,
+                                                                  bottom: 8,
+                                                                ),
+                                                                child: Text(
+                                                                  "Şikayetinizden ${c.usersList[index]["name"]} kullanıcısının haberi olmayacak.",
+                                                                  style: TextStyle(color: ColorManager.instance.secondary),
+                                                                ),
+                                                              ),
+                                                              KButton(
+                                                                color: ColorManager.instance.pink,
+                                                                onTap: () async {
+                                                                  if (con.text.isNotEmpty) {
+                                                                    UserController userController = Get.find();
+                                                                    await userController.report(
+                                                                      "${c.usersList[index]["uid"]}",
+                                                                      con.text,
+                                                                    );
+                                                                  }
+
+                                                                  Get.back();
+                                                                  Get.back();
+                                                                  Get.snackbar(
+                                                                    "Şikayetiniz alınmıştır.",
+                                                                    "${c.usersList[index]["name"]} kullanıcısı bundan haberdar olmayacak.",
+                                                                    backgroundColor: ColorManager.instance.white,
+                                                                    duration: const Duration(seconds: 5),
+                                                                  );
+                                                                },
+                                                                title: "Şikayet Et",
+                                                                textColor: ColorManager.instance.white,
+                                                              ),
+                                                            ],
+                                                          ),
                                                         );
                                                       },
-                                                      title: userController.blockedUsers.contains("${c.usersList[index]["uid"]}") ? "Engeli Kaldır" : "Engelle",
+                                                      title: "Şikayet Et",
                                                       textColor: ColorManager.instance.white,
-                                                    );
-                                                  },
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
+                                                const SizedBox(
+                                                  width: 20,
+                                                ),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 0.05.sw),
+                                                    child: GetBuilder<UserController>(
+                                                      builder: (userController) {
+                                                        return KButton(
+                                                          color: ColorManager.instance.pink,
+                                                          onTap: () async {
+                                                            await userController.addBlock("${c.usersList[index]["uid"]}");
+                                                            Get.back();
+                                                            Get.back();
+                                                            Get.snackbar(
+                                                              !userController.blockedUsers.contains("${c.usersList[index]["uid"]}") ? "Engellendi" : "Engel kaldırıldı",
+                                                              !userController.blockedUsers.contains("${c.usersList[index]["uid"]}") ? "${c.usersList[index]["name"]} kullanıcısı engellendi." : "${c.usersList[index]["name"]} kullanıcısının engeli kaldırıldı.",
+                                                              backgroundColor: ColorManager.instance.white,
+                                                              duration: const Duration(seconds: 5),
+                                                            );
+                                                          },
+                                                          title: userController.blockedUsers.contains("${c.usersList[index]["uid"]}") ? "Engeli Kaldır" : "Engelle",
+                                                          textColor: ColorManager.instance.white,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            KButton(
+                                              color: ColorManager.instance.white,
+                                              onTap: () {
+                                                Get.back();
+                                              },
+                                              title: "Vazgeç",
+                                              textColor: ColorManager.instance.pink,
+                                              borderColor: ColorManager.instance.pink,
                                             ),
                                           ],
                                         ),
-                                        KButton(
-                                          color: ColorManager.instance.white,
-                                          onTap: () {
-                                            Get.back();
-                                          },
-                                          title: "Vazgeç",
-                                          textColor: ColorManager.instance.pink,
-                                          borderColor: ColorManager.instance.pink,
-                                        ),
-                                      ],
+                                      );
+                                    },
+                                    child: Text(
+                                      "Şikayet et veya Engelle",
+                                      style: TextStyle(
+                                        color: ColorManager.instance.gray_text,
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 13,
+                                      ),
                                     ),
-                                  );
-                                },
-                                child: Text(
-                                  "Şikayet et veya Engelle",
-                                  style: TextStyle(
-                                    color: ColorManager.instance.gray_text,
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 13,
                                   ),
-                                ),
-                              ),
-                            ],
+                                ],
+                              );
+                            },
                           ),
                         ),
                       );
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: kElevationToShadow[2],
-                        color: ColorManager.instance.gridGray,
-                      ),
-                      child: Stack(
-                        children: [
-                          Center(
-                            child: c.usersList[index]["images"] == null
-                                ? Image.asset(
-                                    "assets/images/camera-slash.png",
-                                    height: 40,
-                                    width: 40,
-                                  )
-                                : ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: CachedNetworkImage(
-                                      imageUrl: c.usersList[index]["images"].first,
-                                      height: 202,
-                                      width: Get.width,
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      c.usersList[index]["name"] ?? "",
-                                      style: TextStyle(
-                                        color: ColorManager.instance.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "${c.usersList[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.usersList[index]["birthTimestamp"]).year)}",
-                                      style: TextStyle(
-                                        color: ColorManager.instance.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                    child: GetBuilder<UserController>(builder: (userController) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: kElevationToShadow[2],
+                          color: ColorManager.instance.gridGray,
+                        ),
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: c.usersList[index]["images"] == null
+                                  ? Image.asset(
+                                      "assets/images/camera-slash.png",
+                                      height: 40,
+                                      width: 40,
                                     )
-                                  ],
-                                ),
-                                c.usersList[index]["location"] != null
-                                    ? Text(
-                                        c.usersList[index]["location"],
+                                  : userController.isPremium == false
+                                      ? Center(
+                                          child: ClipRRect(
+                                            clipBehavior: Clip.hardEdge,
+                                            borderRadius: BorderRadius.circular(20),
+                                            child: Stack(
+                                              children: [
+                                                CachedNetworkImage(
+                                                  imageUrl: c.usersList[index]["images"].first,
+                                                  height: 202,
+                                                  width: Get.width,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                BackdropFilter(
+                                                  filter: ImageFilter.blur(
+                                                    sigmaX: 8.0,
+                                                    sigmaY: 8.0,
+                                                  ),
+                                                  child: Container(
+                                                    color: Colors.transparent,
+                                                    width: Get.width,
+                                                    height: 202,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: CachedNetworkImage(
+                                            imageUrl: c.usersList[index]["images"].first,
+                                            height: 202,
+                                            width: Get.width,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          c.usersList[index]["name"] ?? "",
+                                          style: TextStyle(
+                                            color: ColorManager.instance.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 1,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${c.usersList[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.usersList[index]["birthTimestamp"]).year)}",
                                         style: TextStyle(
                                           color: ColorManager.instance.white,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       )
-                                    : const SizedBox(),
-                              ],
+                                    ],
+                                  ),
+                                  c.usersList[index]["location"] != null
+                                      ? Text(
+                                          c.usersList[index]["location"],
+                                          style: TextStyle(
+                                            color: ColorManager.instance.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
+                          ],
+                        ),
+                      );
+                    }),
                   ),
                 );
               },
@@ -769,8 +860,7 @@ class ShopWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        Get.closeAllSnackbars();
-        Get.snackbar("Çok yakında", "Market çok yakında aktif olacaktır.", backgroundColor: ColorManager.instance.white);
+        Get.to(() => const MarketPage());
       },
       icon: Image.asset(
         "assets/images/shop.png",
