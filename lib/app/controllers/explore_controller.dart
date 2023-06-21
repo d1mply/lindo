@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches
+
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -15,15 +17,23 @@ import '../ui/utils/k_button.dart';
 
 class ExploreController extends GetxController {
   TextEditingController searchController = TextEditingController();
-  int pageSize = 10;
+  int pageSize = 8;
+  int searchPageSize = 20;
+  ScrollController scrollController = ScrollController();
   bool onlyValidatedUsers = false;
+  bool selectedOnlyValidatedUsers = false;
   List<Map<dynamic, dynamic>> usersList = [];
+  List<Map<dynamic, dynamic>> boostedUsers = [];
+
   RangeValues currentRangeValue = const RangeValues(18, 100);
   String? selectedCity;
   List<bool> genderSelections = List.generate(2, (i) => false);
+  int minAge = 18;
+  int maxAge = 100;
+  List<bool> selectedGenderSelections = [false, false];
 
   getUsers({String? start}) async {
-    await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).startAt(start).once().then(
+    await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).once().then(
       (DatabaseEvent snapshot) {
         usersList = [];
         Object? vals = snapshot.snapshot.value;
@@ -33,25 +43,160 @@ class ExploreController extends GetxController {
           UserController userController = Get.find();
           values.forEach(
             (key, value) {
-              if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
-                usersList.add(value);
+              if (FirebaseAuth.instance.currentUser != null) {
+                if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
+                  usersList.add(value);
+                }
               }
             },
           );
         }
       },
     );
+    filterUsers();
     update();
   }
 
-  int searchPageSize = 10;
+  getBoostedUsers() async {
+    await NetworkManager.instance.usersRef.once().then(
+      (DatabaseEvent snapshot) {
+        boostedUsers = [];
+        Object? vals = snapshot.snapshot.value;
 
-  getMoreUsers() {
+        if (vals != null) {
+          Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
+          UserController userController = Get.find();
+          values.forEach(
+            (key, value) {
+              if (FirebaseAuth.instance.currentUser != null) {
+                if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
+                  if (value["boostEndDate"] != null) {
+                    print("added boosted user");
+                    int boostEndDate = value["boostEndDate"] as int;
+                    print(boostEndDate);
+                    print(DateTime.now().millisecondsSinceEpoch);
+                    print(DateTime.now().millisecondsSinceEpoch < boostEndDate);
+                    if (DateTime.now().millisecondsSinceEpoch < boostEndDate) {
+                      boostedUsers.add(value);
+                    }
+                  }
+                }
+              }
+            },
+          );
+        }
+      },
+    );
+
+    update();
+  }
+
+  filterUsers() {
+    bool genderSelection = false;
+    if (selectedGenderSelections.first == true || selectedGenderSelections.last == true) {
+      genderSelection = true;
+    }
+    if (genderSelection == true || currentRangeValue.start != 18 || currentRangeValue.end != 100 || selectedOnlyValidatedUsers == true || selectedCity != null) {
+      List<int> indexes = [];
+      for (int i = 0; i < usersList.length; i++) {
+        if (usersList[i]["year"] != null) {
+          if (usersList[i]["year"] >= minAge && usersList[i]["year"] <= maxAge) {
+          } else {
+            indexes.add(i);
+          }
+        }
+        if (genderSelection == true) {
+          if (selectedGenderSelections.first == true && selectedGenderSelections.last == true) {
+          } else {
+            if (usersList[i]["gender"] == 1) {
+              if (selectedGenderSelections.first == true) {
+                print("filtreye uyan kız");
+              } else {
+                indexes.add(i);
+              }
+            } else if (usersList[i]["gender"] == 2) {
+              if (selectedGenderSelections.last == true) {
+                print("filtreye uyan erkek");
+              } else {
+                indexes.add(i);
+              }
+            }
+          }
+        }
+        if (selectedOnlyValidatedUsers == true) {
+          if (usersList[i]["validate"] != null) {
+            if (usersList[i]["validate"] == false) {
+              indexes.add(i);
+            }
+          } else {
+            indexes.add(i);
+          }
+        }
+        if (usersList[i]["location"] != null) {
+          if (selectedCity != null) {
+            if (selectedCity != usersList[i]["location"]) {
+              indexes.add(i);
+            }
+          }
+        }
+      }
+      indexes = removeDuplicates(indexes);
+      indexes.sort((b, a) => a.compareTo(b));
+      try {
+        for (int i = 0; i < indexes.length; i++) {
+          usersList.removeAt(indexes[i]);
+        }
+      } catch (e) {}
+      update();
+    } else {
+      getUsers();
+    }
+    update();
+  }
+
+  List<int> removeDuplicates(List<int> list) {
+    Set<int> uniqueElements = Set<int>.from(list);
+    List<int> result = uniqueElements.toList();
+    return result;
+  }
+
+  Object? lastvals;
+  getMoreUsers() async {
     debugPrint("refreshed");
     if (searchController.text.isEmpty) {
-      getUsers(start: usersList.last["uid"]);
+      String start = usersList.last["uid"];
+      List<Map<dynamic, dynamic>> temp = usersList;
+      pageSize = pageSize * 2;
+      await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).startAfter(start, key: start).once().then(
+        (DatabaseEvent snapshot) {
+          Object? vals = snapshot.snapshot.value;
+          lastvals = vals;
+          if (vals != lastvals) {
+            if (vals != null) {
+              Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
+              UserController userController = Get.find();
+              values.forEach(
+                (key, value) {
+                  if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
+                    temp.add(value);
+                  }
+                },
+              );
+            }
+          }
+        },
+      );
+
+      Set<Map<dynamic, dynamic>> uniqueSet = {};
+      for (var element in temp) {
+        uniqueSet.add(element);
+      }
+
+      List<Map<dynamic, dynamic>> uniqueList = uniqueSet.toList();
+      usersList = uniqueList;
+      filterUsers();
     } else {
-      searchPageSize += searchPageSize + 10;
+      searchPageSize += searchPageSize + 20;
       searchUsers();
     }
   }
@@ -104,6 +249,15 @@ class ExploreController extends GetxController {
   @override
   void onInit() {
     getUsers();
+    getBoostedUsers();
+    scrollController.addListener(
+      () {
+        if (scrollController.position.atEdge && scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+          print("sona gelindi");
+          getMoreUsers();
+        }
+      },
+    );
     super.onInit();
   }
 

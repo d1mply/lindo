@@ -16,7 +16,7 @@ class RootPage extends GetView<RootController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.instance.transparent,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       // drawer: const CustomDrawer(),
       drawerEnableOpenDragGesture: false,
 
@@ -128,7 +128,7 @@ class RootPage extends GetView<RootController> {
                     ),
                   ],
                   confineInSafeArea: true,
-                  resizeToAvoidBottomInset: false,
+                  resizeToAvoidBottomInset: true,
                   stateManagement: true,
                   hideNavigationBarWhenKeyboardShows: true,
                   decoration: NavBarDecoration(

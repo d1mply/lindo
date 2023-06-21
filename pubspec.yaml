@@ -43,11 +43,16 @@ dependencies:
   story_view: ^0.14.0
   flutter_switch: ^0.3.2
   timeago:
-  appinio_swiper: ^2.0.1
+  appinio_swiper: 2.0.1
   smooth_page_indicator:
   flutter_inapp_purchase: ^5.4.1
   showcaseview: ^2.0.3
   dismissible_page:
+  geolocator: ^9.0.2
+  geocoding:
+  flutter_overlay_loader: ^2.0.0
+  url_launcher: ^6.1.11
+  flutter_animate: ^4.1.1+1
 
   flutter_localizations:
     sdk: flutter

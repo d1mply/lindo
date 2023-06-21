@@ -34,7 +34,7 @@ class LikeController extends GetxController {
 
   Future<void> getMessages() async {
     String myUid = FirebaseAuth.instance.currentUser!.uid;
-    await NetworkManager.instance.swipe.orderByChild("uid").equalTo(myUid).limitToLast(20).once().then(
+    await NetworkManager.instance.swipe.orderByChild("uid").equalTo(myUid).limitToLast(50).once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
         if (vals != null) {

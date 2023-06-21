@@ -1,12 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/init/network/network_manager.dart';
 
 class NotificationController extends GetxController {
-  final ScrollController scrollController = ScrollController();
   int? lastKey;
 
   List<Map<dynamic, dynamic>> messages = [];
@@ -34,42 +32,7 @@ class NotificationController extends GetxController {
 
   Future<void> getMessages() async {
     String myUid = FirebaseAuth.instance.currentUser!.uid;
-    await NetworkManager.instance.notificationRef.orderByChild("uid").equalTo(myUid).limitToLast(20).once().then(
-      (DatabaseEvent snapshot) {
-        Object? vals = snapshot.snapshot.value;
-        if (vals != null) {
-          Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
-          List<Map<dynamic, dynamic>> temp = [];
-          values.forEach(
-            (key, value) {
-              if (!keys.contains(key)) {
-                temp.add(value);
-                keys.add(key);
-              }
-            },
-          );
-
-          messages = temp;
-          messages.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
-          update();
-          lastKey = messages.last["timestamp"];
-        }
-      },
-    );
-    scrollController.addListener(
-      () {
-        if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
-          loadMoreMessages();
-        }
-      },
-    );
-  }
-
-  Future<void> loadMoreMessages() async {
-    page = page + 1;
-    String myUid = FirebaseAuth.instance.currentUser!.uid;
-
-    await NetworkManager.instance.notificationRef.orderByChild("uid").equalTo(myUid).orderByChild("uid").endAt(lastKey).limitToLast(20 * page).once().then(
+    await NetworkManager.instance.notificationRef.orderByChild("uid").equalTo(myUid).once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
         if (vals != null) {
@@ -92,6 +55,4 @@ class NotificationController extends GetxController {
       },
     );
   }
-
-  int page = 1;
 }

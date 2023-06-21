@@ -1,10 +1,12 @@
-// ignore_for_file: prefer_if_null_operators
+// ignore_for_file: prefer_if_null_operators, empty_catches
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lindo/core/base/state.dart';
@@ -530,7 +532,7 @@ class ProfilePage extends GetView<ProfileController> {
                                         ),
                                         const SizedBox(height: 6),
                                         Text(
-                                          "Konumunu ekleyerek daha çok görüntülenme al.",
+                                          c.user?["location"] == null ? "Konumunu ekleyerek daha çok görüntülenme al." : c.user?["location"],
                                           style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
@@ -543,8 +545,24 @@ class ProfilePage extends GetView<ProfileController> {
                                 ),
                                 onTap: () async {
                                   if (await Permission.location.request().isGranted) {
-                                    c.permissionGranted = true;
-                                    c.update();
+                                    try {
+                                      c.permissionGranted = true;
+                                      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+                                      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+                                      if (placemarks.isNotEmpty) {
+                                        Placemark placemark = placemarks.first;
+                                        String? cityCode = placemark.administrativeArea;
+                                        if (cityCode != null) {
+                                          await NetworkManager.instance.currentUserRef().update(
+                                            {
+                                              "location": cityCode,
+                                            },
+                                          );
+                                          c.getFirstData();
+                                        }
+                                      }
+                                      c.update();
+                                    } catch (e) {}
                                   }
                                 },
                               ),

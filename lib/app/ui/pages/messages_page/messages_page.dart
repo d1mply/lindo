@@ -25,7 +25,7 @@ class MessagesPage extends GetView<MessagesController> {
           init: MessagesController(),
           builder: (c) {
             return Scaffold(
-              resizeToAvoidBottomInset: false,
+              resizeToAvoidBottomInset: true,
               appBar: AppBar(
                 leading: const ShopWidget(),
                 elevation: 0,

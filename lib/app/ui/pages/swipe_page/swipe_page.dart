@@ -81,6 +81,7 @@ class SwipePage extends GetView<SwipeController> {
                             "assets/svg/logo.svg",
                           ),
                         ),
+                       
                         SizedBox(
                           width: 1.sw,
                           height: 1.sh,
@@ -92,7 +93,7 @@ class SwipePage extends GetView<SwipeController> {
                                 cardsCount: c.usersList.length,
                                 isDisabled: !swipaAble,
                                 direction: AppinioSwiperDirection.right,
-                                swipeOptions: AppinioSwipeOptions.allDirections,
+                                swipeOptions:  AppinioSwipeOptions.allDirections,
                                 onSwipe: (index, direction) {
                                   if (direction.name == "right") {
                                     swipeRight(c.usersList[index - 1]["uid"], context, c);

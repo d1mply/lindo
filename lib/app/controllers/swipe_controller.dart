@@ -17,12 +17,13 @@ GlobalKey five = GlobalKey();
 
 class SwipeController extends GetxController {
   AppinioSwiperController controller = AppinioSwiperController();
-  int pageSize = 100;
+  int pageSize = 10;
   List<Map<dynamic, dynamic>> usersList = [];
   bool keyAdded = false;
   SwipeController(this.context);
+
   getUsers({String? start}) async {
-    await NetworkManager.instance.usersRef.orderByChild("uid").startAfter(start).limitToFirst(pageSize).once().then(
+    await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
         if (vals != null) {
@@ -47,15 +48,46 @@ class SwipeController extends GetxController {
     showShowCaseView();
   }
 
-  getMoreUsers() {
+  getMoreUsers() async {
     try {
-      String uid = usersList.last["uid"];
-      usersList = [];
-      getUsers(start: uid);
+      String start = usersList.last["uid"];
+      List<Map<dynamic, dynamic>> temp = usersList;
+      await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).startAfter(start).once().then(
+        (DatabaseEvent snapshot) {
+          Object? vals = snapshot.snapshot.value;
+          if (vals != null) {
+            Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
+            UserController userController = Get.find();
+            values.forEach(
+              (key, value) {
+                if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
+                  if (keyAdded == false) {
+                    value["kk"] = true;
+                    keyAdded = true;
+                  }
+                  temp.add(value);
+                  update();
+                }
+              },
+            );
+          }
+        },
+      );
+
+      Set<Map<dynamic, dynamic>> uniqueSet = {};
+      for (var element in temp) {
+        uniqueSet.add(element);
+      }
+
+      List<Map<dynamic, dynamic>> uniqueList = uniqueSet.toList();
+      usersList = uniqueList;
+
+      update();
     } finally {}
   }
 
   final BuildContext context;
+
   showShowCaseView() {
     bool? cached = CacheManager.instance.getValue("showCased");
     if (cached == null) {

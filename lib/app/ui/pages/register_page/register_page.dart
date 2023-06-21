@@ -4,11 +4,14 @@ import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lindo/app/ui/pages/root_page/root_page.dart';
+import 'package:lindo/app/ui/utils/k_button_animated.dart';
 import 'package:lindo/app/ui/utils/k_textformfield.dart';
 import 'package:lindo/app/ui/utils/validation_manager.dart';
 import 'package:lindo/core/init/theme/color_manager.dart';
@@ -23,41 +26,41 @@ class RegisterPage extends GetView<RegisterController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            CupertinoIcons.chevron_left,
-          ),
-          onPressed: () {
-            Get.back();
-          },
-        ),
-      ),
-      body: SafeArea(
-        child: SizedBox(
-          width: 1.sw,
-          height: 1.sh,
-          child: Stack(
-            children: [
-              Positioned(
-                left: 20,
-                bottom: 60,
-                child: SvgPicture.asset(
-                  "assets/svg/logo.svg",
-                ),
+    return GetBuilder<RegisterController>(
+      init: RegisterController(),
+      builder: (c) {
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(
+                CupertinoIcons.chevron_left,
               ),
-              SizedBox(
-                width: 1.sw,
-                height: 1.sh,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      GetBuilder<RegisterController>(
-                        init: RegisterController(),
-                        builder: (c) {
-                          return Column(
+              onPressed: () {
+                c.prev();
+              },
+            ),
+          ),
+          body: SafeArea(
+            child: SizedBox(
+              width: 1.sw,
+              height: 1.sh,
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 20,
+                    bottom: 60,
+                    child: SvgPicture.asset(
+                      "assets/svg/logo.svg",
+                    ),
+                  ),
+                  SizedBox(
+                    width: 1.sw,
+                    height: 1.sh,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Column(
                             children: [
                               Container(
                                 padding: const EdgeInsets.symmetric(
@@ -408,7 +411,18 @@ class RegisterPage extends GetView<RegisterController> {
                                             context: context,
                                             labelText: "Şifre",
                                             controller: c.passwordController,
-                                            obscureText: true,
+                                            obscureText: !c.showPassword,
+                                            suffixIcon: IconButton(
+                                              onPressed: () {
+                                                c.showPassword = !c.showPassword;
+                                                c.update();
+                                              },
+                                              icon: c.showPassword == true
+                                                  ? const Icon(CupertinoIcons.eye)
+                                                  : const Icon(
+                                                      CupertinoIcons.eye_slash,
+                                                    ),
+                                            ),
                                             validation: ValidatorManager.defaultEmptyCheckValidator,
                                             leadingIcon: Padding(
                                               padding: const EdgeInsets.all(12),
@@ -423,7 +437,7 @@ class RegisterPage extends GetView<RegisterController> {
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(vertical: 0.05.sw, horizontal: 16),
-                                child: KButton(
+                                child: KButtonAnimated(
                                   color: ColorManager.instance.pink,
                                   onTap: () async {
                                     if (c.currentStep != 4) {
@@ -441,6 +455,7 @@ class RegisterPage extends GetView<RegisterController> {
                                       if (c.currentStep == 1) {
                                         if (c.formKey1.currentState!.validate()) {
                                           c.next();
+                                          SystemChannels.textInput.invokeMethod('TextInput.hide');
                                         }
                                       }
                                     } else {
@@ -490,17 +505,17 @@ class RegisterPage extends GetView<RegisterController> {
                                 ),
                               ),
                             ],
-                          );
-                        },
+                          )
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -522,13 +537,17 @@ class RegisterPage extends GetView<RegisterController> {
                         height: 24.w,
                         width: 24.w,
                         color: ColorManager.instance.pink,
-                      )
+                      ).animate().fadeIn(
+                          delay: const Duration(milliseconds: 300),
+                        )
                     : SvgPicture.asset(
                         iconPath,
                         height: 24.w,
                         width: 24.w,
                         color: ColorManager.instance.pink,
-                      ),
+                      ).animate().fadeIn(
+                          delay: const Duration(milliseconds: 300),
+                        ),
               )
             : Container(
                 padding: const EdgeInsets.all(12),
@@ -540,7 +559,9 @@ class RegisterPage extends GetView<RegisterController> {
                     20,
                   ),
                 ),
-              );
+              ).animate().fadeIn(
+                  delay: const Duration(milliseconds: 300),
+                );
       },
     );
   }

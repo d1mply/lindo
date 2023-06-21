@@ -18,6 +18,10 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>lindo</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Lindo konuma göre aramayı kullanabilmek için konumunuzu kullanır.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Lindo konuma göre aramayı kullanabilmek için konumunuzu kullanır.</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

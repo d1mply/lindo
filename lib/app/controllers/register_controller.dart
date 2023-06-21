@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 class RegisterController extends GetxController {
   int currentStep = 1;
   int selectedGender = 0;
+  bool showPassword = false;
   DateTime? selectedDateTime;
   PageController pageController = PageController(initialPage: 0);
   TextEditingController nameController = TextEditingController();
@@ -22,8 +23,18 @@ class RegisterController extends GetxController {
   next() {
     pageController.jumpToPage(currentStep);
     currentStep = currentStep + 1;
-
     update();
+  }
+
+  prev() {
+    int currentS = pageController.page?.round() ?? 0;
+    if (currentS == 0) {
+      Get.back();
+    } else {
+      currentStep = currentS;
+      pageController.previousPage(curve: Curves.easeIn, duration: const Duration(milliseconds: 300));
+      update();
+    }
   }
 
   List<String> images = [];

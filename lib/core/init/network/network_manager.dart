@@ -32,7 +32,7 @@ class NetworkManager {
     int count = 0;
     String time = "";
 
-    await FirebaseDatabase.instance.ref().child('chat_rooms').child(calculateChatRoomId(uid)).orderByChild("timestamp").limitToLast(1).once().then(
+    await chatRooms.child(calculateChatRoomId(uid)).orderByChild("timestamp").limitToLast(1).once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
         if (vals != null) {
