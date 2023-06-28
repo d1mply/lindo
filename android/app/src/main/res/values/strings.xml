@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lindo</string>
+    <string name="facebook_app_id">586971633547615</string>
+    <string name="fb_login_protocol_scheme">fb586971633547615</string>
+    <string name="facebook_client_token">465e2e9d3162d0ad692ffaeff14c4a78</string>
+  
+</resources>

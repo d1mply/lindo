@@ -1,4 +1,4 @@
-import 'package:appinio_swiper/appinio_swiper.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:story_view/story_view.dart';
+import 'package:story_view/story_view.dart' as stry;
+import 'package:swipe_stack_null_safe/swipe_stack_null_safe.dart';
 import '../../../../core/base/state.dart';
 import '../../../../core/init/cache/cache_manager.dart';
 import '../../../../core/init/theme/color_manager.dart';
@@ -24,9 +25,16 @@ import '../explore_page/explore_page.dart';
 import '../market_page/market_page.dart';
 import '../profile_page/profile_page.dart';
 
-class SwipePage extends GetView<SwipeController> {
+class SwipePage extends StatefulWidget {
   const SwipePage({super.key});
 
+  @override
+  State<SwipePage> createState() => _SwipePageState();
+}
+
+final GlobalKey<SwipeStackState> swipeKey = GlobalKey<SwipeStackState>();
+
+class _SwipePageState extends State<SwipePage> {
   @override
   Widget build(BuildContext context) {
     return ShowCaseWidget(
@@ -50,7 +58,7 @@ class SwipePage extends GetView<SwipeController> {
                     description: "Bir önceki seçimi geri alabilmek için bu butona tıklayabilirsin.",
                     child: IconButton(
                       onPressed: () {
-                        c.controller.unswipe();
+                        swipeKey.currentState?.rewind();
                       },
                       icon: SvgPicture.asset(
                         "assets/svg/undo.svg",
@@ -69,413 +77,31 @@ class SwipePage extends GetView<SwipeController> {
                   ),
                 ),
                 body: SafeArea(
-                  child: SizedBox(
-                    height: 1.sh,
-                    width: 1.sw,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 20,
-                          bottom: 60,
-                          child: SvgPicture.asset(
-                            "assets/svg/logo.svg",
-                          ),
-                        ),
-                       
-                        SizedBox(
-                          width: 1.sw,
-                          height: 1.sh,
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: AppinioSwiper(
-                                controller: c.controller,
-                                cardsCount: c.usersList.length,
-                                isDisabled: !swipaAble,
-                                direction: AppinioSwiperDirection.right,
-                                swipeOptions:  AppinioSwipeOptions.allDirections,
-                                onSwipe: (index, direction) {
-                                  if (direction.name == "right") {
-                                    swipeRight(c.usersList[index - 1]["uid"], context, c);
-                                  }
-                                  if (direction.name == "top") {
-                                    addNotification(
-                                      c.usersList[index - 1]["uid"],
-                                      "Eşleşme sayfasında profilinizi görüntüledi.",
-                                    );
-                                    StoryController controller = StoryController();
-
-                                    List<StoryItem> storyItems = [];
-                                    if (c.usersList[index - 1]["images"] != null) {
-                                      List items = c.usersList[index - 1]["images"];
-                                      for (var e in items) {
-                                        storyItems.add(
-                                          StoryItem.inlineImage(
-                                            url: e,
-                                            controller: StoryController(),
-                                            duration: const Duration(seconds: 6),
-                                          ),
-                                        );
-                                      }
-                                    }
-
-                                    CustomDialog().showGeneralDialog(
-                                      context,
-                                      icon: const SizedBox(),
-                                      isExpanded: true,
-                                      body: SingleChildScrollView(
-                                        child: Column(
-                                          children: [
-                                            storyItems.isNotEmpty
-                                                ? ClipRRect(
-                                                    borderRadius: BorderRadius.circular(20),
-                                                    child: SizedBox(
-                                                      height: Get.height / 2,
-                                                      width: Get.width,
-                                                      child: StoryView(
-                                                        storyItems: storyItems,
-                                                        controller: controller,
-                                                        inline: true,
-                                                      ),
-                                                    ),
-                                                  )
-                                                : const SizedBox(),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 12.0),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    c.usersList[index - 1]["name"],
-                                                    style: TextStyle(
-                                                      color: ColorManager.instance.black,
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "${DateTime.now().year - int.parse(c.usersList[index - 1]["birth"].toString().split("-").first.toString())}",
-                                                    style: TextStyle(
-                                                      color: ColorManager.instance.black,
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            c.usersList[index - 1]["location"] != null
-                                                ? Text(
-                                                    c.usersList[index - 1]["location"],
-                                                    style: TextStyle(
-                                                      color: ColorManager.instance.white,
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  )
-                                                : const SizedBox(),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 0.05.sw),
-                                              child: KButton(
-                                                color: ColorManager.instance.pink,
-                                                onTap: () {
-                                                  Get.back();
-                                                  Get.to(
-                                                    () => ChatPage(uid: c.usersList[index - 1]["uid"]),
-                                                  );
-                                                },
-                                                title: "Mesaj Gönder",
-                                                textColor: ColorManager.instance.white,
-                                              ),
-                                            ),
-                                            KTextFormField.instance.widget(
-                                              context: context,
-                                              labelText: "Biyografi",
-                                              readOnly: true,
-                                              controller: TextEditingController()..text = "${c.usersList[index - 1]["bio"] ?? ""}",
-                                              maxLines: 5,
-                                              minLines: 1,
-                                            ),
-                                            Container(
-                                              width: Get.width,
-                                              decoration: BoxDecoration(
-                                                color: ColorManager.instance.white,
-                                                borderRadius: BorderRadius.circular(20),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(12.0),
-                                                child: Column(
-                                                  children: [
-                                                    const Align(
-                                                      alignment: Alignment.centerLeft,
-                                                      child: Text(
-                                                        "Bilgi",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: 16,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 6,
-                                                    ),
-                                                    Info(
-                                                      img: "assets/images/height.png",
-                                                      title: "Boy",
-                                                      desc: c.usersList[index - 1]["height"] == null ? "" : "${c.usersList[index - 1]["height"]} cm",
-                                                      onTap: () {},
-                                                    ),
-                                                    Info(
-                                                      img: "assets/images/weight.png",
-                                                      title: "Ağırlık",
-                                                      desc: c.usersList[index - 1]["weight"] == null ? "" : "${c.usersList[index - 1]["weight"]} kg",
-                                                      onTap: () {},
-                                                    ),
-                                                    Info(
-                                                      img: "assets/images/smoking.png",
-                                                      title: "Sigara",
-                                                      desc: c.usersList[index - 1]["smoking"] == null ? "" : "${c.usersList[index - 1]["smoking"]}",
-                                                      onTap: () {},
-                                                    ),
-                                                    Info(
-                                                      img: "assets/images/wine-bottle.png",
-                                                      title: "Alkol",
-                                                      desc: c.usersList[index - 1]["wine-bottle"] == null ? "" : "${c.usersList[index - 1]["wine-bottle"]}",
-                                                      onTap: () {},
-                                                    ),
-                                                    Info(
-                                                      img: "assets/images/heart.png",
-                                                      title: "İlişki Beklentim",
-                                                      desc: c.usersList[index - 1]["hearth"] == null ? "" : "${c.usersList[index - 1]["hearth"]}",
-                                                      onTap: () {},
-                                                    ),
-                                                    Info(
-                                                      img: "assets/images/gender.png",
-                                                      title: "Cinsellik",
-                                                      desc: c.usersList[index - 1]["sex"] == null ? "" : "${c.usersList[index - 1]["sex"]}",
-                                                      onTap: () {},
-                                                    ),
-                                                    Info(
-                                                      img: "assets/images/personality.png",
-                                                      title: "Kişilik",
-                                                      desc: c.usersList[index - 1]["personality"] == null ? "" : "${c.usersList[index - 1]["personality"]}",
-                                                      onTap: () {},
-                                                    ),
-                                                    Info(
-                                                      img: "assets/images/money.png",
-                                                      title: "İlgi Alanları",
-                                                      desc: c.usersList[index - 1]["money"] == null ? "" : "${c.usersList[index - 1]["money"]}",
-                                                      onTap: () {},
-                                                    ),
-                                                    GetBuilder<UserController>(
-                                                      builder: (userController) {
-                                                        return Info(
-                                                          img: "assets/images/insta.png",
-                                                          title: "Instagram",
-                                                          desc: c.usersList[index - 1]["instagram"] == null
-                                                              ? ""
-                                                              : userController.isPremium == false
-                                                                  ? "@*********"
-                                                                  : "${c.usersList[index - 1]["instagram"]}",
-                                                          onTap: () {
-                                                            if (userController.isPremium == false) {
-                                                              Get.to(() => const MarketPage());
-                                                            }
-                                                          },
-                                                        );
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                CustomDialog().showGeneralDialog(
-                                                  context,
-                                                  icon: const SizedBox(),
-                                                  isExpanded: false,
-                                                  body: Column(
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding: EdgeInsets.symmetric(vertical: 0.05.sw),
-                                                              child: KButton(
-                                                                color: ColorManager.instance.pink,
-                                                                onTap: () {
-                                                                  Get.back();
-                                                                  Get.back();
-                                                                  TextEditingController con = TextEditingController();
-                                                                  KBottomSheet.show(
-                                                                    context: context,
-                                                                    withoutHeader: true,
-                                                                    content: Column(
-                                                                      mainAxisSize: MainAxisSize.min,
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      children: [
-                                                                        const Padding(
-                                                                          padding: EdgeInsets.all(8.0),
-                                                                          child: Text(
-                                                                            "Şikayet sebebiniz;",
-                                                                            style: TextStyle(
-                                                                              fontWeight: FontWeight.w600,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        KTextFormField.instance.widget(
-                                                                          context: context,
-                                                                          maxLines: 4,
-                                                                          controller: con,
-                                                                        ),
-                                                                        Padding(
-                                                                          padding: const EdgeInsets.only(
-                                                                            left: 8.0,
-                                                                            right: 8,
-                                                                            bottom: 8,
-                                                                          ),
-                                                                          child: Text(
-                                                                            "Şikayetinizden ${c.usersList[index - 1]["name"]} kullanıcısının haberi olmayacak.",
-                                                                            style: TextStyle(color: ColorManager.instance.secondary),
-                                                                          ),
-                                                                        ),
-                                                                        KButton(
-                                                                          color: ColorManager.instance.pink,
-                                                                          onTap: () async {
-                                                                            if (con.text.isNotEmpty) {
-                                                                              UserController userController = Get.find();
-                                                                              await userController.report(
-                                                                                "${c.usersList[index - 1]["uid"]}",
-                                                                                con.text,
-                                                                              );
-                                                                            }
-
-                                                                            Get.back();
-                                                                            Get.back();
-                                                                            Get.snackbar(
-                                                                              "Şikayetiniz alınmıştır.",
-                                                                              "${c.usersList[index - 1]["name"]} kullanıcısı bundan haberdar olmayacak.",
-                                                                              backgroundColor: ColorManager.instance.white,
-                                                                              duration: const Duration(seconds: 5),
-                                                                            );
-                                                                          },
-                                                                          title: "Şikayet Et",
-                                                                          textColor: ColorManager.instance.white,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                                title: "Şikayet Et",
-                                                                textColor: ColorManager.instance.white,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 20,
-                                                          ),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding: EdgeInsets.symmetric(vertical: 0.05.sw),
-                                                              child: GetBuilder<UserController>(
-                                                                builder: (userController) {
-                                                                  return KButton(
-                                                                    color: ColorManager.instance.pink,
-                                                                    onTap: () async {
-                                                                      await userController.addBlock("${c.usersList[index - 1]["uid"]}");
-                                                                      Get.back();
-                                                                      Get.back();
-                                                                      Get.snackbar(
-                                                                        !userController.blockedUsers.contains("${c.usersList[index - 1]["uid"]}") ? "Engellendi" : "Engel kaldırıldı",
-                                                                        !userController.blockedUsers.contains("${c.usersList[index - 1]["uid"]}") ? "${c.usersList[index - 1]["name"]} kullanıcısı engellendi." : "${c.usersList[index - 1]["name"]} kullanıcısının engeli kaldırıldı.",
-                                                                        backgroundColor: ColorManager.instance.white,
-                                                                        duration: const Duration(seconds: 5),
-                                                                      );
-                                                                    },
-                                                                    title: userController.blockedUsers.contains("${c.usersList[index - 1]["uid"]}") ? "Engeli Kaldır" : "Engelle",
-                                                                    textColor: ColorManager.instance.white,
-                                                                  );
-                                                                },
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      KButton(
-                                                        color: ColorManager.instance.white,
-                                                        onTap: () {
-                                                          Get.back();
-                                                        },
-                                                        title: "Vazgeç",
-                                                        textColor: ColorManager.instance.pink,
-                                                        borderColor: ColorManager.instance.pink,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                              child: Text(
-                                                "Şikayet et veya Engelle",
-                                                style: TextStyle(
-                                                  color: ColorManager.instance.gray_text,
-                                                  decoration: TextDecoration.underline,
-                                                  fontSize: 13,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                  if (index == c.usersList.length) {
-                                    c.getMoreUsers();
-                                  }
-                                  c.update();
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SizedBox(
+                        height: Get.height,
+                        width: Get.width,
+                        child: SwipeStack(
+                          key: swipeKey,
+                          visibleCount: 10,
+                          onSwipe: (int index, SwiperPosition position) {
+                            if (position == SwiperPosition.Right) {
+                              swipeRight(c.usersList[index]["uid"], context);
+                            }
+                          },
+                          children: c.cards.map(
+                            (e) {
+                              return SwiperItem(
+                                builder: (p0, progress) {
+                                  return e;
                                 },
-                                cardsBuilder: (BuildContext context, index) {
-                                  return Stack(
-                                    children: [
-                                      c.usersList.isNotEmpty
-                                          ? ClipRRect(
-                                              borderRadius: BorderRadius.circular(20),
-                                              child: SizedBox(
-                                                height: Get.height,
-                                                width: Get.width,
-                                                child: Story(
-                                                  images: c.usersList[index]["images"],
-                                                  name: c.usersList[index]["name"],
-                                                  age: c.usersList[index]["birth"],
-                                                  show: c.usersList[index]["kk"],
-                                                ),
-                                              ),
-                                            )
-                                          : const SizedBox(),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
+                              );
+                            },
+                          ).toList(),
                         ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Showcase(
-                            key: two,
-                            descriptionAlignment: TextAlign.center,
-                            description: "Fotoğraflar arasında geçiş yapmak için sağa veya sola kaydır.",
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Container(
-                                color: ColorManager.instance.transparent,
-                                width: Get.width / 2,
-                                height: Get.height / 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -495,10 +121,12 @@ class Story extends StatefulWidget {
     this.age,
     this.name,
     required this.show,
+    required this.user,
   });
   final dynamic images;
   final String? name, age;
   final bool? show;
+  final Map<dynamic, dynamic> user;
 
   @override
   State<Story> createState() => _StoryState();
@@ -518,6 +146,8 @@ class _StoryState extends State<Story> {
     return GetBuilder<SwipeController>(
       builder: (c) {
         return Container(
+          height: Get.height,
+          width: Get.width,
           decoration: BoxDecoration(
             color: ColorManager.instance.gray.withOpacity(1),
           ),
@@ -623,8 +253,7 @@ class _StoryState extends State<Story> {
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          SwipeController c = Get.find();
-                          c.controller.swipeLeft();
+                          swipeKey.currentState?.swipeLeft();
                         },
                         child: Container(
                           padding: const EdgeInsets.all(16),
@@ -642,15 +271,344 @@ class _StoryState extends State<Story> {
                           CupertinoIcons.chevron_up,
                           color: ColorManager.instance.white,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          addNotification(
+                            widget.user["uid"],
+                            "Eşleşme sayfasında profilinizi görüntüledi.",
+                          );
+                          stry.StoryController controller = stry.StoryController();
+
+                          List<stry.StoryItem> storyItems = [];
+                          if (widget.user["images"] != null) {
+                            List items = widget.user["images"];
+                            for (var e in items) {
+                              storyItems.add(
+                                stry.StoryItem.inlineImage(
+                                  url: e,
+                                  controller: stry.StoryController(),
+                                  duration: const Duration(seconds: 6),
+                                ),
+                              );
+                            }
+                          }
+
+                          CustomDialog().showGeneralDialog(
+                            context,
+                            icon: const SizedBox(),
+                            isExpanded: true,
+                            body: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  storyItems.isNotEmpty
+                                      ? ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: SizedBox(
+                                            height: Get.height / 2,
+                                            width: Get.width,
+                                            child: stry.StoryView(
+                                              storyItems: storyItems,
+                                              controller: controller,
+                                              inline: true,
+                                            ),
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          widget.user["name"],
+                                          style: TextStyle(
+                                            color: ColorManager.instance.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${DateTime.now().year - int.parse(widget.user["birth"].toString().split("-").first.toString())}",
+                                          style: TextStyle(
+                                            color: ColorManager.instance.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  widget.user["location"] != null
+                                      ? Text(
+                                          widget.user["location"],
+                                          style: TextStyle(
+                                            color: ColorManager.instance.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 0.05.sw),
+                                    child: KButton(
+                                      color: ColorManager.instance.pink,
+                                      onTap: () {
+                                        Get.back();
+                                        Get.to(
+                                          () => ChatPage(uid: widget.user["uid"]),
+                                        );
+                                      },
+                                      title: "Mesaj Gönder",
+                                      textColor: ColorManager.instance.white,
+                                    ),
+                                  ),
+                                  KTextFormField.instance.widget(
+                                    context: context,
+                                    labelText: "Biyografi",
+                                    readOnly: true,
+                                    controller: TextEditingController()..text = "${widget.user["bio"] ?? ""}",
+                                    maxLines: 5,
+                                    minLines: 1,
+                                  ),
+                                  Container(
+                                    width: Get.width,
+                                    decoration: BoxDecoration(
+                                      color: ColorManager.instance.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        children: [
+                                          const Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              "Bilgi",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 6,
+                                          ),
+                                          Info(
+                                            img: "assets/images/height.png",
+                                            title: "Boy",
+                                            desc: widget.user["height"] == null ? "" : "${widget.user["height"]} cm",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/weight.png",
+                                            title: "Ağırlık",
+                                            desc: widget.user["weight"] == null ? "" : "${widget.user["weight"]} kg",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/smoking.png",
+                                            title: "Sigara",
+                                            desc: widget.user["smoking"] == null ? "" : "${widget.user["smoking"]}",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/wine-bottle.png",
+                                            title: "Alkol",
+                                            desc: widget.user["wine-bottle"] == null ? "" : "${widget.user["wine-bottle"]}",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/heart.png",
+                                            title: "İlişki Beklentim",
+                                            desc: widget.user["hearth"] == null ? "" : "${widget.user["hearth"]}",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/gender.png",
+                                            title: "Cinsellik",
+                                            desc: widget.user["sex"] == null ? "" : "${widget.user["sex"]}",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/personality.png",
+                                            title: "Kişilik",
+                                            desc: widget.user["personality"] == null ? "" : "${widget.user["personality"]}",
+                                            onTap: () {},
+                                          ),
+                                          Info(
+                                            img: "assets/images/money.png",
+                                            title: "İlgi Alanları",
+                                            desc: widget.user["money"] == null ? "" : "${widget.user["money"]}",
+                                            onTap: () {},
+                                          ),
+                                          GetBuilder<UserController>(
+                                            builder: (userController) {
+                                              return Info(
+                                                img: "assets/images/insta.png",
+                                                title: "Instagram",
+                                                desc: widget.user["instagram"] == null
+                                                    ? ""
+                                                    : userController.isPremium == false
+                                                        ? "@*********"
+                                                        : "${widget.user["instagram"]}",
+                                                onTap: () {
+                                                  if (userController.isPremium == false) {
+                                                    Get.to(() => const MarketPage());
+                                                  }
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      CustomDialog().showGeneralDialog(
+                                        context,
+                                        icon: const SizedBox(),
+                                        isExpanded: false,
+                                        body: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 0.05.sw),
+                                                    child: KButton(
+                                                      color: ColorManager.instance.pink,
+                                                      onTap: () {
+                                                        Get.back();
+                                                        Get.back();
+                                                        TextEditingController con = TextEditingController();
+                                                        KBottomSheet.show(
+                                                          context: context,
+                                                          withoutHeader: true,
+                                                          content: Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              const Padding(
+                                                                padding: EdgeInsets.all(8.0),
+                                                                child: Text(
+                                                                  "Şikayet sebebiniz;",
+                                                                  style: TextStyle(
+                                                                    fontWeight: FontWeight.w600,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              KTextFormField.instance.widget(
+                                                                context: context,
+                                                                maxLines: 4,
+                                                                controller: con,
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(
+                                                                  left: 8.0,
+                                                                  right: 8,
+                                                                  bottom: 8,
+                                                                ),
+                                                                child: Text(
+                                                                  "Şikayetinizden ${widget.user["name"]} kullanıcısının haberi olmayacak.",
+                                                                  style: TextStyle(color: ColorManager.instance.secondary),
+                                                                ),
+                                                              ),
+                                                              KButton(
+                                                                color: ColorManager.instance.pink,
+                                                                onTap: () async {
+                                                                  if (con.text.isNotEmpty) {
+                                                                    UserController userController = Get.find();
+                                                                    await userController.report(
+                                                                      "${widget.user["uid"]}",
+                                                                      con.text,
+                                                                    );
+                                                                  }
+
+                                                                  Get.back();
+                                                                  Get.back();
+                                                                  Get.snackbar(
+                                                                    "Şikayetiniz alınmıştır.",
+                                                                    "${widget.user["name"]} kullanıcısı bundan haberdar olmayacak.",
+                                                                    backgroundColor: ColorManager.instance.white,
+                                                                    duration: const Duration(seconds: 5),
+                                                                  );
+                                                                },
+                                                                title: "Şikayet Et",
+                                                                textColor: ColorManager.instance.white,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      },
+                                                      title: "Şikayet Et",
+                                                      textColor: ColorManager.instance.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 20,
+                                                ),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 0.05.sw),
+                                                    child: GetBuilder<UserController>(
+                                                      builder: (userController) {
+                                                        return KButton(
+                                                          color: ColorManager.instance.pink,
+                                                          onTap: () async {
+                                                            await userController.addBlock("${widget.user["uid"]}");
+                                                            Get.back();
+                                                            Get.back();
+                                                            Get.snackbar(
+                                                              !userController.blockedUsers.contains("${widget.user["uid"]}") ? "Engellendi" : "Engel kaldırıldı",
+                                                              !userController.blockedUsers.contains("${widget.user["uid"]}") ? "${widget.user["name"]} kullanıcısı engellendi." : "${widget.user["name"]} kullanıcısının engeli kaldırıldı.",
+                                                              backgroundColor: ColorManager.instance.white,
+                                                              duration: const Duration(seconds: 5),
+                                                            );
+                                                          },
+                                                          title: userController.blockedUsers.contains("${widget.user["uid"]}") ? "Engeli Kaldır" : "Engelle",
+                                                          textColor: ColorManager.instance.white,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            KButton(
+                                              color: ColorManager.instance.white,
+                                              onTap: () {
+                                                Get.back();
+                                              },
+                                              title: "Vazgeç",
+                                              textColor: ColorManager.instance.pink,
+                                              borderColor: ColorManager.instance.pink,
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      "Şikayet et veya Engelle",
+                                      style: TextStyle(
+                                        color: ColorManager.instance.gray_text,
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                     Expanded(
                       child: InkWell(
                         onTap: () {
                           if (swipaAble) {
-                            SwipeController c = Get.find();
-                            c.controller.swipeRight();
+                            swipeKey.currentState?.swipeRight();
                           } else {
                             KBottomSheet.show(
                               context: context,

@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
         home: const RootPage(),
         logWriterCallback: localLogWriter,
         useInheritedMediaQuery: true,
-        title: "Lindo Chat",
+        title: "Lindo",
         theme: AppThemeLight.instance.theme,
         debugShowCheckedModeBanner: false,
         defaultTransition: Transition.cupertino,

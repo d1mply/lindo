@@ -7,6 +7,9 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import '../../../../core/base/state.dart';
 import '../../../../core/init/theme/color_manager.dart';
 
+import '../../../controllers/explore_controller.dart';
+import '../../../controllers/like_controller.dart';
+import '../../../controllers/messages_controller.dart';
 import '../login_page/login_page.dart';
 
 class RootPage extends GetView<RootController> {
@@ -35,6 +38,23 @@ class RootPage extends GetView<RootController> {
                   controller: c.controller,
                   screens: c.buildScreens,
                   onItemSelected: (index) {
+                    if (index == 0) {
+                      if (Get.isRegistered<ExploreController>()) {
+                        ExploreController x = Get.find();
+                        Future.wait([x.getMoreUsers(), x.getBoostedUsers()]);
+                      }
+                    } else if (index == 1) {
+                      if (Get.isRegistered<LikeController>()) {
+                        LikeController x = Get.find();
+                        x.getMessages();
+                      }
+                    } else if (index == 3) {
+                      if (Get.isRegistered<MessagesController>()) {
+                        MessagesController x = Get.find();
+                        x.getData();
+                      }
+                    }
+
                     c.selectedIndex = index;
                     c.update();
                   },

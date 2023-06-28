@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:lindo/core/init/theme/color_manager.dart';
 import '../../../controllers/market_controller.dart';
 
@@ -29,111 +30,66 @@ class MarketPage extends GetView<MarketController> {
             elevation: 1,
           ),
           body: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ListView.builder(
-                    itemCount: c.subItems.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          c.purchase(c.subItems[index]);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ColorManager.instance.white,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                      ),
-                                      child: Text(
-                                        c.subItems[index].title ?? "",
-                                        style: TextStyle(
-                                          color: ColorManager.instance.mor,
-                                        ),
+            child: Column(
+              children: [
+                ListView.builder(
+                  itemCount: c.products.length,
+                  reverse: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        InAppPurchase.instance.buyNonConsumable(
+                          purchaseParam: PurchaseParam(
+                            productDetails: c.products[index],
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: ColorManager.instance.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "assets/images/coin.png",
+                                  height: 32,
+                                  width: 32,
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
+                                    child: Text(
+                                      c.products[index].title ?? "",
+                                      style: TextStyle(
+                                        color: ColorManager.instance.mor,
                                       ),
                                     ),
                                   ),
-                                  Text(
-                                    c.subItems[index].localizedPrice ?? "",
-                                    style: TextStyle(
-                                      color: ColorManager.instance.primary,
-                                    ),
+                                ),
+                                Text(
+                                  c.products[index].price ?? "",
+                                  style: TextStyle(
+                                    color: ColorManager.instance.primary,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
-                  ListView.builder(
-                    itemCount: c.items.length,
-                    reverse: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          c.purchase(c.items[index]);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ColorManager.instance.white,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    "assets/images/coin.png",
-                                    height: 32,
-                                    width: 32,
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                      ),
-                                      child: Text(
-                                        c.items[index].title ?? "",
-                                        style: TextStyle(
-                                          color: ColorManager.instance.mor,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    c.items[index].introductoryPrice ?? "",
-                                    style: TextStyle(
-                                      color: ColorManager.instance.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         );

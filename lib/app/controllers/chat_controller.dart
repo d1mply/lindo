@@ -15,6 +15,7 @@ class ChatController extends GetxController {
 
   String chatRoomId = "";
   TextEditingController textEditingController = TextEditingController();
+  TextEditingController textEmojiEditingController = TextEditingController();
 
   String calculateChatRoomId() {
     List<String> uidList = [uid];

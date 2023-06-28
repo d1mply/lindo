@@ -43,9 +43,8 @@ dependencies:
   story_view: ^0.14.0
   flutter_switch: ^0.3.2
   timeago:
-  appinio_swiper: 2.0.1
+  swipe_stack_null_safe: ^1.0.0
   smooth_page_indicator:
-  flutter_inapp_purchase: ^5.4.1
   showcaseview: ^2.0.3
   dismissible_page:
   geolocator: ^9.0.2
@@ -53,6 +52,13 @@ dependencies:
   flutter_overlay_loader: ^2.0.0
   url_launcher: ^6.1.11
   flutter_animate: ^4.1.1+1
+  shimmer: ^3.0.0
+  emoji_picker_flutter: ^1.6.1
+  google_sign_in: ^6.1.4
+  video_player: ^2.6.1
+  flutter_facebook_auth: ^4.4.1+1 #podfile ios:11
+  sign_in_with_apple: ^4.1.0
+  in_app_purchase: ^3.1.7
 
   flutter_localizations:
     sdk: flutter

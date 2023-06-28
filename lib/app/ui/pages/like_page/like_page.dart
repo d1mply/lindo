@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -166,7 +167,8 @@ class LikePage extends GetView<LikeController> {
                                             onPressed: () async {
                                               UserController userController = Get.find();
                                               if (userController.isPremium) {
-                                                await NetworkManager.instance.notificationRef.child(c.keys[index]).remove();
+                                                print(c.keys[index]);
+                                                await NetworkManager.instance.swipe.child(c.keys[index]).remove();
                                                 c.keys.removeAt(index);
                                                 c.messages.removeAt(index);
                                                 c.update();
@@ -208,25 +210,41 @@ class LikePage extends GetView<LikeController> {
                                               UserController userController = Get.find();
                                               if (userController.isPremium) {
                                                 DateTime now = DateTime.now();
-                                                String chatRoomId = calculateChatRoomId(c.messages[index]["uid"], c.messages[index]["senderUid"]);
-                                                NetworkManager.instance.getUserReference(c.messages[index]["uid"]).child("chatrooms").child(chatRoomId).set(
+                                                String uid = c.messages[index]["senderUid"];
+                                                String chatRoomId = calculateChatRoomId(uid, FirebaseAuth.instance.currentUser!.uid);
+                                                NetworkManager.instance.getUserReference(uid).child("chatrooms").child(chatRoomId).set(
                                                   {
                                                     "timestamp": now.millisecondsSinceEpoch,
-                                                    "uid": c.messages[index]["senderUid"],
+                                                    "uid": FirebaseAuth.instance.currentUser!.uid,
                                                     "chatroomId": chatRoomId,
                                                     "liked": true,
                                                   },
                                                 );
-                                                NetworkManager.instance.getUserReference(c.messages[index]["senderUid"]).child("chatrooms").child(chatRoomId).set(
+                                                NetworkManager.instance.getUserReference(FirebaseAuth.instance.currentUser!.uid).child("chatrooms").child(chatRoomId).set(
                                                   {
                                                     "timestamp": now.millisecondsSinceEpoch,
-                                                    "uid": c.messages[index]["uid"],
+                                                    "uid": uid,
                                                     "chatroomId": chatRoomId,
                                                     "liked": true,
+                                                  },
+                                                );
+                                                NetworkManager.instance.getUserReference(uid).update(
+                                                  {
+                                                    "lastMessage": DateTime.now().millisecondsSinceEpoch,
+                                                  },
+                                                );
+                                                await NetworkManager.instance.chatRooms.child(chatRoomId).push().set(
+                                                  {
+                                                    "timestamp": now.millisecondsSinceEpoch,
+                                                    "sender_uid": FirebaseAuth.instance.currentUser!.uid,
+                                                    "receiver_uid": uid,
+                                                    "type": "text",
+                                                    "message": "Eşleşme başladı.",
+                                                    "isRead": false,
                                                   },
                                                 );
 
-                                                await NetworkManager.instance.notificationRef.child(c.keys[index]).remove();
+                                                await NetworkManager.instance.swipe.child(c.keys[index]).remove();
                                                 c.keys.removeAt(index);
                                                 c.messages.removeAt(index);
                                                 c.update();
@@ -269,7 +287,9 @@ class LikePage extends GetView<LikeController> {
                                 ],
                               ),
                             ),
-                          );
+                          ).animate().fadeIn(
+                                delay: Duration(milliseconds: 300 * index),
+                              );
                         },
                       );
                     },

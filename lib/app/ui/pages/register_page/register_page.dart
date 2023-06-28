@@ -19,7 +19,6 @@ import 'package:translator/translator.dart';
 import '../../../../core/base/state.dart';
 import '../../../../core/init/network/network_manager.dart';
 import '../../../controllers/register_controller.dart';
-import '../../utils/k_button.dart';
 
 class RegisterPage extends GetView<RegisterController> {
   const RegisterPage({super.key});
@@ -482,7 +481,7 @@ class RegisterPage extends GetView<RegisterController> {
                                                     "birthYear": c.selectedDateTime?.year,
                                                     "gender": c.selectedGender,
                                                     "uid": credential.user?.uid,
-                                                    "account_verify": true,
+                                                    "account_verify": false,
                                                   },
                                                 );
                                                 Get.offAll(() => const RootPage());

@@ -15,6 +15,50 @@
       },
       "oauth_client": [
         {
+          "client_id": "608021159788-edl716m4810g2gp82q3otjuviu0h5k4i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lindo",
+            "certificate_hash": "9226743e25fbccc75a9d716d2d8e7d68cf9cba08"
+          }
+        },
+        {
+          "client_id": "608021159788-1bupfkcp50udj2ejdv7a7htk5hdq1prh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-WbPWKqb0yjb1q3Ce9TAgHLAwpWktPMg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "608021159788-1bupfkcp50udj2ejdv7a7htk5hdq1prh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "608021159788-1gf1g36u9llp8jolpvu5i4vscmbt1qpv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.lindo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:608021159788:android:9b14236999429e5cd99d49",
+        "android_client_info": {
+          "package_name": "com.lindo_mod"
+        }
+      },
+      "oauth_client": [
+        {
           "client_id": "608021159788-1bupfkcp50udj2ejdv7a7htk5hdq1prh.apps.googleusercontent.com",
           "client_type": 3
         }

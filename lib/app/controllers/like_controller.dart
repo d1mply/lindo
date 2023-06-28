@@ -46,6 +46,7 @@ class LikeController extends GetxController {
               if (!keys.contains(key)) {
                 temp.add(value);
                 keys.add(key);
+                print("ABC KEY : " + key);
               }
             },
           );

@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -58,5 +60,34 @@ class RegisterController extends GetxController {
     await uploadImage(image3);
     await uploadImage(image4);
     return true;
+  }
+
+  Future<UserCredential?> signInWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+
+    if (googleSignInAccount != null) {
+      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      UserCredential user = await FirebaseAuth.instance.signInWithCredential(credential);
+
+      if (user.user != null) {
+        if (user.user?.email != null) {
+          try {
+            return user;
+          } catch (e) {
+            return null;
+          }
+        }
+      }
+      return null;
+    } else {
+      return null;
+    }
   }
 }

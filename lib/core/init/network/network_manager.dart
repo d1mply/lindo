@@ -24,7 +24,8 @@ class NetworkManager {
   }
 
   Future<DataSnapshot> getUserDetailsWithId(String uid) async {
-    return await FirebaseDatabase.instance.ref().child('users').child(uid).get();
+    print(uid);
+    return await usersRef.child(uid).get();
   }
 
   Future<Map<String, dynamic>> getUserLastMessages(String uid) async {

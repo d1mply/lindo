@@ -7,7 +7,7 @@ import '../../core/init/network/network_manager.dart';
 class MessagesController extends GetxController {
   @override
   void onReady() {
-    init();
+    getData();
     super.onReady();
   }
 
@@ -16,7 +16,7 @@ class MessagesController extends GetxController {
   List<Map<dynamic, dynamic>> chatRooms = [];
   List<Map<dynamic, dynamic>> chatRoomsForSwiped = [];
 
-  init() async {
+  getData() async {
     await NetworkManager.instance.getUserReference(FirebaseAuth.instance.currentUser!.uid).child("chatrooms").get().then(
       (DataSnapshot value) async {
         if (value.exists) {

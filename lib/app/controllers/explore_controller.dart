@@ -33,10 +33,12 @@ class ExploreController extends GetxController {
   List<bool> selectedGenderSelections = [false, false];
 
   getUsers({String? start}) async {
+    isLoading = true;
     await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).once().then(
       (DatabaseEvent snapshot) {
         usersList = [];
         Object? vals = snapshot.snapshot.value;
+        List<Map<dynamic, dynamic>> temp = [];
 
         if (vals != null) {
           Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
@@ -45,19 +47,28 @@ class ExploreController extends GetxController {
             (key, value) {
               if (FirebaseAuth.instance.currentUser != null) {
                 if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
-                  usersList.add(value);
+                  temp.add(value);
                 }
               }
             },
           );
+
+          Set<Map<dynamic, dynamic>> uniqueSet = {};
+          for (var element in temp) {
+            uniqueSet.add(element);
+          }
+
+          List<Map<dynamic, dynamic>> uniqueList = uniqueSet.toList();
+          usersList = uniqueList;
         }
       },
     );
     filterUsers();
     update();
+    isLoading = false;
   }
 
-  getBoostedUsers() async {
+  Future getBoostedUsers() async {
     await NetworkManager.instance.usersRef.once().then(
       (DatabaseEvent snapshot) {
         boostedUsers = [];
@@ -159,9 +170,12 @@ class ExploreController extends GetxController {
     List<int> result = uniqueElements.toList();
     return result;
   }
+  bool isLoadings = true;
 
+  bool isLoading = false;
   Object? lastvals;
-  getMoreUsers() async {
+  Future getMoreUsers() async {
+    isLoading = true;
     debugPrint("refreshed");
     if (searchController.text.isEmpty) {
       String start = usersList.last["uid"];
@@ -194,11 +208,12 @@ class ExploreController extends GetxController {
 
       List<Map<dynamic, dynamic>> uniqueList = uniqueSet.toList();
       usersList = uniqueList;
-      filterUsers();
+      await filterUsers();
     } else {
       searchPageSize += searchPageSize + 20;
-      searchUsers();
+      await searchUsers();
     }
+    isLoading = false;
   }
 
   searchUsers() async {
@@ -409,7 +424,11 @@ Future<Map<dynamic, dynamic>?> getUser(String uid) async {
 }
 
 bool swipaAble = true;
-swipeRight(String? uid, context, cc) async {
+
+swipeRight(
+  String? uid,
+  context,
+) async {
   String key = "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}";
   int? cacheKey = CacheManager.instance.getValue(key);
   if (cacheKey != null) {
