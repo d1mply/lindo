@@ -36,6 +36,9 @@ dependencies:
   firebase_storage:
   flutter_local_notifications: ^12.0.4
   intl:
+  http:
+  pinput:
+  carousel_slider: ^4.2.1
   im_stepper: ^1.0.1+1
   flutter_cupertino_datetime_picker: ^3.0.0
   translator:
@@ -59,6 +62,7 @@ dependencies:
   flutter_facebook_auth: ^4.4.1+1 #podfile ios:11
   sign_in_with_apple: ^4.1.0
   in_app_purchase: ^3.1.7
+  flutter_countdown_timer: ^4.1.0
 
   flutter_localizations:
     sdk: flutter

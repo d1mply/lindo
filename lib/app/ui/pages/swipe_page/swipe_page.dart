@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -560,8 +559,8 @@ class _StoryState extends State<Story> {
                                                             Get.back();
                                                             Get.back();
                                                             Get.snackbar(
-                                                              !userController.blockedUsers.contains("${widget.user["uid"]}") ? "Engellendi" : "Engel kaldırıldı",
-                                                              !userController.blockedUsers.contains("${widget.user["uid"]}") ? "${widget.user["name"]} kullanıcısı engellendi." : "${widget.user["name"]} kullanıcısının engeli kaldırıldı.",
+                                                              userController.blockedUsers.contains("${widget.user["uid"]}") ? "Engellendi" : "Engel kaldırıldı",
+                                                              userController.blockedUsers.contains("${widget.user["uid"]}") ? "${widget.user["name"]} kullanıcısı engellendi." : "${widget.user["name"]} kullanıcısının engeli kaldırıldı.",
                                                               backgroundColor: ColorManager.instance.white,
                                                               duration: const Duration(seconds: 5),
                                                             );

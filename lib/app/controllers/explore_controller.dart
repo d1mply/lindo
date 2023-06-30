@@ -82,11 +82,7 @@ class ExploreController extends GetxController {
               if (FirebaseAuth.instance.currentUser != null) {
                 if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
                   if (value["boostEndDate"] != null) {
-                    print("added boosted user");
                     int boostEndDate = value["boostEndDate"] as int;
-                    print(boostEndDate);
-                    print(DateTime.now().millisecondsSinceEpoch);
-                    print(DateTime.now().millisecondsSinceEpoch < boostEndDate);
                     if (DateTime.now().millisecondsSinceEpoch < boostEndDate) {
                       boostedUsers.add(value);
                     }
@@ -121,13 +117,11 @@ class ExploreController extends GetxController {
           } else {
             if (usersList[i]["gender"] == 1) {
               if (selectedGenderSelections.first == true) {
-                print("filtreye uyan kız");
               } else {
                 indexes.add(i);
               }
             } else if (usersList[i]["gender"] == 2) {
               if (selectedGenderSelections.last == true) {
-                print("filtreye uyan erkek");
               } else {
                 indexes.add(i);
               }
@@ -170,6 +164,7 @@ class ExploreController extends GetxController {
     List<int> result = uniqueElements.toList();
     return result;
   }
+
   bool isLoadings = true;
 
   bool isLoading = false;
@@ -525,5 +520,4 @@ swipeRight(
       },
     );
   }
-  print(cacheKey);
 }

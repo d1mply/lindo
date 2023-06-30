@@ -384,8 +384,8 @@ class NotificationPage extends GetView<NotificationController> {
                                                                 Get.back();
                                                                 Get.back();
                                                                 Get.snackbar(
-                                                                  !userController.blockedUsers.contains("${user?["uid"]}") ? "Engellendi" : "Engel kaldırıldı",
-                                                                  !userController.blockedUsers.contains("${user?["uid"]}") ? "${user?["name"]} kullanıcısı engellendi." : "${user?["name"]} kullanıcısının engeli kaldırıldı.",
+                                                                  userController.blockedUsers.contains("${user?["uid"]}") ? "Engellendi" : "Engel kaldırıldı",
+                                                                  userController.blockedUsers.contains("${user?["uid"]}") ? "${user?["name"]} kullanıcısı engellendi." : "${user?["name"]} kullanıcısının engeli kaldırıldı.",
                                                                   backgroundColor: ColorManager.instance.white,
                                                                   duration: const Duration(seconds: 5),
                                                                 );

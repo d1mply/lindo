@@ -18,6 +18,9 @@ class NetworkManager {
   DatabaseReference swipe = FirebaseDatabase.instance.ref().child('swipe');
   DatabaseReference messagesRef = FirebaseDatabase.instance.ref().child('messages');
   DatabaseReference chatRooms = FirebaseDatabase.instance.ref().child('chat_rooms');
+  DatabaseReference boostRef = FirebaseDatabase.instance.ref().child('boost');
+  DatabaseReference premiumRef = FirebaseDatabase.instance.ref().child('premium');
+  DatabaseReference buyTransactionsRef = FirebaseDatabase.instance.ref().child('buy_transactions');
 
   DatabaseReference getUserReference(String uid) {
     return FirebaseDatabase.instance.ref().child('users').child(uid);

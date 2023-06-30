@@ -99,9 +99,11 @@ class ExplorePage extends GetView<ExploreController> {
                                         Expanded(
                                           child: Row(
                                             children: [
-                                              Text(
-                                                "Sadece doğrulanmış hesaplar",
-                                                style: TextStyle(color: ColorManager.instance.softBlack),
+                                              Expanded(
+                                                child: Text(
+                                                  "Sadece doğrulanmış hesaplar",
+                                                  style: TextStyle(color: ColorManager.instance.softBlack),
+                                                ),
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(left: 6),
@@ -759,8 +761,8 @@ class ExplorePage extends GetView<ExploreController> {
                                                                                       Get.back();
                                                                                       Get.back();
                                                                                       Get.snackbar(
-                                                                                        !userController.blockedUsers.contains("${c.boostedUsers[index]["uid"]}") ? "Engellendi" : "Engel kaldırıldı",
-                                                                                        !userController.blockedUsers.contains("${c.boostedUsers[index]["uid"]}") ? "${c.boostedUsers[index]["name"]} kullanıcısı engellendi." : "${c.boostedUsers[index]["name"]} kullanıcısının engeli kaldırıldı.",
+                                                                                        userController.blockedUsers.contains("${c.boostedUsers[index]["uid"]}") ? "Engellendi" : "Engel kaldırıldı",
+                                                                                        userController.blockedUsers.contains("${c.boostedUsers[index]["uid"]}") ? "${c.boostedUsers[index]["name"]} kullanıcısı engellendi." : "${c.boostedUsers[index]["name"]} kullanıcısının engeli kaldırıldı.",
                                                                                         backgroundColor: ColorManager.instance.white,
                                                                                         duration: const Duration(seconds: 5),
                                                                                       );

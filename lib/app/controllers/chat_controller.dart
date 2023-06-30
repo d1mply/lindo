@@ -16,7 +16,7 @@ class ChatController extends GetxController {
   String chatRoomId = "";
   TextEditingController textEditingController = TextEditingController();
   TextEditingController textEmojiEditingController = TextEditingController();
-
+  bool isBlocked = false;
   String calculateChatRoomId() {
     List<String> uidList = [uid];
     uidList.add(FirebaseAuth.instance.currentUser!.uid);
@@ -120,6 +120,13 @@ class ChatController extends GetxController {
       Object? vals = _user.value;
       if (vals != null) {
         user = _user.value as Map<dynamic, dynamic>;
+        try {
+          if (user?["blocks"] != null) {
+            if (user?["blocks"].contains(FirebaseAuth.instance.currentUser!.uid)) {
+              isBlocked = true;
+            }
+          }
+        } catch (e) {}
       }
       update();
     }

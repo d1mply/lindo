@@ -15,22 +15,50 @@ class ProfileController extends GetxController {
   DataSnapshot? userDetails;
   Map<dynamic, dynamic>? user;
   List<String?> images = [null, null, null, null, null, null, null];
-  String? height, weight, smoking, wineBottle, hearth, sex, personality, money,instagram;
+  String? height, weight, smoking, wineBottle, hearth, sex, personality, money, instagram;
   List<String> sigara = ["İçiyorum", "İçmiyorum", "Bazen İçiyorum"];
   List<String> alkol = ["İçiyorum", "İçmiyorum", "Bazen İçiyorum"];
   List<String> iliski = ["Flört", "Sevgili", "Evlilik", "Tanışma", "Arkadaş"];
   List<String> cinsellik = ["Olur", "Olmaz", "Belki"];
   List<String> kisilik = ["Açıklık", "Sorumlu", "Utangaç", "Uyumlu", "Duygusal", "Meraklı", "Araştırmacı", "Gezgin"];
   List<String> ilgiAlanlari = ["Bisiklet Sürmek", "Araba Sürmek", "Yürüş Yapmak", "Kitap Okumak", "Oyun Oynamak", "Gezmek", "Yemek Yapmak", "Yüzme", "Tenis", "Voleybol", "Futbol", "Diğer"];
+  int number = 0;
+  int retryNumber = 0;
+  TextEditingController textEditingController = TextEditingController();
 
   @override
   void onInit() {
+    getMarketDescriptionData();
     getFirstData();
-
     super.onInit();
   }
 
   bool permissionGranted = false;
+
+  List<String> boostDetails = [];
+  List<String> premiumDetails = [];
+
+  getMarketDescriptionData() async {
+    try {
+      DataSnapshot snapshot = await NetworkManager.instance.boostRef.get();
+
+      if (snapshot.exists) {
+        for (var element in snapshot.children) {
+          boostDetails.add(element.value as String);
+        }
+      }
+    } catch (e) {}
+
+    try {
+      DataSnapshot snapshot2 = await NetworkManager.instance.premiumRef.get();
+
+      if (snapshot2.exists) {
+        for (var element in snapshot2.children) {
+          premiumDetails.add(element.value as String);
+        }
+      }
+    } catch (e) {}
+  }
 
   getFirstData() async {
     permissionGranted = await Permission.location.isGranted;

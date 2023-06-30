@@ -30,23 +30,34 @@ class UserController extends GetxController {
   }
 
   Future<bool> addBlock(String uid) async {
-    await getBlockedUsers();
-    if (!blockedUsers.contains(uid)) {
-      blockedUsers.add(uid);
-      NetworkManager.instance.currentUserRef().child("blocks").set(blockedUsers);
+    if (blockedUsers.contains(uid)) {
+      await removeBlock(uid);
+    } else {
+      await getBlockedUsers();
+      if (!blockedUsers.contains(uid)) {
+        blockedUsers.add(uid);
+        NetworkManager.instance.currentUserRef().child("blocks").set(blockedUsers);
+      }
+      await getBlockedUsers();
     }
-    await getBlockedUsers();
+    update();
 
     return true;
   }
 
   Future<bool> removeBlock(String uid) async {
-    await getBlockedUsers();
     if (blockedUsers.contains(uid)) {
-      blockedUsers.remove(uid);
-      NetworkManager.instance.currentUserRef().child("blocks").set(blockedUsers);
+      await getBlockedUsers();
+      if (blockedUsers.contains(uid)) {
+        blockedUsers.remove(uid);
+        NetworkManager.instance.currentUserRef().child("blocks").set(blockedUsers);
+      }
+      await getBlockedUsers();
+    } else {
+      await addBlock(uid);
     }
-    await getBlockedUsers();
+
+    update();
     return true;
   }
 
