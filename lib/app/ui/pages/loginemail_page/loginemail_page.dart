@@ -8,6 +8,7 @@ import 'package:lindo/app/ui/pages/root_page/root_page.dart';
 import 'package:lindo/app/ui/utils/k_textformfield.dart';
 import 'package:translator/translator.dart';
 import '../../../../core/init/theme/color_manager.dart';
+import '../../../controllers/usercontroller.dart';
 import '../../utils/k_button.dart';
 
 class LoginemailPage extends StatefulWidget {
@@ -83,6 +84,8 @@ class _LoginemailPageState extends State<LoginemailPage> {
                               email: emailControllerForLogin.text,
                               password: passwordControllerForLogin.text,
                             );
+                            UserController userController = Get.find();
+                            userController.getCurrentUserData();
                             Get.offAll(() => const RootPage());
                           }
                         } on FirebaseAuthException catch (e) {

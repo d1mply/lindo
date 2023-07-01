@@ -173,37 +173,38 @@ class ExploreController extends GetxController {
     isLoading = true;
     debugPrint("refreshed");
     if (searchController.text.isEmpty) {
-      String start = usersList.last["uid"];
-      List<Map<dynamic, dynamic>> temp = usersList;
-      pageSize = pageSize * 2;
-      await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).startAfter(start, key: start).once().then(
-        (DatabaseEvent snapshot) {
-          Object? vals = snapshot.snapshot.value;
-          lastvals = vals;
-          if (vals != lastvals) {
-            if (vals != null) {
-              Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
-              UserController userController = Get.find();
-              values.forEach(
-                (key, value) {
-                  if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
-                    temp.add(value);
-                  }
-                },
-              );
+      String? start = usersList.last["uid"];
+      if (start != null) {
+        List<Map<dynamic, dynamic>> temp = usersList;
+        pageSize = pageSize * 2;
+        await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).startAfter(start, key: start).once().then(
+          (DatabaseEvent snapshot) {
+            Object? vals = snapshot.snapshot.value;
+            lastvals = vals;
+            if (vals != lastvals) {
+              if (vals != null) {
+                Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
+                UserController userController = Get.find();
+                values.forEach(
+                  (key, value) {
+                    if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
+                      temp.add(value);
+                    }
+                  },
+                );
+              }
             }
-          }
-        },
-      );
+          },
+        );
+        Set<Map<dynamic, dynamic>> uniqueSet = {};
+        for (var element in temp) {
+          uniqueSet.add(element);
+        }
 
-      Set<Map<dynamic, dynamic>> uniqueSet = {};
-      for (var element in temp) {
-        uniqueSet.add(element);
+        List<Map<dynamic, dynamic>> uniqueList = uniqueSet.toList();
+        usersList = uniqueList;
+        await filterUsers();
       }
-
-      List<Map<dynamic, dynamic>> uniqueList = uniqueSet.toList();
-      usersList = uniqueList;
-      await filterUsers();
     } else {
       searchPageSize += searchPageSize + 20;
       await searchUsers();

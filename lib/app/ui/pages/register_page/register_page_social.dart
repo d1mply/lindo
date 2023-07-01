@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lindo/app/controllers/usercontroller.dart';
 import 'package:lindo/app/ui/pages/register_page/register_social_controller.dart';
 import 'package:lindo/app/ui/utils/k_button_animated.dart';
 import 'package:lindo/app/ui/utils/k_textformfield.dart';
@@ -459,6 +460,8 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                             },
                                           );
                                         }
+                                        UserController userController = Get.find();
+                                        userController.getCurrentUserData();
                                       } on FirebaseAuthException catch (e) {
                                         Get.closeAllSnackbars();
                                         final translator = GoogleTranslator();

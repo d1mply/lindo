@@ -373,7 +373,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                             ),
                                                           ),
                                                     if (userController.isPremium) Positioned(left: 0, top: 0, child: Image.asset("assets/images/premium.png")),
-                                                    if (c.user?["validate"] == null)
+                                                    if (c.user?["validate"] == true)
                                                       Positioned(
                                                         right: 0,
                                                         top: 0,
@@ -1628,7 +1628,7 @@ class ProfilePage extends GetView<ProfileController> {
                                   },
                                 ),
                               ),
-                              c.user?["phone"] == null
+                              c.user?["validate"] != true
                                   ? Padding(
                                       padding: const EdgeInsets.only(
                                         left: 30,
