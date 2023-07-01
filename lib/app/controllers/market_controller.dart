@@ -1,6 +1,7 @@
 // ignore_for_file: empty_catches, avoid_function_literals_in_foreach_calls
 
 import 'dart:async';
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -23,12 +24,20 @@ class MarketController extends GetxController {
     "3",
   ];
 
+  final List<String> kProductIdsforIOS = <String>[
+    "boost_1h",
+    "boost_3h",
+    "boost_524h",
+    "1m",
+    "2m",
+    "3m",
+  ];
+
   List<ProductDetails> products = [];
   List<ProductDetails> premiums = [];
 
   @override
   void onInit() {
-    getMarketDescriptionData();
     initMarket();
 
     super.onInit();
@@ -112,9 +121,10 @@ class MarketController extends GetxController {
 
   bool available = false;
   initMarket() async {
+    await getMarketDescriptionData();
     available = await InAppPurchase.instance.isAvailable();
     if (available) {
-      final ProductDetailsResponse productDetailResponse = await InAppPurchase.instance.queryProductDetails(kProductIds.toSet());
+      final ProductDetailsResponse productDetailResponse = await InAppPurchase.instance.queryProductDetails(Platform.isAndroid ? kProductIds.toSet() : kProductIdsforIOS.toSet());
 
       if (productDetailResponse.error == null) {
         for (int i = 0; i < productDetailResponse.productDetails.length; i++) {

@@ -5,7 +5,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:lindo/app/ui/pages/register_page/register_page.dart';
 import 'package:lindo/app/ui/pages/register_page/register_page_social.dart';
 import 'package:lindo/core/base/state.dart';

@@ -81,7 +81,7 @@ class MarketPage extends GetView<MarketController> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: c.groupValue == 0 ? c.boostDetails.length : c.premiumDetails.length,
                           itemBuilder: (context, index) {

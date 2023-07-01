@@ -5,7 +5,6 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -626,7 +625,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                               options: CarouselOptions(
                                                                 autoPlay: true,
                                                                 viewportFraction: 1,
-                                                                autoPlayInterval: Duration(seconds: 6),
+                                                                autoPlayInterval: const Duration(seconds: 6),
                                                                 height: 60,
                                                               ),
                                                               items: c.premiumDetails
@@ -702,7 +701,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                               options: CarouselOptions(
                                                                 autoPlay: true,
                                                                 viewportFraction: 1,
-                                                                autoPlayInterval: Duration(seconds: 6),
+                                                                autoPlayInterval: const Duration(seconds: 6),
                                                                 height: 60,
                                                               ),
                                                               items: c.boostDetails
