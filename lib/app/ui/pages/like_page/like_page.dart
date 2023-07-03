@@ -109,7 +109,7 @@ class LikePage extends GetView<LikeController> {
                                                           color: ColorManager.instance.pink,
                                                           onTap: () {
                                                             Navigator.pop(context);
-                                                            Get.to(() => const MarketPage());
+                                                            Get.to(() => const MarketPage(type: 2));
                                                           },
                                                           title: "Premium Ol",
                                                           borderColor: ColorManager.instance.pink,
@@ -189,7 +189,7 @@ class LikePage extends GetView<LikeController> {
                                                         color: ColorManager.instance.pink,
                                                         onTap: () {
                                                           Navigator.pop(context);
-                                                          Get.to(() => const MarketPage());
+                                                          Get.to(() => const MarketPage(type: 2));
                                                         },
                                                         title: "Premium Ol",
                                                         borderColor: ColorManager.instance.pink,
@@ -265,7 +265,7 @@ class LikePage extends GetView<LikeController> {
                                                         color: ColorManager.instance.pink,
                                                         onTap: () {
                                                           Navigator.pop(context);
-                                                          Get.to(() => const MarketPage());
+                                                          Get.to(() => const MarketPage(type: 2));
                                                         },
                                                         title: "Premium Ol",
                                                         borderColor: ColorManager.instance.pink,

@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:lindo/app/controllers/usercontroller.dart';
@@ -12,8 +11,6 @@ import 'package:lindo/core/init/network/network_manager.dart';
 
 class MarketController extends GetxController {
   late StreamSubscription<List<PurchaseDetails>> subscription;
-  PageController pageController = PageController();
-  int groupValue = 0;
 
   final List<String> kProductIds = <String>[
     "boost_1h",
@@ -22,6 +19,11 @@ class MarketController extends GetxController {
     "1",
     "2",
     "3",
+    "gold1",
+    "gold2",
+    "gold3",
+    "gold4",
+    "gold5",
   ];
 
   final List<String> kProductIdsforIOS = <String>[
@@ -31,10 +33,18 @@ class MarketController extends GetxController {
     "1m",
     "2m",
     "3m",
+    "gold1",
+    "gold2",
+    "gold3",
+    "gold4",
+    "gold5",
   ];
 
   List<ProductDetails> products = [];
   List<ProductDetails> premiums = [];
+  List<ProductDetails> golds = [];
+
+  MarketController();
 
   @override
   void onInit() {
@@ -106,6 +116,26 @@ class MarketController extends GetxController {
             } else if (purchaseDetails.productID == "1") {
               int newTime = now.millisecondsSinceEpoch + ((hour * 24) * 180);
               await NetworkManager.instance.currentUserRef().update({"premiumEndDate": newTime});
+            } else if (purchaseDetails.productID == "gold1") {
+              UserController userController = Get.find();
+              userController.coin += 1000;
+              await NetworkManager.instance.currentUserRef().update({"coin": userController.coin});
+            } else if (purchaseDetails.productID == "gold2") {
+              UserController userController = Get.find();
+              userController.coin += 3000;
+              await NetworkManager.instance.currentUserRef().update({"coin": userController.coin});
+            } else if (purchaseDetails.productID == "gold3") {
+              UserController userController = Get.find();
+              userController.coin += 5000;
+              await NetworkManager.instance.currentUserRef().update({"coin": userController.coin});
+            } else if (purchaseDetails.productID == "gold4") {
+              UserController userController = Get.find();
+              userController.coin += 10000;
+              await NetworkManager.instance.currentUserRef().update({"coin": userController.coin});
+            } else if (purchaseDetails.productID == "gold5") {
+              UserController userController = Get.find();
+              userController.coin += 20000;
+              await NetworkManager.instance.currentUserRef().update({"coin": userController.coin});
             }
             UserController userController = Get.find();
             await userController.getCurrentUserData();
@@ -121,6 +151,7 @@ class MarketController extends GetxController {
 
   bool available = false;
   initMarket() async {
+    update();
     await getMarketDescriptionData();
     available = await InAppPurchase.instance.isAvailable();
     if (available) {
@@ -130,13 +161,14 @@ class MarketController extends GetxController {
         for (int i = 0; i < productDetailResponse.productDetails.length; i++) {
           if (productDetailResponse.productDetails[i].id == "1" || productDetailResponse.productDetails[i].id == "2" || productDetailResponse.productDetails[i].id == "3") {
             premiums.add(productDetailResponse.productDetails[i]);
+          } else if (productDetailResponse.productDetails[i].id.contains("gold")) {
+            golds.add(productDetailResponse.productDetails[i]);
           } else {
             products.add(productDetailResponse.productDetails[i]);
           }
         }
         update();
       }
-      print(products.length);
       subscription = InAppPurchase.instance.purchaseStream.listen(
         (purchaseDetailsList) {
           _listenToPurchaseUpdated(purchaseDetailsList);

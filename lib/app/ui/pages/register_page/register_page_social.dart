@@ -380,95 +380,103 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                   color: ColorManager.instance.pink,
                                   onTap: () async {
                                     if (c.currentStep == 3) {
-                                      c.uploadImages();
-                                      try {
-                                        if (loginType == 0) {
-                                          await c.signInWithGoogle().then(
-                                            (credential) async {
-                                              if (credential != null) {
-                                                if (credential.user?.uid != null) {
-                                                  await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
-                                                    {
-                                                      "email": credential.user?.email,
-                                                      "name": c.nameController.text,
-                                                      "registerDate": DateTime.now().toString(),
-                                                      "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
-                                                      "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
-                                                      "birth": c.selectedDateTime.toString(),
-                                                      "year": DateTime.now().year - c.selectedDateTime!.year,
-                                                      "images": c.images,
-                                                      "birthYear": c.selectedDateTime?.year,
-                                                      "gender": c.selectedGender,
-                                                      "uid": credential.user?.uid,
-                                                      "account_verify": false,
-                                                    },
-                                                  );
-                                                }
-                                              }
-                                            },
-                                          );
-                                        }
-                                        if (loginType == 1) {
-                                          await c.signInWithFacebook().then(
-                                            (credential) async {
-                                              if (credential != null) {
-                                                if (credential.user?.uid != null) {
-                                                  await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
-                                                    {
-                                                      "email": credential.user?.email,
-                                                      "name": c.nameController.text,
-                                                      "registerDate": DateTime.now().toString(),
-                                                      "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
-                                                      "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
-                                                      "birth": c.selectedDateTime.toString(),
-                                                      "year": DateTime.now().year - c.selectedDateTime!.year,
-                                                      "images": c.images,
-                                                      "birthYear": c.selectedDateTime?.year,
-                                                      "gender": c.selectedGender,
-                                                      "uid": credential.user?.uid,
-                                                      "account_verify": false,
-                                                    },
-                                                  );
-                                                }
-                                              }
-                                            },
-                                          );
-                                        }
-                                        if (loginType == 2) {
-                                          await c.signInWithApple().then(
-                                            (credential) async {
-                                              if (credential != null) {
-                                                if (credential.user?.uid != null) {
-                                                  await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
-                                                    {
-                                                      "email": credential.user?.email,
-                                                      "name": c.nameController.text,
-                                                      "registerDate": DateTime.now().toString(),
-                                                      "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
-                                                      "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
-                                                      "birth": c.selectedDateTime.toString(),
-                                                      "year": DateTime.now().year - c.selectedDateTime!.year,
-                                                      "images": c.images,
-                                                      "birthYear": c.selectedDateTime?.year,
-                                                      "gender": c.selectedGender,
-                                                      "uid": credential.user?.uid,
-                                                      "account_verify": false,
-                                                    },
-                                                  );
-                                                }
-                                              }
-                                            },
-                                          );
-                                        }
-                                        UserController userController = Get.find();
-                                        userController.getCurrentUserData();
-                                      } on FirebaseAuthException catch (e) {
+                                      await c.uploadImages();
+                                      if (c.images.isEmpty) {
                                         Get.closeAllSnackbars();
-                                        final translator = GoogleTranslator();
-                                        Translation translation = await translator.translate(e.message ?? "", to: 'tr');
-                                        Get.snackbar("Hata", translation.text, backgroundColor: Colors.white);
-                                      } catch (e) {
-                                        print("hata");
+                                        Get.snackbar("Uyarı", "Lütfen en az 1 profil fotoğrafı yükleyiniz.");
+                                      } else {
+                                        try {
+                                          if (loginType == 0) {
+                                            await c.signInWithGoogle().then(
+                                              (credential) async {
+                                                if (credential != null) {
+                                                  if (credential.user?.uid != null) {
+                                                    await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
+                                                      {
+                                                        "email": credential.user?.email,
+                                                        "name": c.nameController.text,
+                                                        "registerDate": DateTime.now().toString(),
+                                                        "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
+                                                        "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
+                                                        "birth": c.selectedDateTime.toString(),
+                                                        "year": DateTime.now().year - c.selectedDateTime!.year,
+                                                        "images": c.images,
+                                                        "birthYear": c.selectedDateTime?.year,
+                                                        "gender": c.selectedGender,
+                                                        "uid": credential.user?.uid,
+                                                        "account_verify": false,
+                                                        "coin": 100,
+                                                      },
+                                                    );
+                                                  }
+                                                }
+                                              },
+                                            );
+                                          }
+                                          if (loginType == 1) {
+                                            await c.signInWithFacebook().then(
+                                              (credential) async {
+                                                if (credential != null) {
+                                                  if (credential.user?.uid != null) {
+                                                    await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
+                                                      {
+                                                        "email": credential.user?.email,
+                                                        "name": c.nameController.text,
+                                                        "registerDate": DateTime.now().toString(),
+                                                        "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
+                                                        "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
+                                                        "birth": c.selectedDateTime.toString(),
+                                                        "year": DateTime.now().year - c.selectedDateTime!.year,
+                                                        "images": c.images,
+                                                        "birthYear": c.selectedDateTime?.year,
+                                                        "gender": c.selectedGender,
+                                                        "uid": credential.user?.uid,
+                                                        "account_verify": false,
+                                                        "coin": 100,
+                                                      },
+                                                    );
+                                                  }
+                                                }
+                                              },
+                                            );
+                                          }
+                                          if (loginType == 2) {
+                                            await c.signInWithApple().then(
+                                              (credential) async {
+                                                if (credential != null) {
+                                                  if (credential.user?.uid != null) {
+                                                    await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
+                                                      {
+                                                        "email": credential.user?.email,
+                                                        "name": c.nameController.text,
+                                                        "registerDate": DateTime.now().toString(),
+                                                        "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
+                                                        "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
+                                                        "birth": c.selectedDateTime.toString(),
+                                                        "year": DateTime.now().year - c.selectedDateTime!.year,
+                                                        "images": c.images,
+                                                        "birthYear": c.selectedDateTime?.year,
+                                                        "gender": c.selectedGender,
+                                                        "uid": credential.user?.uid,
+                                                        "account_verify": false,
+                                                        "coin": 100,
+                                                      },
+                                                    );
+                                                  }
+                                                }
+                                              },
+                                            );
+                                          }
+                                          UserController userController = Get.find();
+                                          userController.getCurrentUserData();
+                                        } on FirebaseAuthException catch (e) {
+                                          Get.closeAllSnackbars();
+                                          final translator = GoogleTranslator();
+                                          Translation translation = await translator.translate(e.message ?? "", to: 'tr');
+                                          Get.snackbar("Hata", translation.text, backgroundColor: Colors.white);
+                                        } catch (e) {
+                                          debugPrint("hata");
+                                        }
                                       }
                                     }
                                     if (c.currentStep == 2) {

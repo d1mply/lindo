@@ -1,3 +1,7 @@
+// ignore_for_file: empty_catches
+
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
@@ -6,12 +10,28 @@ import '../../core/init/network/network_manager.dart';
 
 class UserController extends GetxController {
   List<String> blockedUsers = [];
-
+  int gender = 0;
   @override
   void onInit() {
     getBlockedUsers();
     getCurrentUserData();
+    setStatus();
     super.onInit();
+  }
+
+  setStatus() {
+    if (FirebaseAuth.instance.currentUser?.uid != null) {
+      Timer.periodic(
+        const Duration(seconds: 15),
+        (time) {
+          NetworkManager.instance.currentUserRef().update(
+            {
+              "lastActiveTime": DateTime.now().millisecondsSinceEpoch,
+            },
+          );
+        },
+      );
+    }
   }
 
   getBlockedUsers() async {
@@ -77,13 +97,15 @@ class UserController extends GetxController {
 
   bool isPremium = false;
   bool boosted = false;
-
   int coin = 0;
 
   getCurrentUserData() async {
     if (FirebaseAuth.instance.currentUser != null) {
       DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
       final data = user.value as Map<Object?, Object?>;
+      try {
+        gender = data["gender"] as int;
+      } catch (e) {}
       if (data["premiumEndDate"] != null) {
         int premiumDate = data["premiumEndDate"] as int;
         if (DateTime.now().millisecondsSinceEpoch < premiumDate) {
@@ -97,8 +119,20 @@ class UserController extends GetxController {
         }
       }
       if (data["coin"] != null) {
-        coin = data["coin"] as int;
+        try {
+          coin = data["coin"] as int;
+        } catch (e) {}
+      } else {
+        coin = 100;
       }
+      update();
+    }
+  }
+
+  removeCoin(int c) async {
+    if (coin - c >= 0) {
+      coin -= c;
+      await NetworkManager.instance.currentUserRef().update({"coin": coin});
       update();
     }
   }

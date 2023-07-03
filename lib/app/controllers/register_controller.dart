@@ -40,6 +40,7 @@ class RegisterController extends GetxController {
   }
 
   List<String> images = [];
+  
   uploadImage(XFile? image) async {
     if (image != null) {
       String downloadUrl = "";

@@ -17,6 +17,8 @@ class MessagesController extends GetxController {
   List<Map<dynamic, dynamic>> chatRoomsForSwiped = [];
 
   getData() async {
+    chatRoomsForSwiped = [];
+    chatRooms = [];
     await NetworkManager.instance.getUserReference(FirebaseAuth.instance.currentUser!.uid).child("chatrooms").get().then(
       (DataSnapshot value) async {
         if (value.exists) {

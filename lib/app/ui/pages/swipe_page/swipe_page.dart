@@ -57,7 +57,38 @@ class _SwipePageState extends State<SwipePage> {
                     description: "Bir önceki seçimi geri alabilmek için bu butona tıklayabilirsin.",
                     child: IconButton(
                       onPressed: () {
-                        swipeKey.currentState?.rewind();
+                        if (swipaAble) {
+                          swipeKey.currentState?.rewind();
+                        } else {
+                          CustomDialog().showGeneralDialog(
+                            Get.context!,
+                            body: Column(
+                              children: [
+                                const SizedBox(height: 12),
+                                const Text(
+                                  "Premium olmayan kullanıcılar için günlük kaydırma limiti 6 dır. Sınırsız kaydırma yapabilmek için premium edinin.",
+                                ),
+                                const SizedBox(height: 8),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 32),
+                                  child: KButton(
+                                    color: ColorManager.instance.pink,
+                                    textColor: ColorManager.instance.white,
+                                    onTap: () {
+                                      Get.to(
+                                        () => const MarketPage(
+                                          type: 2,
+                                        ),
+                                      );
+                                    },
+                                    title: "Premium Ol",
+                                  ),
+                                ),
+                              ],
+                            ),
+                            title: "Uyarı",
+                          );
+                        }
                       },
                       icon: SvgPicture.asset(
                         "assets/svg/undo.svg",
@@ -451,7 +482,7 @@ class _StoryState extends State<Story> {
                                                         : "${widget.user["instagram"]}",
                                                 onTap: () {
                                                   if (userController.isPremium == false) {
-                                                    Get.to(() => const MarketPage());
+                                                    Get.to(() => const MarketPage(type: 2));
                                                   }
                                                 },
                                               );
@@ -625,7 +656,7 @@ class _StoryState extends State<Story> {
                                     color: ColorManager.instance.pink,
                                     onTap: () {
                                       Navigator.pop(context);
-                                      Get.to(() => const MarketPage());
+                                      Get.to(() => const MarketPage(type: 2));
                                     },
                                     title: "Premium Ol",
                                     borderColor: ColorManager.instance.pink,

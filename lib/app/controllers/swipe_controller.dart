@@ -23,6 +23,7 @@ class SwipeController extends GetxController {
   SwipeController(this.context);
 
   getUsers({String? start}) async {
+    UserController userController = Get.find();
     await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
@@ -39,6 +40,11 @@ class SwipeController extends GetxController {
                 usersList.add(value);
                 update();
               }
+            },
+          );
+          usersList.removeWhere(
+            (element) {
+              return (element["gender"] == userController.gender);
             },
           );
           cards = usersList.map(
@@ -61,13 +67,13 @@ class SwipeController extends GetxController {
                   : const SizedBox();
             },
           ).toList();
+          cards.shuffle();
         }
       },
     );
     update();
     showShowCaseView();
   }
-
 
   final BuildContext context;
 

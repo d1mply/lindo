@@ -17,8 +17,8 @@ import '../ui/utils/k_button.dart';
 
 class ExploreController extends GetxController {
   TextEditingController searchController = TextEditingController();
-  int pageSize = 8;
-  int searchPageSize = 20;
+  int pageSize = 300;
+  int searchPageSize = 300;
   ScrollController scrollController = ScrollController();
   bool onlyValidatedUsers = false;
   bool selectedOnlyValidatedUsers = false;
@@ -43,11 +43,16 @@ class ExploreController extends GetxController {
         if (vals != null) {
           Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
           UserController userController = Get.find();
+
           values.forEach(
             (key, value) {
               if (FirebaseAuth.instance.currentUser != null) {
-                if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
-                  temp.add(value);
+                if (value != null) {
+                  if (value["uid"] != null) {
+                    if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
+                      temp.add(value);
+                    }
+                  }
                 }
               }
             },
@@ -80,11 +85,15 @@ class ExploreController extends GetxController {
           values.forEach(
             (key, value) {
               if (FirebaseAuth.instance.currentUser != null) {
-                if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
-                  if (value["boostEndDate"] != null) {
-                    int boostEndDate = value["boostEndDate"] as int;
-                    if (DateTime.now().millisecondsSinceEpoch < boostEndDate) {
-                      boostedUsers.add(value);
+                if (value != null) {
+                  if (value["uid"] != null) {
+                    if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
+                      if (value["boostEndDate"] != null) {
+                        int boostEndDate = value["boostEndDate"] as int;
+                        if (DateTime.now().millisecondsSinceEpoch < boostEndDate) {
+                          boostedUsers.add(value);
+                        }
+                      }
                     }
                   }
                 }
@@ -105,6 +114,8 @@ class ExploreController extends GetxController {
     }
     if (genderSelection == true || currentRangeValue.start != 18 || currentRangeValue.end != 100 || selectedOnlyValidatedUsers == true || selectedCity != null) {
       List<int> indexes = [];
+      List<Map<dynamic, dynamic>> temps = [];
+
       for (int i = 0; i < usersList.length; i++) {
         if (usersList[i]["year"] != null) {
           if (usersList[i]["year"] >= minAge && usersList[i]["year"] <= maxAge) {
@@ -141,20 +152,25 @@ class ExploreController extends GetxController {
           if (selectedCity != null) {
             if (selectedCity != usersList[i]["location"]) {
               indexes.add(i);
+            } else {
+              temps.add(usersList[i]);
             }
           }
         }
       }
       indexes = removeDuplicates(indexes);
       indexes.sort((b, a) => a.compareTo(b));
+
       try {
         for (int i = 0; i < indexes.length; i++) {
           usersList.removeAt(indexes[i]);
         }
       } catch (e) {}
+
+      if (indexes.isEmpty && selectedCity != null) {
+        usersList = temps;
+      }
       update();
-    } else {
-      getUsers();
     }
     update();
   }
@@ -165,9 +181,8 @@ class ExploreController extends GetxController {
     return result;
   }
 
-  bool isLoadings = true;
-
   bool isLoading = false;
+
   Object? lastvals;
   Future getMoreUsers() async {
     isLoading = true;
@@ -177,7 +192,7 @@ class ExploreController extends GetxController {
       if (start != null) {
         List<Map<dynamic, dynamic>> temp = usersList;
         pageSize = pageSize * 2;
-        await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).startAfter(start, key: start).once().then(
+        await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).once().then(
           (DatabaseEvent snapshot) {
             Object? vals = snapshot.snapshot.value;
             lastvals = vals;
@@ -214,6 +229,7 @@ class ExploreController extends GetxController {
 
   searchUsers() async {
     if (searchController.text.isEmpty) {
+      pageSize = pageSize * 2;
       getUsers();
     } else {
       List<Map<dynamic, dynamic>> x = [];
@@ -469,7 +485,11 @@ swipeRight(
                 color: ColorManager.instance.pink,
                 onTap: () {
                   Navigator.pop(context);
-                  Get.to(() => const MarketPage());
+                  Get.to(
+                    () => const MarketPage(
+                      type: 2,
+                    ),
+                  );
                 },
                 title: "Premium Ol",
                 borderColor: ColorManager.instance.pink,

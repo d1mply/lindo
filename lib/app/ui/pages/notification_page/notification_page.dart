@@ -83,7 +83,7 @@ class NotificationPage extends GetView<NotificationController> {
                                       color: ColorManager.instance.pink,
                                       onTap: () {
                                         Navigator.pop(context);
-                                        Get.to(() => const MarketPage());
+                                        Get.to(() => const MarketPage(type: 2));
                                       },
                                       title: "Premium Ol",
                                       borderColor: ColorManager.instance.pink,
@@ -274,7 +274,7 @@ class NotificationPage extends GetView<NotificationController> {
                                                               : "${user?["instagram"]}",
                                                       onTap: () {
                                                         if (userController.isPremium == false) {
-                                                          Get.to(() => const MarketPage());
+                                                          Get.to(() => const MarketPage(type: 2));
                                                         }
                                                       },
                                                     );

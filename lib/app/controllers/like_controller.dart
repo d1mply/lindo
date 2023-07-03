@@ -62,8 +62,8 @@ class LikeController extends GetxController {
             temp.removeWhere((element) => counter[element["senderUid"]]! > 1);
             messages = temp;
             messages.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
-            update();
             lastKey = messages.last["timestamp"];
+            update();
           }
         },
       );

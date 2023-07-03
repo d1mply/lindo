@@ -30,8 +30,9 @@ class ChatPage extends GetView<ChatController> {
     return Container(
       color: ColorManager.instance.white,
       child: SafeArea(
-        child: GetBuilder<UserController>(builder: (userController) {
-          return GetBuilder<ChatController>(
+        child: GetBuilder<UserController>(
+          builder: (userController) {
+            return GetBuilder<ChatController>(
               init: ChatController(uid),
               builder: (c) {
                 return Scaffold(
@@ -275,7 +276,11 @@ class ChatPage extends GetView<ChatController> {
                                                                       color: ColorManager.instance.pink,
                                                                       onTap: () {
                                                                         Navigator.pop(context);
-                                                                        Get.to(() => const MarketPage());
+                                                                        Get.to(
+                                                                          () => const MarketPage(
+                                                                            type: 2,
+                                                                          ),
+                                                                        );
                                                                       },
                                                                       title: "Premium Ol",
                                                                       borderColor: ColorManager.instance.pink,
@@ -489,7 +494,7 @@ class ChatPage extends GetView<ChatController> {
                                                         color: ColorManager.instance.pink,
                                                         onTap: () {
                                                           Navigator.pop(context);
-                                                          Get.to(() => const MarketPage());
+                                                          Get.to(() => const MarketPage(type: 2));
                                                         },
                                                         title: "Premium Ol",
                                                         borderColor: ColorManager.instance.pink,
@@ -523,8 +528,10 @@ class ChatPage extends GetView<ChatController> {
                     ),
                   ),
                 );
-              });
-        }),
+              },
+            );
+          },
+        ),
       ),
     );
   }

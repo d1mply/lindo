@@ -23,6 +23,7 @@ import 'package:pinput/pinput.dart';
 import '../../../../core/init/network/network_manager.dart';
 import '../../../controllers/profile_controller.dart';
 import '../../../controllers/usercontroller.dart';
+import '../../global_widgets/indicator.dart';
 import '../../utils/k_bottom_sheet.dart';
 import '../../utils/k_button.dart';
 import '../../utils/k_textformfield.dart';
@@ -372,7 +373,16 @@ class ProfilePage extends GetView<ProfileController> {
                                                               },
                                                             ),
                                                           ),
-                                                    if (userController.isPremium) Positioned(left: 0, top: 0, child: Image.asset("assets/images/premium.png")),
+                                                    if (userController.isPremium)
+                                                      Positioned(
+                                                        left: 0,
+                                                        top: 0,
+                                                        child: Image.asset(
+                                                          "assets/images/premium.png",
+                                                          height: 50,
+                                                          width: 50,
+                                                        ),
+                                                      ),
                                                     if (c.user?["validate"] == true)
                                                       Positioned(
                                                         right: 0,
@@ -582,7 +592,7 @@ class ProfilePage extends GetView<ProfileController> {
                                 userController.isPremium == false
                                     ? InkWell(
                                         onTap: () {
-                                          Get.to(() => const MarketPage());
+                                          Get.to(() => const MarketPage(type: 2));
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.only(left: 30, right: 30, bottom: 8),
@@ -603,7 +613,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
-                                                  Image.asset("assets/images/premium.png"),
+                                                  Image.asset("assets/images/premium.png", height: 50, width: 50),
                                                   Expanded(
                                                     child: Padding(
                                                       padding: const EdgeInsets.only(left: 12.0),
@@ -629,15 +639,28 @@ class ProfilePage extends GetView<ProfileController> {
                                                                 height: 60,
                                                               ),
                                                               items: c.premiumDetails
+                                                                  .asMap()
+                                                                  .entries
                                                                   .map(
-                                                                    (e) => Text(
-                                                                      e,
-                                                                      style: TextStyle(
-                                                                        color: ColorManager.instance.white,
-                                                                        fontSize: 14,
-                                                                        fontFamily: 'Rubik',
-                                                                        fontWeight: FontWeight.w400,
-                                                                      ),
+                                                                    (e) => Column(
+                                                                      children: [
+                                                                        Text(
+                                                                          e.value,
+                                                                          style: TextStyle(
+                                                                            color: ColorManager.instance.white,
+                                                                            fontSize: 14,
+                                                                            fontFamily: 'Rubik',
+                                                                            fontWeight: FontWeight.w400,
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(height: 8),
+                                                                        Row(
+                                                                            children: c.premiumDetails.asMap().entries.map(
+                                                                          (i) {
+                                                                            return Indicator(isActive: e.key == i.key);
+                                                                          },
+                                                                        ).toList()),
+                                                                      ],
                                                                     ),
                                                                   )
                                                                   .toList(),
@@ -658,7 +681,7 @@ class ProfilePage extends GetView<ProfileController> {
                                 userController.boosted == false
                                     ? InkWell(
                                         onTap: () {
-                                          Get.to(() => const MarketPage());
+                                          Get.to(() => const MarketPage(type: 1));
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.only(top: 8, left: 30, right: 30),
@@ -679,7 +702,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
-                                                  Image.asset("assets/images/startup.png"),
+                                                  Image.asset("assets/images/startup.png", height: 50, width: 50),
                                                   Expanded(
                                                     child: Padding(
                                                       padding: const EdgeInsets.only(left: 12.0),
@@ -705,15 +728,28 @@ class ProfilePage extends GetView<ProfileController> {
                                                                 height: 60,
                                                               ),
                                                               items: c.boostDetails
+                                                                  .asMap()
+                                                                  .entries
                                                                   .map(
-                                                                    (e) => Text(
-                                                                      e,
-                                                                      style: TextStyle(
-                                                                        color: ColorManager.instance.white,
-                                                                        fontSize: 14,
-                                                                        fontFamily: 'Rubik',
-                                                                        fontWeight: FontWeight.w400,
-                                                                      ),
+                                                                    (e) => Column(
+                                                                      children: [
+                                                                        Text(
+                                                                          e.value,
+                                                                          style: TextStyle(
+                                                                            color: ColorManager.instance.white,
+                                                                            fontSize: 14,
+                                                                            fontFamily: 'Rubik',
+                                                                            fontWeight: FontWeight.w400,
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(height: 8),
+                                                                        Row(
+                                                                            children: c.boostDetails.asMap().entries.map(
+                                                                          (i) {
+                                                                            return Indicator(isActive: e.key == i.key);
+                                                                          },
+                                                                        ).toList()),
+                                                                      ],
                                                                     ),
                                                                   )
                                                                   .toList(),

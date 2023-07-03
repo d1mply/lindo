@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -74,7 +73,7 @@ class ExplorePage extends GetView<ExploreController> {
                                   color: ColorManager.instance.pink,
                                   onTap: () {
                                     Navigator.pop(context);
-                                    Get.to(() => const MarketPage());
+                                    Get.to(() => const MarketPage(type: 2));
                                   },
                                   title: "Premium Ol",
                                   borderColor: ColorManager.instance.pink,
@@ -486,47 +485,47 @@ class ExplorePage extends GetView<ExploreController> {
                                                         return Column(
                                                           children: [
                                                             storyItems.isNotEmpty
-                                                                ? userController.isPremium
-                                                                    ? ClipRRect(
-                                                                        borderRadius: BorderRadius.circular(20),
-                                                                        child: SizedBox(
-                                                                          height: Get.height / 2,
-                                                                          width: Get.width,
-                                                                          child: StoryView(
-                                                                            storyItems: storyItems,
-                                                                            controller: controller,
-                                                                            inline: true,
-                                                                          ),
-                                                                        ),
-                                                                      )
-                                                                    : InkWell(
-                                                                        onTap: () {
-                                                                          Get.to(() => const MarketPage());
-                                                                        },
-                                                                        child: const Text("Kullanıcı görsellerini sadece premium kullanıcılar görüntüleyebilir. Premium olmak için tıkla."),
-                                                                      )
+                                                                ? ClipRRect(
+                                                                    borderRadius: BorderRadius.circular(20),
+                                                                    child: SizedBox(
+                                                                      height: Get.height / 2,
+                                                                      width: Get.width,
+                                                                      child: StoryView(
+                                                                        storyItems: storyItems,
+                                                                        controller: controller,
+                                                                        inline: true,
+                                                                      ),
+                                                                    ),
+                                                                  )
                                                                 : const SizedBox(),
                                                             Padding(
                                                               padding: const EdgeInsets.symmetric(vertical: 12.0),
                                                               child: Row(
                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                 children: [
-                                                                  Text(
-                                                                    c.boostedUsers[index]["name"] ?? "",
-                                                                    style: TextStyle(
-                                                                      color: ColorManager.instance.black,
-                                                                      fontSize: 16,
-                                                                      fontWeight: FontWeight.bold,
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      c.boostedUsers[index]["name"] ?? "",
+                                                                      style: TextStyle(
+                                                                        color: ColorManager.instance.black,
+                                                                        fontSize: 16,
+                                                                        fontWeight: FontWeight.bold,
+                                                                      ),
                                                                     ),
                                                                   ),
-                                                                  Text(
-                                                                    "${c.boostedUsers[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.boostedUsers[index]["birthTimestamp"]).year)}",
-                                                                    style: TextStyle(
-                                                                      color: ColorManager.instance.black,
-                                                                      fontSize: 16,
-                                                                      fontWeight: FontWeight.bold,
-                                                                    ),
-                                                                  )
+                                                                  Row(
+                                                                    children: [
+                                                                      ActiveCircle(time: c.boostedUsers[index]["lastActiveTime"]),
+                                                                      Text(
+                                                                        "${c.boostedUsers[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.boostedUsers[index]["birthTimestamp"]).year)}",
+                                                                        style: TextStyle(
+                                                                          color: ColorManager.instance.black,
+                                                                          fontSize: 16,
+                                                                          fontWeight: FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                                 ],
                                                               ),
                                                             ),
@@ -649,16 +648,8 @@ class ExplorePage extends GetView<ExploreController> {
                                                                     Info(
                                                                       img: "assets/images/insta.png",
                                                                       title: "Instagram",
-                                                                      desc: c.boostedUsers[index]["instagram"] == null
-                                                                          ? ""
-                                                                          : userController.isPremium == false
-                                                                              ? "@*********"
-                                                                              : "${c.boostedUsers[index]["instagram"]}",
-                                                                      onTap: () {
-                                                                        if (userController.isPremium == false) {
-                                                                          Get.to(() => const MarketPage());
-                                                                        }
-                                                                      },
+                                                                      desc: c.boostedUsers[index]["instagram"] == null ? "" : "${c.boostedUsers[index]["instagram"] ?? ""}",
+                                                                      onTap: () {},
                                                                     ),
                                                                   ],
                                                                 ),
@@ -828,43 +819,15 @@ class ExplorePage extends GetView<ExploreController> {
                                                                   height: 40,
                                                                   width: 40,
                                                                 )
-                                                              : userController.isPremium == false
-                                                                  ? Center(
-                                                                      child: ClipRRect(
-                                                                        clipBehavior: Clip.hardEdge,
-                                                                        borderRadius: BorderRadius.circular(20),
-                                                                        child: Stack(
-                                                                          children: [
-                                                                            CachedNetworkImage(
-                                                                              imageUrl: c.boostedUsers[index]["images"].first,
-                                                                              height: 202,
-                                                                              width: Get.width,
-                                                                              fit: BoxFit.cover,
-                                                                            ),
-                                                                            BackdropFilter(
-                                                                              filter: ImageFilter.blur(
-                                                                                sigmaX: 8.0,
-                                                                                sigmaY: 8.0,
-                                                                              ),
-                                                                              child: Container(
-                                                                                color: Colors.transparent,
-                                                                                width: Get.width,
-                                                                                height: 202,
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    )
-                                                                  : ClipRRect(
-                                                                      borderRadius: BorderRadius.circular(20),
-                                                                      child: CachedNetworkImage(
-                                                                        imageUrl: c.boostedUsers[index]["images"].first,
-                                                                        height: 202,
-                                                                        width: Get.width,
-                                                                        fit: BoxFit.cover,
-                                                                      ),
-                                                                    ),
+                                                              : ClipRRect(
+                                                                  borderRadius: BorderRadius.circular(20),
+                                                                  child: CachedNetworkImage(
+                                                                    imageUrl: c.boostedUsers[index]["images"].first,
+                                                                    height: 202,
+                                                                    width: Get.width,
+                                                                    fit: BoxFit.cover,
+                                                                  ),
+                                                                ),
                                                         ),
                                                         Padding(
                                                           padding: const EdgeInsets.all(8.0),
@@ -885,14 +848,19 @@ class ExplorePage extends GetView<ExploreController> {
                                                                       maxLines: 1,
                                                                     ),
                                                                   ),
-                                                                  Text(
-                                                                    "${c.boostedUsers[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.boostedUsers[index]["birthTimestamp"]).year)}",
-                                                                    style: TextStyle(
-                                                                      color: ColorManager.instance.white,
-                                                                      fontSize: 16,
-                                                                      fontWeight: FontWeight.bold,
-                                                                    ),
-                                                                  )
+                                                                  Row(
+                                                                    children: [
+                                                                      ActiveCircle(time: c.boostedUsers[index]["lastActiveTime"]),
+                                                                      Text(
+                                                                        "${c.boostedUsers[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.boostedUsers[index]["birthTimestamp"]).year)}",
+                                                                        style: TextStyle(
+                                                                          color: ColorManager.instance.white,
+                                                                          fontSize: 16,
+                                                                          fontWeight: FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                                 ],
                                                               ),
                                                               c.boostedUsers[index]["location"] != null
@@ -966,25 +934,18 @@ class ExplorePage extends GetView<ExploreController> {
                                             return Column(
                                               children: [
                                                 storyItems.isNotEmpty
-                                                    ? userController.isPremium
-                                                        ? ClipRRect(
-                                                            borderRadius: BorderRadius.circular(20),
-                                                            child: SizedBox(
-                                                              height: Get.height / 2,
-                                                              width: Get.width,
-                                                              child: StoryView(
-                                                                storyItems: storyItems,
-                                                                controller: controller,
-                                                                inline: true,
-                                                              ),
-                                                            ),
-                                                          )
-                                                        : InkWell(
-                                                            onTap: () {
-                                                              Get.to(() => const MarketPage());
-                                                            },
-                                                            child: const Text("Kullanıcı görsellerini sadece premium kullanıcılar görüntüleyebilir. Premium olmak için tıkla."),
-                                                          )
+                                                    ? ClipRRect(
+                                                        borderRadius: BorderRadius.circular(20),
+                                                        child: SizedBox(
+                                                          height: Get.height / 2,
+                                                          width: Get.width,
+                                                          child: StoryView(
+                                                            storyItems: storyItems,
+                                                            controller: controller,
+                                                            inline: true,
+                                                          ),
+                                                        ),
+                                                      )
                                                     : const SizedBox(),
                                                 Padding(
                                                   padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -999,14 +960,19 @@ class ExplorePage extends GetView<ExploreController> {
                                                           fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
-                                                      Text(
-                                                        "${c.usersList[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.usersList[index]["birthTimestamp"]).year)}",
-                                                        style: TextStyle(
-                                                          color: ColorManager.instance.black,
-                                                          fontSize: 16,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      )
+                                                      Row(
+                                                        children: [
+                                                          ActiveCircle(time: c.usersList[index]["lastActiveTime"]),
+                                                          Text(
+                                                            "${c.usersList[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.usersList[index]["birthTimestamp"]).year)}",
+                                                            style: TextStyle(
+                                                              color: ColorManager.instance.black,
+                                                              fontSize: 16,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ],
                                                   ),
                                                 ),
@@ -1129,16 +1095,8 @@ class ExplorePage extends GetView<ExploreController> {
                                                         Info(
                                                           img: "assets/images/insta.png",
                                                           title: "Instagram",
-                                                          desc: c.usersList[index]["instagram"] == null
-                                                              ? ""
-                                                              : userController.isPremium == false
-                                                                  ? "@*********"
-                                                                  : "${c.usersList[index]["instagram"]}",
-                                                          onTap: () {
-                                                            if (userController.isPremium == false) {
-                                                              Get.to(() => const MarketPage());
-                                                            }
-                                                          },
+                                                          desc: c.usersList[index]["instagram"] == null ? "" : "${c.usersList[index]["instagram"] ?? ""}",
+                                                          onTap: () {},
                                                         ),
                                                       ],
                                                     ),
@@ -1302,43 +1260,15 @@ class ExplorePage extends GetView<ExploreController> {
                                                       height: 40,
                                                       width: 40,
                                                     )
-                                                  : userController.isPremium == false
-                                                      ? Center(
-                                                          child: ClipRRect(
-                                                            clipBehavior: Clip.hardEdge,
-                                                            borderRadius: BorderRadius.circular(20),
-                                                            child: Stack(
-                                                              children: [
-                                                                CachedNetworkImage(
-                                                                  imageUrl: c.usersList[index]["images"].first,
-                                                                  height: 202,
-                                                                  width: Get.width,
-                                                                  fit: BoxFit.cover,
-                                                                ),
-                                                                BackdropFilter(
-                                                                  filter: ImageFilter.blur(
-                                                                    sigmaX: 8.0,
-                                                                    sigmaY: 8.0,
-                                                                  ),
-                                                                  child: Container(
-                                                                    color: Colors.transparent,
-                                                                    width: Get.width,
-                                                                    height: 202,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : ClipRRect(
-                                                          borderRadius: BorderRadius.circular(20),
-                                                          child: CachedNetworkImage(
-                                                            imageUrl: c.usersList[index]["images"].first,
-                                                            height: 202,
-                                                            width: Get.width,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
+                                                  : ClipRRect(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      child: CachedNetworkImage(
+                                                        imageUrl: c.usersList[index]["images"].first,
+                                                        height: 202,
+                                                        width: Get.width,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.all(8.0),
@@ -1359,14 +1289,19 @@ class ExplorePage extends GetView<ExploreController> {
                                                           maxLines: 1,
                                                         ),
                                                       ),
-                                                      Text(
-                                                        "${c.usersList[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.usersList[index]["birthTimestamp"]).year)}",
-                                                        style: TextStyle(
-                                                          color: ColorManager.instance.white,
-                                                          fontSize: 16,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      )
+                                                      ActiveCircle(time: c.usersList[index]["lastActiveTime"]),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            "${c.usersList[index]["birthTimestamp"] == null ? "" : (DateTime.now().year - DateTime.fromMillisecondsSinceEpoch(c.usersList[index]["birthTimestamp"]).year)}",
+                                                            style: TextStyle(
+                                                              color: ColorManager.instance.white,
+                                                              fontSize: 16,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ],
                                                   ),
                                                   c.usersList[index]["location"] != null
@@ -1402,6 +1337,53 @@ class ExplorePage extends GetView<ExploreController> {
   }
 }
 
+class ActiveCircle extends StatelessWidget {
+  const ActiveCircle({
+    super.key,
+    required this.time,
+  });
+  final int? time;
+
+  @override
+  Widget build(BuildContext context) {
+    return time != null
+        ? (DateTime.now().millisecondsSinceEpoch < (time! + 300000))
+            ? Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: Container(
+                  height: 8,
+                  width: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: ColorManager.instance.green,
+                  ),
+                ),
+              )
+            : Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: Container(
+                  height: 8,
+                  width: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: ColorManager.instance.red,
+                  ),
+                ),
+              )
+        : Padding(
+            padding: const EdgeInsets.only(left: 8, right: 8),
+            child: Container(
+              height: 8,
+              width: 8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: ColorManager.instance.red,
+              ),
+            ),
+          );
+  }
+}
+
 class ShopWidget extends StatelessWidget {
   const ShopWidget({
     super.key,
@@ -1411,7 +1393,7 @@ class ShopWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        Get.to(() => const MarketPage());
+        Get.to(() => const MarketPage(type: 2));
       },
       icon: Image.asset(
         "assets/images/shop.png",

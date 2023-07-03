@@ -6,8 +6,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lindo/app/controllers/usercontroller.dart';
+import 'package:lindo/app/ui/pages/market_page/market_page.dart';
 
 import '../../core/init/network/network_manager.dart';
+import '../../core/init/theme/color_manager.dart';
+import '../ui/utils/custom_dialog.dart';
+import '../ui/utils/k_button.dart';
 
 class ChatController extends GetxController {
   final String uid;
@@ -139,57 +144,111 @@ class ChatController extends GetxController {
     required String message,
   }) async {
     if (message.replaceAll(" ", "").isNotEmpty) {
-      DateTime now = DateTime.now();
+      UserController userController = Get.find();
+      bool sendable = true;
+      if (type == "text") {
+        if (userController.coin < 25) {
+          sendable = false;
+        } else {
+          await userController.removeCoin(25);
+        }
+      }
+      if (type == "image") {
+        if (userController.coin < 300) {
+          sendable = false;
+        } else {
+          await userController.removeCoin(25);
+        }
+      }
+      if (sendable) {
+        DateTime now = DateTime.now();
 
-      if (messages.isEmpty) {
-        NetworkManager.instance.getUserReference(uid).child("chatrooms").child(chatRoomId).set(
-          {
-            "timestamp": now.millisecondsSinceEpoch,
-            "uid": FirebaseAuth.instance.currentUser!.uid,
-            "chatroomId": chatRoomId,
-            "liked": isLiked == null ? false : true,
-          },
-        );
-        NetworkManager.instance.getUserReference(FirebaseAuth.instance.currentUser!.uid).child("chatrooms").child(chatRoomId).set(
-          {
-            "timestamp": now.millisecondsSinceEpoch,
-            "uid": uid,
-            "chatroomId": chatRoomId,
-            "liked": isLiked == null ? false : true,
-          },
-        );
-        NetworkManager.instance.getUserReference(uid).update(
-          {
-            "lastMessage": DateTime.now().millisecondsSinceEpoch,
-          },
-        );
-        await NetworkManager.instance.chatRooms.child(chatRoomId).push().set(
-          {
-            "timestamp": now.millisecondsSinceEpoch,
-            "sender_uid": FirebaseAuth.instance.currentUser!.uid,
-            "receiver_uid": uid,
-            "type": type,
-            "message": message,
-            "isRead": false,
-          },
-        );
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
-        textEditingController.clear();
-        update();
+        if (messages.isEmpty) {
+          NetworkManager.instance.getUserReference(uid).child("chatrooms").child(chatRoomId).set(
+            {
+              "timestamp": now.millisecondsSinceEpoch,
+              "uid": FirebaseAuth.instance.currentUser!.uid,
+              "chatroomId": chatRoomId,
+              "liked": isLiked == null ? false : true,
+            },
+          );
+          NetworkManager.instance.getUserReference(FirebaseAuth.instance.currentUser!.uid).child("chatrooms").child(chatRoomId).set(
+            {
+              "timestamp": now.millisecondsSinceEpoch,
+              "uid": uid,
+              "chatroomId": chatRoomId,
+              "liked": isLiked == null ? false : true,
+            },
+          );
+          NetworkManager.instance.getUserReference(uid).update(
+            {
+              "lastMessage": DateTime.now().millisecondsSinceEpoch,
+            },
+          );
+          await NetworkManager.instance.chatRooms.child(chatRoomId).push().set(
+            {
+              "timestamp": now.millisecondsSinceEpoch,
+              "sender_uid": FirebaseAuth.instance.currentUser!.uid,
+              "receiver_uid": uid,
+              "type": type,
+              "message": message,
+              "isRead": false,
+            },
+          );
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+          textEditingController.clear();
+          update();
+        } else {
+          await NetworkManager.instance.chatRooms.child(chatRoomId).push().set(
+            {
+              "timestamp": now.millisecondsSinceEpoch,
+              "sender_uid": FirebaseAuth.instance.currentUser!.uid,
+              "receiver_uid": uid,
+              "type": type,
+              "message": message,
+              "isRead": false,
+            },
+          );
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+          textEditingController.clear();
+          update();
+        }
       } else {
-        await NetworkManager.instance.chatRooms.child(chatRoomId).push().set(
-          {
-            "timestamp": now.millisecondsSinceEpoch,
-            "sender_uid": FirebaseAuth.instance.currentUser!.uid,
-            "receiver_uid": uid,
-            "type": type,
-            "message": message,
-            "isRead": false,
-          },
+        CustomDialog().showGeneralDialog(
+          Get.context!,
+          body: Column(
+            children: [
+              const SizedBox(height: 12),
+              const Text(
+                "Mesaj veya fotoğraf göndermek için altınınız yetersiz. Mesajlar 25, fotoğraflar 300 altın tüketir.",
+              ),
+              const SizedBox(height: 8),
+              GetBuilder<UserController>(
+                builder: (s) {
+                  return Text(
+                    "Mevcut Altın: ${s.coin}",
+                  );
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 32),
+                child: KButton(
+                  color: ColorManager.instance.pink,
+                  textColor: ColorManager.instance.white,
+                  onTap: () {
+                    Get.to(
+                      () => const MarketPage(
+                        type: 3,
+                      ),
+                    );
+                  },
+                  title: "Altın Yükle",
+                ),
+              ),
+            ],
+          ),
+          title: "Altın Yetersiz",
         );
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
-        textEditingController.clear();
-        update();
       }
     }
   }

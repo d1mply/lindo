@@ -441,8 +441,13 @@ class RegisterPage extends GetView<RegisterController> {
                                   onTap: () async {
                                     if (c.currentStep != 4) {
                                       if (c.currentStep == 3) {
-                                        c.uploadImages();
-                                        c.next();
+                                        await c.uploadImages();
+                                        if (c.images.isEmpty) {
+                                          Get.closeAllSnackbars();
+                                          Get.snackbar("Uyarı", "Lütfen en az 1 profil fotoğrafı yükleyiniz.");
+                                        } else {
+                                          c.next();
+                                        }
                                       }
                                       if (c.currentStep == 2) {
                                         if (c.selectedGender == 0) {
@@ -482,6 +487,7 @@ class RegisterPage extends GetView<RegisterController> {
                                                     "gender": c.selectedGender,
                                                     "uid": credential.user?.uid,
                                                     "account_verify": false,
+                                                    "coin": 100,
                                                   },
                                                 );
                                                 Get.offAll(() => const RootPage());
