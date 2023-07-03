@@ -23,7 +23,6 @@ class SwipeController extends GetxController {
   SwipeController(this.context);
 
   getUsers({String? start}) async {
-    UserController userController = Get.find();
     await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
