@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -1359,28 +1358,8 @@ class ActiveCircle extends StatelessWidget {
                   ),
                 ),
               )
-            : Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8),
-                child: Container(
-                  height: 8,
-                  width: 8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: ColorManager.instance.red,
-                  ),
-                ),
-              )
-        : Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8),
-            child: Container(
-              height: 8,
-              width: 8,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: ColorManager.instance.red,
-              ),
-            ),
-          );
+            : SizedBox()
+        : SizedBox();
   }
 }
 
