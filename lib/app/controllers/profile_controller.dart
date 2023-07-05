@@ -29,6 +29,7 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     getMarketDescriptionData();
+    getMarketDescriptionData2();
     getFirstData();
     super.onInit();
   }
@@ -47,8 +48,12 @@ class ProfileController extends GetxController {
           boostDetails.add(element.value as String);
         }
       }
-    } catch (e) {}
+    } finally {
+      update();
+    }
+  }
 
+  getMarketDescriptionData2() async {
     try {
       DataSnapshot snapshot2 = await NetworkManager.instance.premiumRef.get();
 
@@ -57,7 +62,9 @@ class ProfileController extends GetxController {
           premiumDetails.add(element.value as String);
         }
       }
-    } catch (e) {}
+    } finally {
+      update();
+    }
   }
 
   getFirstData() async {

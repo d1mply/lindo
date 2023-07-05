@@ -197,16 +197,16 @@ class MarketPage extends GetView<MarketController> {
                                 );
                               },
                             )
-                          : ListView.builder(
-                              itemCount: c.premiums.length,
+                          : ListView.builder( 
+                              itemCount: c.golds.length,
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return InkWell(
                                   onTap: () {
-                                    InAppPurchase.instance.buyNonConsumable(
+                                    InAppPurchase.instance.buyConsumable(
                                       purchaseParam: PurchaseParam(
-                                        productDetails: c.premiums[index],
+                                        productDetails: c.golds[index],
                                       ),
                                     );
                                   },
@@ -232,7 +232,7 @@ class MarketPage extends GetView<MarketController> {
                                                   horizontal: 12,
                                                 ),
                                                 child: Text(
-                                                  c.premiums[index].title,
+                                                  c.golds[index].title,
                                                   style: TextStyle(
                                                     color: ColorManager.instance.sari,
                                                   ),
@@ -240,7 +240,7 @@ class MarketPage extends GetView<MarketController> {
                                               ),
                                             ),
                                             Text(
-                                              c.premiums[index].price,
+                                              c.golds[index].price,
                                               style: TextStyle(
                                                 color: ColorManager.instance.sari,
                                               ),

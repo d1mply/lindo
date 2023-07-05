@@ -65,7 +65,9 @@ class MarketController extends GetxController {
           boostDetails.add(element.value as String);
         }
       }
-    } catch (e) {}
+    } finally {
+      update();
+    }
 
     try {
       DataSnapshot snapshot2 = await NetworkManager.instance.premiumRef.get();
@@ -75,7 +77,9 @@ class MarketController extends GetxController {
           premiumDetails.add(element.value as String);
         }
       }
-    } catch (e) {}
+    } finally {
+      update();
+    }
   }
 
   final int hour = 3600000;

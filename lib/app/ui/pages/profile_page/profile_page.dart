@@ -636,7 +636,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                                 autoPlay: true,
                                                                 viewportFraction: 1,
                                                                 autoPlayInterval: const Duration(seconds: 6),
-                                                                height: 60,
+                                                                height: 58,
                                                               ),
                                                               items: c.premiumDetails
                                                                   .asMap()
@@ -644,13 +644,17 @@ class ProfilePage extends GetView<ProfileController> {
                                                                   .map(
                                                                     (e) => Column(
                                                                       children: [
-                                                                        Text(
-                                                                          e.value,
-                                                                          style: TextStyle(
-                                                                            color: ColorManager.instance.white,
-                                                                            fontSize: 14,
-                                                                            fontFamily: 'Rubik',
-                                                                            fontWeight: FontWeight.w400,
+                                                                        Expanded(
+                                                                          child: Text(
+                                                                            e.value,
+                                                                            style: TextStyle(
+                                                                              color: ColorManager.instance.white,
+                                                                              fontSize: 14,
+                                                                              fontFamily: 'Rubik',
+                                                                              fontWeight: FontWeight.w400,
+                                                                            ),
+                                                                            maxLines: 2,
+                                                                            overflow: TextOverflow.ellipsis,
                                                                           ),
                                                                         ),
                                                                         const SizedBox(height: 8),
