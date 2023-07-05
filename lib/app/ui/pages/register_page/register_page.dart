@@ -15,7 +15,6 @@ import 'package:lindo/app/ui/utils/k_button_animated.dart';
 import 'package:lindo/app/ui/utils/k_textformfield.dart';
 import 'package:lindo/app/ui/utils/validation_manager.dart';
 import 'package:lindo/core/init/theme/color_manager.dart';
-import 'package:translator/translator.dart';
 import '../../../../core/base/state.dart';
 import '../../../../core/init/network/network_manager.dart';
 import '../../../controllers/register_controller.dart';
@@ -496,9 +495,7 @@ class RegisterPage extends GetView<RegisterController> {
                                           );
                                         } on FirebaseAuthException catch (e) {
                                           Get.closeAllSnackbars();
-                                          final translator = GoogleTranslator();
-                                          Translation translation = await translator.translate(e.message ?? "", to: 'tr');
-                                          Get.snackbar("Hata", translation.text, backgroundColor: Colors.white);
+                                          Get.snackbar("Hata", e.message ?? "Bir hata oluştu", backgroundColor: Colors.white);
                                         } catch (e) {
                                           print("hata");
                                         }

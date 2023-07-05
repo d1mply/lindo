@@ -98,7 +98,7 @@ class _SwipePageState extends State<SwipePage> {
                   elevation: 0,
                   backgroundColor: ColorManager.instance.background_gray,
                   actions: const [
-                    ShopWidget(),
+                    ShopWidget(type: 2),
                   ],
                   title: Image.asset(
                     "assets/images/lindo.png",

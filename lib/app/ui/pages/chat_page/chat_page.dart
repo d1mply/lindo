@@ -383,7 +383,7 @@ class ChatPage extends GetView<ChatController> {
                                         color: ColorManager.instance.pink,
                                       ),
                                       leadingIcon: IconButton(
-                                        icon: Image.asset("assets/images/emoji.png"),
+                                        icon: Image.asset("assets/images/emoji.png", height: 22, width: 22),
                                         onPressed: () {
                                           KBottomSheet.show(
                                             context: context,
@@ -432,7 +432,16 @@ class ChatPage extends GetView<ChatController> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           InkWell(
-                                            child: Image.asset("assets/images/gallery.png"),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(2.0),
+                                              child: Center(
+                                                child: Image.asset(
+                                                  "assets/images/gallery.png",
+                                                  height: 18,
+                                                  width: 18,
+                                                ),
+                                              ),
+                                            ),
                                             onTap: () {
                                               UserController userController = Get.find();
                                               if (userController.isPremium) {
@@ -480,7 +489,7 @@ class ChatPage extends GetView<ChatController> {
                                               } else {
                                                 KBottomSheet.show(
                                                   context: context,
-                                                  title: "Fotoğraf Görüntüleme",
+                                                  title: "Fotoğraf Gönderme",
                                                   content: Column(
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: [
@@ -509,14 +518,15 @@ class ChatPage extends GetView<ChatController> {
                                               }
                                             },
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 12, right: 12),
-                                            child: InkWell(
-                                              child: Image.asset("assets/images/send.png"),
-                                              onTap: () {
-                                                c.sendMessage(type: "text", message: c.textEditingController.text);
-                                              },
+                                          IconButton(
+                                            icon: Image.asset(
+                                              "assets/images/send.png",
+                                              height: 18,
+                                              width: 18,
                                             ),
+                                            onPressed: () {
+                                              c.sendMessage(type: "text", message: c.textEditingController.text);
+                                            },
                                           ),
                                         ],
                                       ),

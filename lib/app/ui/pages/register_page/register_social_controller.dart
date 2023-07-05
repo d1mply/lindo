@@ -97,7 +97,9 @@ class RegisterSocialController extends GetxController {
   }
 
   Future<UserCredential?> signInWithFacebook() async {
-    final LoginResult result = await FacebookAuth.instance.login();
+    final LoginResult result = await FacebookAuth.instance.login(
+      permissions: ["public_profile", "email"],
+    );
 
     if (result.status == LoginStatus.success) {
       final AuthCredential facebookCredential = FacebookAuthProvider.credential(result.accessToken!.token);

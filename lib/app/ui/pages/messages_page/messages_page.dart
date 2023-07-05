@@ -30,7 +30,7 @@ class MessagesPage extends GetView<MessagesController> {
                 return Scaffold(
                   resizeToAvoidBottomInset: true,
                   appBar: AppBar(
-                    leading: const ShopWidget(),
+                    leading: const ShopWidget(type: 3),
                     elevation: 0,
                     backgroundColor: ColorManager.instance.background_gray,
                     actions: [

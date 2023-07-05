@@ -27,7 +27,7 @@ class LikePage extends GetView<LikeController> {
         backgroundColor: ColorManager.instance.background_gray,
         elevation: 0,
         actions: const [
-          ShopWidget(),
+          ShopWidget(type: 2),
         ],
         title: Text(
           "Beğeniler",

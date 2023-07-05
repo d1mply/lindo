@@ -6,7 +6,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lindo/app/ui/pages/root_page/root_page.dart';
 import 'package:lindo/app/ui/utils/k_textformfield.dart';
-import 'package:translator/translator.dart';
 import '../../../../core/init/theme/color_manager.dart';
 import '../../../controllers/usercontroller.dart';
 import '../../utils/k_button.dart';
@@ -90,9 +89,7 @@ class _LoginemailPageState extends State<LoginemailPage> {
                           }
                         } on FirebaseAuthException catch (e) {
                           Get.closeAllSnackbars();
-                          final translator = GoogleTranslator();
-                          Translation translation = await translator.translate(e.message ?? "", to: 'tr');
-                          Get.snackbar("Error", translation.text, backgroundColor: Colors.white);
+                          Get.snackbar("Hata", e.message ?? "Bir hata oluştu", backgroundColor: Colors.white);
                         }
                       },
                       title: "Giriş Yap",

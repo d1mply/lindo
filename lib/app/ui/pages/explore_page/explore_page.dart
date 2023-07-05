@@ -235,7 +235,11 @@ class ExplorePage extends GetView<ExploreController> {
                                                               onSelectedItemChanged: (value) {
                                                                 setState(
                                                                   () {
-                                                                    c.selectedCity = c.cities[value];
+                                                                    if (c.cities[value] == "Tümü") {
+                                                                      c.selectedCity = null;
+                                                                    } else {
+                                                                      c.selectedCity = c.cities[value];
+                                                                    }
                                                                     c.update();
                                                                   },
                                                                 );
@@ -385,7 +389,7 @@ class ExplorePage extends GetView<ExploreController> {
               ],
             ),
             actions: const [
-              ShopWidget(),
+              ShopWidget(type: 3),
             ],
           ),
           body: RefreshIndicator(
@@ -441,15 +445,15 @@ class ExplorePage extends GetView<ExploreController> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 160,
+                                    height: 120,
                                     width: Get.width,
                                     child: ListView.builder(
                                       itemCount: c.boostedUsers.length,
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (context, index) {
                                         return SizedBox(
-                                          height: 160,
-                                          width: 160,
+                                          height: 120,
+                                          width: 120,
                                           child: Padding(
                                             padding: const EdgeInsets.all(10),
                                             child: InkWell(
@@ -1366,13 +1370,15 @@ class ActiveCircle extends StatelessWidget {
 class ShopWidget extends StatelessWidget {
   const ShopWidget({
     super.key,
+    required this.type,
   });
 
+  final int type;
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        Get.to(() => const MarketPage(type: 2));
+        Get.to(() => MarketPage(type: type));
       },
       icon: Image.asset(
         "assets/images/shop.png",

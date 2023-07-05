@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "608021159788-pbftvr60hqak6fcggobl0pre2rjjpjdu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lindo",
+            "certificate_hash": "494ef49b9657b23102aeefdbfc4ef07a8b8c7e08"
+          }
+        },
+        {
           "client_id": "608021159788-1bupfkcp50udj2ejdv7a7htk5hdq1prh.apps.googleusercontent.com",
           "client_type": 3
         }

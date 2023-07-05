@@ -12,11 +12,11 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lindo/app/controllers/usercontroller.dart';
 import 'package:lindo/app/ui/pages/register_page/register_social_controller.dart';
+import 'package:lindo/app/ui/pages/root_page/root_page.dart';
 import 'package:lindo/app/ui/utils/k_button_animated.dart';
 import 'package:lindo/app/ui/utils/k_textformfield.dart';
 import 'package:lindo/app/ui/utils/validation_manager.dart';
 import 'package:lindo/core/init/theme/color_manager.dart';
-import 'package:translator/translator.dart';
 import '../../../../core/base/state.dart';
 import '../../../../core/init/network/network_manager.dart';
 
@@ -407,6 +407,10 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                                         "account_verify": false,
                                                         "coin": 100,
                                                       },
+                                                    ).then(
+                                                      (value) {
+                                                        Get.offAll(() => const RootPage());
+                                                      },
                                                     );
                                                   }
                                                 }
@@ -433,6 +437,10 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                                         "uid": credential.user?.uid,
                                                         "account_verify": false,
                                                         "coin": 100,
+                                                      },
+                                                    ).then(
+                                                      (value) {
+                                                        Get.offAll(() => const RootPage());
                                                       },
                                                     );
                                                   }
@@ -461,6 +469,10 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                                         "account_verify": false,
                                                         "coin": 100,
                                                       },
+                                                    ).then(
+                                                      (value) {
+                                                        Get.offAll(() => const RootPage());
+                                                      },
                                                     );
                                                   }
                                                 }
@@ -471,9 +483,7 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                           userController.getCurrentUserData();
                                         } on FirebaseAuthException catch (e) {
                                           Get.closeAllSnackbars();
-                                          final translator = GoogleTranslator();
-                                          Translation translation = await translator.translate(e.message ?? "", to: 'tr');
-                                          Get.snackbar("Hata", translation.text, backgroundColor: Colors.white);
+                                          Get.snackbar("Hata", e.message ?? "Bir hata oluştu", backgroundColor: Colors.white);
                                         } catch (e) {
                                           debugPrint("hata");
                                         }
