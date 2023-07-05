@@ -289,7 +289,7 @@ class ExploreController extends GetxController {
   }
 
   List<String> cities = [
-    'Tümü'
+    'Tümü',
     'Adana',
     'Adıyaman',
     'Afyonkarahisar',

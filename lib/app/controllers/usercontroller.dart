@@ -20,17 +20,19 @@ class UserController extends GetxController {
   }
 
   setStatus() {
-    if (FirebaseAuth.instance.currentUser?.uid != null) {
-      Timer.periodic(
-        const Duration(seconds: 15),
-        (time) {
-          NetworkManager.instance.currentUserRef().update(
-            {
-              "lastActiveTime": DateTime.now().millisecondsSinceEpoch,
-            },
-          );
-        },
-      );
+    if (FirebaseAuth.instance.currentUser != null) {
+      if (FirebaseAuth.instance.currentUser?.uid != null) {
+        Timer.periodic(
+          const Duration(seconds: 15),
+          (time) {
+            NetworkManager.instance.currentUserRef().update(
+              {
+                "lastActiveTime": DateTime.now().millisecondsSinceEpoch,
+              },
+            );
+          },
+        );
+      }
     }
   }
 
