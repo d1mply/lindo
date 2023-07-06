@@ -158,7 +158,7 @@ class ChatController extends GetxController {
         if (userController.coin < 300) {
           sendable = false;
         } else {
-          await userController.removeCoin(25);
+          await userController.removeCoin(300);
         }
       }
       if (sendable) {

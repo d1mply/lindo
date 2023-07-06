@@ -57,7 +57,6 @@ class MessagesController extends GetxController {
       sortedListChat.add(data);
     }
     sortedListChat.sort((a, b) => b["count"].compareTo(a["count"]));
-
     chatRooms = sortedListChat;
 
     for (int i = 0; i < chatRoomsForSwiped.length; i++) {

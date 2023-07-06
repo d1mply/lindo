@@ -1,7 +1,7 @@
 name: lindo
 description: Lindo App
 
-version: 1.0.17+17
+version: 1.0.18+18
 
 environment:
   sdk: ">=2.19.2 <3.0.0"

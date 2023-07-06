@@ -27,7 +27,6 @@ class NetworkManager {
   }
 
   Future<DataSnapshot> getUserDetailsWithId(String uid) async {
-    print(uid);
     return await usersRef.child(uid).get();
   }
 
@@ -51,6 +50,23 @@ class NetworkManager {
                   }
                 }
               }
+              try {
+                time = DateFormat('hh:mm').format(DateTime.fromMillisecondsSinceEpoch(int.parse(tim.toString())));
+              } catch (e) {}
+            },
+          );
+        }
+      },
+    );
+
+    await chatRooms.child(calculateChatRoomId(uid)).orderByChild("timestamp").limitToLast(1).once().then(
+      (DatabaseEvent snapshot) {
+        Object? vals = snapshot.snapshot.value;
+        if (vals != null) {
+          Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
+          dynamic tim = "";
+          values.forEach(
+            (key, value) {
               text = value["message"];
               tim = value["timestamp"];
               try {
@@ -61,6 +77,7 @@ class NetworkManager {
         }
       },
     );
+
     return {"message": text, "count": count, "time": time};
   }
 
