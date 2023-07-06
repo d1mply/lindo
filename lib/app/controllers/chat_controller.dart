@@ -13,6 +13,7 @@ import '../../core/init/network/network_manager.dart';
 import '../../core/init/theme/color_manager.dart';
 import '../ui/utils/custom_dialog.dart';
 import '../ui/utils/k_button.dart';
+import 'explore_controller.dart';
 
 class ChatController extends GetxController {
   final String uid;
@@ -162,7 +163,10 @@ class ChatController extends GetxController {
       }
       if (sendable) {
         DateTime now = DateTime.now();
-
+        addNotification(
+          uid,
+          type == "text" ? message : "Bir fotoğraf gönderdi.",
+        );
         if (messages.isEmpty) {
           NetworkManager.instance.getUserReference(uid).child("chatrooms").child(chatRoomId).set(
             {
