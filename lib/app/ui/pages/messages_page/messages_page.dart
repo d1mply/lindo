@@ -154,125 +154,129 @@ class MessagesPage extends GetView<MessagesController> {
                                                             child: FutureBuilder(
                                                               future: NetworkManager.instance.getUserLastMessages(uid),
                                                               builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
-                                                                return Padding(
-                                                                  padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.w),
-                                                                  child: Container(
-                                                                    decoration: BoxDecoration(color: ColorManager.instance.white, borderRadius: BorderRadius.circular(8)),
-                                                                    child: Padding(
-                                                                      padding: EdgeInsets.all(4.0.w),
-                                                                      child: Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                                        children: [
-                                                                          Padding(
-                                                                            padding: const EdgeInsets.all(8.0),
-                                                                            child: Stack(
-                                                                              children: [
-                                                                                ClipRRect(
-                                                                                  borderRadius: BorderRadius.circular(500),
-                                                                                  child: snapshot.hasData
-                                                                                      ? user["images"] == null
-                                                                                          ? SvgPicture.asset(
-                                                                                              "assets/svg/no_gender.svg",
-                                                                                              width: 40.w,
-                                                                                              height: 40.w,
-                                                                                              fit: BoxFit.cover,
-                                                                                            )
-                                                                                          : CachedNetworkImage(
-                                                                                              imageUrl: user["images"].first,
-                                                                                              width: 40.w,
-                                                                                              height: 40.w,
-                                                                                              fit: BoxFit.cover,
-                                                                                            )
-                                                                                      : const SizedBox(),
-                                                                                ),
-                                                                                c.flag == true
-                                                                                    ? Positioned(
-                                                                                        left: 0,
-                                                                                        bottom: 0,
-                                                                                        child: Icon(
-                                                                                          Icons.favorite,
-                                                                                          size: Utility.dynamicWidthPixel(16),
-                                                                                          color: ColorManager.instance.pink,
-                                                                                        ),
-                                                                                      )
-                                                                                    : const SizedBox(),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                          Expanded(
-                                                                            child: Padding(
-                                                                              padding: EdgeInsets.only(left: 8.0.w, right: 8.w),
-                                                                              child: Column(
-                                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                if (snapshot.hasData) {
+                                                                  return Padding(
+                                                                    padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.w),
+                                                                    child: Container(
+                                                                      decoration: BoxDecoration(color: ColorManager.instance.white, borderRadius: BorderRadius.circular(8)),
+                                                                      child: Padding(
+                                                                        padding: EdgeInsets.all(4.0.w),
+                                                                        child: Row(
+                                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Stack(
                                                                                 children: [
-                                                                                  Text(
-                                                                                    "${snapshot.hasData ? user["name"] ?? "" : ""}",
-                                                                                    maxLines: 1,
-                                                                                    style: TextStyle(
-                                                                                      color: ColorManager.instance.primary,
-                                                                                      fontWeight: FontWeight.w600,
-                                                                                      fontSize: 14,
-                                                                                    ),
+                                                                                  ClipRRect(
+                                                                                    borderRadius: BorderRadius.circular(500),
+                                                                                    child: snapshot.hasData
+                                                                                        ? user["images"] == null
+                                                                                            ? SvgPicture.asset(
+                                                                                                "assets/svg/no_gender.svg",
+                                                                                                width: 40.w,
+                                                                                                height: 40.w,
+                                                                                                fit: BoxFit.cover,
+                                                                                              )
+                                                                                            : CachedNetworkImage(
+                                                                                                imageUrl: user["images"].first,
+                                                                                                width: 40.w,
+                                                                                                height: 40.w,
+                                                                                                fit: BoxFit.cover,
+                                                                                              )
+                                                                                        : const SizedBox(),
                                                                                   ),
-                                                                                  Text(
-                                                                                    "${snapshot.hasData ? (snapshot.data!["message"] ?? "") : ""}",
-                                                                                    maxLines: 1,
-                                                                                    style: TextStyle(
-                                                                                      color: ColorManager.instance.primary,
-                                                                                      fontWeight: snapshot.data!["count"] != 0 ? FontWeight.bold : FontWeight.normal,
-                                                                                      fontSize: 14,
-                                                                                    ),
-                                                                                  ),
+                                                                                  c.flag == true
+                                                                                      ? Positioned(
+                                                                                          left: 0,
+                                                                                          bottom: 0,
+                                                                                          child: Icon(
+                                                                                            Icons.favorite,
+                                                                                            size: Utility.dynamicWidthPixel(16),
+                                                                                            color: ColorManager.instance.pink,
+                                                                                          ),
+                                                                                        )
+                                                                                      : const SizedBox(),
                                                                                 ],
                                                                               ),
                                                                             ),
-                                                                          ),
-                                                                          Column(
-                                                                            children: [
-                                                                              Text(
-                                                                                "${snapshot.hasData ? (snapshot.data!["time"] ?? "") : ""}",
-                                                                                maxLines: 1,
-                                                                                style: TextStyle(
-                                                                                  color: ColorManager.instance.gray,
-                                                                                  fontWeight: FontWeight.w400,
-                                                                                  fontSize: 14,
+                                                                            Expanded(
+                                                                              child: Padding(
+                                                                                padding: EdgeInsets.only(left: 8.0.w, right: 8.w),
+                                                                                child: Column(
+                                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      "${snapshot.hasData ? user["name"] ?? "" : ""}",
+                                                                                      maxLines: 1,
+                                                                                      style: TextStyle(
+                                                                                        color: ColorManager.instance.primary,
+                                                                                        fontWeight: FontWeight.w600,
+                                                                                        fontSize: 14,
+                                                                                      ),
+                                                                                    ),
+                                                                                    Text(
+                                                                                      "${snapshot.hasData ? (snapshot.data!["message"] ?? "") : ""}",
+                                                                                      maxLines: 1,
+                                                                                      style: TextStyle(
+                                                                                        color: ColorManager.instance.primary,
+                                                                                        fontWeight: snapshot.data!["count"] != 0 ? FontWeight.bold : FontWeight.normal,
+                                                                                        fontSize: 14,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
                                                                                 ),
                                                                               ),
-                                                                              snapshot.hasData
-                                                                                  ? snapshot.data!["count"] != 0
-                                                                                      ? Container(
-                                                                                          decoration: BoxDecoration(
-                                                                                            shape: BoxShape.circle,
-                                                                                            color: ColorManager.instance.pink,
-                                                                                          ),
-                                                                                          child: Padding(
-                                                                                            padding: const EdgeInsets.all(5.0),
-                                                                                            child: Text(
-                                                                                              snapshot.data!["count"].toString(),
-                                                                                              maxLines: 1,
-                                                                                              style: TextStyle(
-                                                                                                color: ColorManager.instance.white,
-                                                                                                fontWeight: FontWeight.w600,
-                                                                                                fontSize: 14,
+                                                                            ),
+                                                                            Column(
+                                                                              children: [
+                                                                                Text(
+                                                                                  "${snapshot.hasData ? (snapshot.data!["time"] ?? "") : ""}",
+                                                                                  maxLines: 1,
+                                                                                  style: TextStyle(
+                                                                                    color: ColorManager.instance.gray,
+                                                                                    fontWeight: FontWeight.w400,
+                                                                                    fontSize: 14,
+                                                                                  ),
+                                                                                ),
+                                                                                snapshot.hasData
+                                                                                    ? snapshot.data!["count"] != 0
+                                                                                        ? Container(
+                                                                                            decoration: BoxDecoration(
+                                                                                              shape: BoxShape.circle,
+                                                                                              color: ColorManager.instance.pink,
+                                                                                            ),
+                                                                                            child: Padding(
+                                                                                              padding: const EdgeInsets.all(5.0),
+                                                                                              child: Text(
+                                                                                                snapshot.data!["count"].toString(),
+                                                                                                maxLines: 1,
+                                                                                                style: TextStyle(
+                                                                                                  color: ColorManager.instance.white,
+                                                                                                  fontWeight: FontWeight.w600,
+                                                                                                  fontSize: 14,
+                                                                                                ),
                                                                                               ),
                                                                                             ),
-                                                                                          ),
-                                                                                        )
-                                                                                      : const SizedBox()
-                                                                                  : const Text(""),
-                                                                            ],
-                                                                          ),
-                                                                        ],
+                                                                                          )
+                                                                                        : const SizedBox()
+                                                                                    : const Text(""),
+                                                                              ],
+                                                                            ),
+                                                                          ],
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                );
+                                                                  );
+                                                                } else {
+                                                                  return const SizedBox();
+                                                                }
                                                               },
                                                             ),
                                                           );
                                                         } else {
-                                                          return const CupertinoActivityIndicator();
+                                                          return const SizedBox();
                                                         }
                                                       },
                                                     );
