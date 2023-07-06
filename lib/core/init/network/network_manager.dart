@@ -36,7 +36,7 @@ class NetworkManager {
     int count = 0;
     String time = "";
 
-    await chatRooms.child(calculateChatRoomId(uid)).orderByChild("timestamp").limitToLast(1).once().then(
+    await chatRooms.child(calculateChatRoomId(uid)).orderByChild("timestamp").limitToLast(30).once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
         if (vals != null) {
