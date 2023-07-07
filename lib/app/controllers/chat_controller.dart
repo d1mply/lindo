@@ -146,6 +146,7 @@ class ChatController extends GetxController {
   }) async {
     if (message.replaceAll(" ", "").isNotEmpty) {
       UserController userController = Get.find();
+      await userController.getCurrentUserData();
       bool sendable = true;
       if (type == "text") {
         if (userController.coin < 25) {
@@ -203,6 +204,11 @@ class ChatController extends GetxController {
           textEditingController.clear();
           update();
         } else {
+          NetworkManager.instance.getUserReference(uid).update(
+            {
+              "lastMessage": DateTime.now().millisecondsSinceEpoch,
+            },
+          );
           await NetworkManager.instance.chatRooms.child(chatRoomId).push().set(
             {
               "timestamp": now.millisecondsSinceEpoch,
