@@ -63,7 +63,7 @@ class MessagesController extends GetxController {
       String uid = chatRoomsForSwiped[i]["chatroomId"].replaceAll("-", "").replaceAll(FirebaseAuth.instance.currentUser!.uid, "");
       Map<String, dynamic> x = await NetworkManager.instance.getUserLastMessages(uid);
       int count = x["count"];
-      Map<dynamic, dynamic> data = chatRooms[i];
+      Map<dynamic, dynamic> data = chatRoomsForSwiped[i];
       data["count"] = count;
       sortedListSwiped.add(data);
     }
