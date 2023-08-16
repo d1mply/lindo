@@ -391,6 +391,7 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                               (credential) async {
                                                 if (credential != null) {
                                                   if (credential.user?.uid != null) {
+                                                    //TODO burada user uid si varsa setleme işlemi yapma! facebook ve google için
                                                     await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
                                                       {
                                                         "email": credential.user?.email,

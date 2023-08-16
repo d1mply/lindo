@@ -288,90 +288,7 @@ class ExploreController extends GetxController {
     super.onInit();
   }
 
-  List<String> cities = [
-    'Tümü',
-    'Adana',
-    'Adıyaman',
-    'Afyonkarahisar',
-    'Ağrı',
-    'Amasya',
-    'Ankara',
-    'Antalya',
-    'Artvin',
-    'Aydın',
-    'Balıkesir',
-    'Bilecik',
-    'Bingöl',
-    'Bitlis',
-    'Bolu',
-    'Burdur',
-    'Bursa',
-    'Çanakkale',
-    'Çankırı',
-    'Çorum',
-    'Denizli',
-    'Diyarbakır',
-    'Edirne',
-    'Elazığ',
-    'Erzincan',
-    'Erzurum',
-    'Eskişehir',
-    'Gaziantep',
-    'Giresun',
-    'Gümüşhane',
-    'Hakkari',
-    'Hatay',
-    'Isparta',
-    'Mersin',
-    'İstanbul',
-    'İzmir',
-    'Kars',
-    'Kastamonu',
-    'Kayseri',
-    'Kırklareli',
-    'Kırşehir',
-    'Kocaeli',
-    'Konya',
-    'Kütahya',
-    'Malatya',
-    'Manisa',
-    'Kahramanmaraş',
-    'Mardin',
-    'Muğla',
-    'Muş',
-    'Nevşehir',
-    'Niğde',
-    'Ordu',
-    'Rize',
-    'Sakarya',
-    'Samsun',
-    'Siirt',
-    'Sinop',
-    'Sivas',
-    'Tekirdağ',
-    'Tokat',
-    'Trabzon',
-    'Tunceli',
-    'Şanlıurfa',
-    'Uşak',
-    'Van',
-    'Yozgat',
-    'Zonguldak',
-    'Aksaray',
-    'Bayburt',
-    'Karaman',
-    'Kırıkkale',
-    'Batman',
-    'Şırnak',
-    'Bartın',
-    'Ardahan',
-    'Iğdır',
-    'Yalova',
-    'Karabük',
-    'Kilis',
-    'Osmaniye',
-    'Düzce'
-  ];
+  List<String> cities = ['Tümü', 'Adana', 'Adıyaman', 'Afyonkarahisar', 'Ağrı', 'Amasya', 'Ankara', 'Antalya', 'Artvin', 'Aydın', 'Balıkesir', 'Bilecik', 'Bingöl', 'Bitlis', 'Bolu', 'Burdur', 'Bursa', 'Çanakkale', 'Çankırı', 'Çorum', 'Denizli', 'Diyarbakır', 'Edirne', 'Elazığ', 'Erzincan', 'Erzurum', 'Eskişehir', 'Gaziantep', 'Giresun', 'Gümüşhane', 'Hakkari', 'Hatay', 'Isparta', 'Mersin', 'İstanbul', 'İzmir', 'Kars', 'Kastamonu', 'Kayseri', 'Kırklareli', 'Kırşehir', 'Kocaeli', 'Konya', 'Kütahya', 'Malatya', 'Manisa', 'Kahramanmaraş', 'Mardin', 'Muğla', 'Muş', 'Nevşehir', 'Niğde', 'Ordu', 'Rize', 'Sakarya', 'Samsun', 'Siirt', 'Sinop', 'Sivas', 'Tekirdağ', 'Tokat', 'Trabzon', 'Tunceli', 'Şanlıurfa', 'Uşak', 'Van', 'Yozgat', 'Zonguldak', 'Aksaray', 'Bayburt', 'Karaman', 'Kırıkkale', 'Batman', 'Şırnak', 'Bartın', 'Ardahan', 'Iğdır', 'Yalova', 'Karabük', 'Kilis', 'Osmaniye', 'Düzce'];
 }
 
 addNotification(String? uid, String message) async {
@@ -423,6 +340,55 @@ addNotification(String? uid, String message) async {
   } finally {}
 }
 
+addNotification2(String? uid, String message, String title) async {
+  try {
+    DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+    final data = user.value as Map<Object?, Object?>;
+
+    if (uid == FirebaseAuth.instance.currentUser!.uid) {
+      return;
+    }
+    String? image;
+    if (data["images"] != null) {
+      image = (data["images"] as List).first;
+    }
+    NetworkManager.instance.notificationRef.push().set(
+      {
+        "uid": uid,
+        "image": image,
+        "senderUid": FirebaseAuth.instance.currentUser!.uid,
+        "sender": data["name"],
+        "message": message,
+        "timestamp": DateTime.now().millisecondsSinceEpoch,
+        "isRead": false,
+      },
+    );
+    if (uid != null) {
+      Map<dynamic, dynamic>? sendUser = await getUser(uid);
+      if (sendUser?["token"] != null) {
+        Dio dio = Dio();
+        dio.post(
+          "https://fcm.googleapis.com/fcm/send",
+          options: Options(
+            headers: {
+              "Authorization": "key=$firebasePushServerKey",
+              "Content-Type": "application/json",
+            },
+          ),
+          data: {
+            "to": sendUser?["token"],
+            "notification": {
+              "body": message,
+              "priority": "high",
+              "title": title,
+            }
+          },
+        );
+      }
+    }
+  } finally {}
+}
+
 Future<Map<dynamic, dynamic>?> getUser(String uid) async {
   Map<dynamic, dynamic>? user;
 
@@ -455,6 +421,11 @@ swipeRight(
         return;
       }
 
+      addNotification2(
+        uid,
+        "Biri Seni Beğendi 😍🥰",
+        "🎉🥳 Yeni Beğenii! 🥳🎉",
+      );
       NetworkManager.instance.swipe.push().set(
         {
           "uid": uid,
@@ -507,7 +478,11 @@ swipeRight(
         if (uid == FirebaseAuth.instance.currentUser!.uid) {
           return;
         }
-
+        addNotification2(
+          uid,
+          "Biri Seni Beğendi 😍🥰",
+          "🎉🥳 Yeni Beğenii! 🥳🎉",
+        );
         NetworkManager.instance.swipe.push().set(
           {
             "uid": uid,

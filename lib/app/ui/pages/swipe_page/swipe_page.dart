@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,6 +10,7 @@ import 'package:story_view/story_view.dart' as stry;
 import 'package:swipe_stack_null_safe/swipe_stack_null_safe.dart';
 import '../../../../core/base/state.dart';
 import '../../../../core/init/cache/cache_manager.dart';
+import '../../../../core/init/network/network_manager.dart';
 import '../../../../core/init/theme/color_manager.dart';
 import '../../../controllers/explore_controller.dart';
 import '../../../controllers/swipe_controller.dart';
@@ -301,10 +303,13 @@ class _StoryState extends State<Story> {
                           CupertinoIcons.chevron_up,
                           color: ColorManager.instance.white,
                         ),
-                        onPressed: () {
-                          addNotification(
+                        onPressed: () async {
+                          DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+                          final user2 = user.value as Map<Object?, Object?>;
+                          addNotification2(
                             widget.user["uid"],
-                            "Eşleşme sayfasında profilinizi görüntüledi.",
+                            "${user2["name"]} Eşleşme sayfasında profilinizi görüntüledi 😘 ",
+                            "😍 Yeni Görüntülenme! 😍",
                           );
                           stry.StoryController controller = stry.StoryController();
 

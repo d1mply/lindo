@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,6 +16,7 @@ import 'package:lindo/core/init/theme/color_manager.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:story_view/story_view.dart';
+import '../../../../core/init/network/network_manager.dart';
 import '../../../controllers/explore_controller.dart';
 import '../../utils/k_bottom_sheet.dart';
 import '../../utils/k_button.dart';
@@ -457,11 +459,15 @@ class ExplorePage extends GetView<ExploreController> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(10),
                                             child: InkWell(
-                                              onTap: () {
-                                                addNotification(
+                                              onTap: () async {
+                                                DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+                                                final user2 = user.value as Map<Object?, Object?>;
+                                                addNotification2(
                                                   c.boostedUsers[index]["uid"],
-                                                  "Keşfette profilinizi görüntüledi.",
+                                                  "${user2["name"]} Keşfette profilini görüntüledi 😘 ",
+                                                  "😍 Yeni Görüntülenme! 😍",
                                                 );
+
                                                 StoryController controller = StoryController();
 
                                                 List<StoryItem> storyItems = [];
@@ -906,11 +912,15 @@ class ExplorePage extends GetView<ExploreController> {
                               return Padding(
                                 padding: const EdgeInsets.all(10),
                                 child: InkWell(
-                                  onTap: () {
-                                    addNotification(
+                                  onTap: () async {
+                                    DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+                                    final user2 = user.value as Map<Object?, Object?>;
+                                    addNotification2(
                                       c.usersList[index]["uid"],
-                                      "Keşfette profilinizi görüntüledi.",
+                                      "${user2["name"]} Keşfette profilini görüntüledi 😘 ",
+                                      "😍 Yeni Görüntülenme! 😍",
                                     );
+
                                     StoryController controller = StoryController();
 
                                     List<StoryItem> storyItems = [];
