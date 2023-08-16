@@ -46,7 +46,6 @@ class UserController extends GetxController {
         }
       }
       blockedUsers = items;
-      print(items);
     }
     update();
   }

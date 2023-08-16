@@ -145,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                                                   child: Padding(
                                                     padding: EdgeInsets.symmetric(horizontal: 14),
                                                     child: Text(
-                                                      "Google ile Giriş Yap",
+                                                      "Google ile Kayıt Ol",
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                       ),
@@ -216,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
                                                   child: Padding(
                                                     padding: EdgeInsets.symmetric(horizontal: 14),
                                                     child: Text(
-                                                      "Facebook ile Giriş Yap",
+                                                      "Facebook ile Kayıt Ol",
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                       ),
@@ -314,7 +314,7 @@ class _LoginPageState extends State<LoginPage> {
                                     PersistentNavBarNavigator.pushNewScreen(context, screen: const LoginemailPage(), withNavBar: false);
                                   },
                                   child: Text(
-                                    "E-posta ile Giriş Yap",
+                                    "Giriş Yap",
                                     style: TextStyle(
                                       color: ColorManager.instance.white,
                                       fontWeight: FontWeight.w600,

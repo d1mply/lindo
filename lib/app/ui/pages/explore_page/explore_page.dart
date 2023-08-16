@@ -1372,8 +1372,8 @@ class ActiveCircle extends StatelessWidget {
                   ),
                 ),
               )
-            : SizedBox()
-        : SizedBox();
+            : const SizedBox()
+        : const SizedBox();
   }
 }
 

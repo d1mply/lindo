@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +24,7 @@ import '../../../../core/init/network/network_manager.dart';
 class RegisterPageSocial extends GetView<RegisterSocialController> {
   const RegisterPageSocial({required this.loginType, super.key});
   final int loginType; //0 google, 1 facebook, 2 apple
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<RegisterSocialController>(
@@ -391,28 +393,33 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                               (credential) async {
                                                 if (credential != null) {
                                                   if (credential.user?.uid != null) {
-                                                    //TODO burada user uid si varsa setleme işlemi yapma! facebook ve google için
-                                                    await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
-                                                      {
-                                                        "email": credential.user?.email,
-                                                        "name": c.nameController.text,
-                                                        "registerDate": DateTime.now().toString(),
-                                                        "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
-                                                        "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
-                                                        "birth": c.selectedDateTime.toString(),
-                                                        "year": DateTime.now().year - c.selectedDateTime!.year,
-                                                        "images": c.images,
-                                                        "birthYear": c.selectedDateTime?.year,
-                                                        "gender": c.selectedGender,
-                                                        "uid": credential.user?.uid,
-                                                        "account_verify": false,
-                                                        "coin": 100,
-                                                      },
-                                                    ).then(
-                                                      (value) {
-                                                        Get.offAll(() => const RootPage());
-                                                      },
-                                                    );
+                                                    DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+
+                                                    if (user.value == null) {
+                                                      await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
+                                                        {
+                                                          "email": credential.user?.email,
+                                                          "name": credential.user?.displayName ?? "",
+                                                          "registerDate": DateTime.now().toString(),
+                                                          "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
+                                                          "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
+                                                          "birth": c.selectedDateTime.toString(),
+                                                          "year": DateTime.now().year - c.selectedDateTime!.year,
+                                                          "images": c.images,
+                                                          "birthYear": c.selectedDateTime?.year,
+                                                          "gender": c.selectedGender,
+                                                          "uid": credential.user?.uid,
+                                                          "account_verify": false,
+                                                          "coin": 100,
+                                                        },
+                                                      ).then(
+                                                        (value) {
+                                                          Get.offAll(() => const RootPage());
+                                                        },
+                                                      );
+                                                    } else {
+                                                      Get.offAll(() => const RootPage());
+                                                    }
                                                   }
                                                 }
                                               },
@@ -423,27 +430,33 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                               (credential) async {
                                                 if (credential != null) {
                                                   if (credential.user?.uid != null) {
-                                                    await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
-                                                      {
-                                                        "email": credential.user?.email,
-                                                        "name": c.nameController.text,
-                                                        "registerDate": DateTime.now().toString(),
-                                                        "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
-                                                        "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
-                                                        "birth": c.selectedDateTime.toString(),
-                                                        "year": DateTime.now().year - c.selectedDateTime!.year,
-                                                        "images": c.images,
-                                                        "birthYear": c.selectedDateTime?.year,
-                                                        "gender": c.selectedGender,
-                                                        "uid": credential.user?.uid,
-                                                        "account_verify": false,
-                                                        "coin": 100,
-                                                      },
-                                                    ).then(
-                                                      (value) {
-                                                        Get.offAll(() => const RootPage());
-                                                      },
-                                                    );
+                                                    DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+
+                                                    if (user.value == null) {
+                                                      await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
+                                                        {
+                                                          "email": credential.user?.email,
+                                                          "name": credential.user?.displayName ?? "",
+                                                          "registerDate": DateTime.now().toString(),
+                                                          "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
+                                                          "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,
+                                                          "birth": c.selectedDateTime.toString(),
+                                                          "year": DateTime.now().year - c.selectedDateTime!.year,
+                                                          "images": c.images,
+                                                          "birthYear": c.selectedDateTime?.year,
+                                                          "gender": c.selectedGender,
+                                                          "uid": credential.user?.uid,
+                                                          "account_verify": false,
+                                                          "coin": 100,
+                                                        },
+                                                      ).then(
+                                                        (value) {
+                                                          Get.offAll(() => const RootPage());
+                                                        },
+                                                      );
+                                                    } else {
+                                                      Get.offAll(() => const RootPage());
+                                                    }
                                                   }
                                                 }
                                               },
@@ -457,7 +470,7 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                                     await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
                                                       {
                                                         "email": credential.user?.email,
-                                                        "name": c.nameController.text,
+                                                        "name": credential.user?.displayName ?? "",
                                                         "registerDate": DateTime.now().toString(),
                                                         "registerTimestamp": DateTime.now().millisecondsSinceEpoch,
                                                         "birthTimestamp": c.selectedDateTime?.millisecondsSinceEpoch,

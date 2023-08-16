@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "608021159788-5s4u1u54ndcn3as965uf1stsrjevl9ui.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lindo",
+            "certificate_hash": "367fd18d96f5d5d2e631ceac9d61f2ff849f151b"
+          }
+        },
+        {
           "client_id": "608021159788-edl716m4810g2gp82q3otjuviu0h5k4i.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

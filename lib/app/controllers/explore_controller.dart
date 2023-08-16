@@ -280,7 +280,6 @@ class ExploreController extends GetxController {
     scrollController.addListener(
       () {
         if (scrollController.position.atEdge && scrollController.position.pixels == scrollController.position.maxScrollExtent) {
-          print("sona gelindi");
           getMoreUsers();
         }
       },
