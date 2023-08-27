@@ -138,7 +138,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                   child: InkWell(
                                                     onTap: () async {
                                                       final ImagePicker picker = ImagePicker();
-                                                      XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                      XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                       String? downloadUrl = await c.uploadImage(image);
                                                       if (downloadUrl != null) {
                                                         c.images[1] = downloadUrl;
@@ -200,7 +200,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                 InkWell(
                                                   onTap: () async {
                                                     final ImagePicker picker = ImagePicker();
-                                                    XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                    XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                     String? downloadUrl = await c.uploadImage(image);
                                                     if (downloadUrl != null) {
                                                       c.images[2] = downloadUrl;
@@ -257,7 +257,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                   child: InkWell(
                                                     onTap: () async {
                                                       final ImagePicker picker = ImagePicker();
-                                                      XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                      XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                       String? downloadUrl = await c.uploadImage(image);
                                                       if (downloadUrl != null) {
                                                         c.images[3] = downloadUrl;
@@ -321,7 +321,7 @@ class ProfilePage extends GetView<ProfileController> {
                                             child: InkWell(
                                               onTap: () async {
                                                 final ImagePicker picker = ImagePicker();
-                                                XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                 String? downloadUrl = await c.uploadImage(image);
                                                 if (downloadUrl != null) {
                                                   c.images[0] = downloadUrl;
@@ -404,7 +404,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                   child: InkWell(
                                                     onTap: () async {
                                                       final ImagePicker picker = ImagePicker();
-                                                      XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                      XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                       String? downloadUrl = await c.uploadImage(image);
                                                       if (downloadUrl != null) {
                                                         c.images[4] = downloadUrl;
@@ -466,7 +466,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                 InkWell(
                                                   onTap: () async {
                                                     final ImagePicker picker = ImagePicker();
-                                                    XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                    XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                     String? downloadUrl = await c.uploadImage(image);
                                                     if (downloadUrl != null) {
                                                       c.images[5] = downloadUrl;
@@ -523,7 +523,7 @@ class ProfilePage extends GetView<ProfileController> {
                                                   child: InkWell(
                                                     onTap: () async {
                                                       final ImagePicker picker = ImagePicker();
-                                                      XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                      XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                       String? downloadUrl = await c.uploadImage(image);
                                                       if (downloadUrl != null) {
                                                         c.images[6] = downloadUrl;

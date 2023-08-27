@@ -228,7 +228,7 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                         InkWell(
                                           onTap: () async {
                                             final ImagePicker picker = ImagePicker();
-                                            c.image1 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                            c.image1 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                             c.update();
                                           },
                                           child: Container(
@@ -266,7 +266,7 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                                   child: InkWell(
                                                     onTap: () async {
                                                       final ImagePicker picker = ImagePicker();
-                                                      c.image2 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                      c.image2 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                       c.update();
                                                     },
                                                     child: Container(
@@ -302,7 +302,7 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                                   child: InkWell(
                                                     onTap: () async {
                                                       final ImagePicker picker = ImagePicker();
-                                                      c.image3 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                      c.image3 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                       c.update();
                                                     },
                                                     child: Container(
@@ -338,7 +338,7 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                                   child: InkWell(
                                                     onTap: () async {
                                                       final ImagePicker picker = ImagePicker();
-                                                      c.image4 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                      c.image4 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                       c.update();
                                                     },
                                                     child: Container(
@@ -467,7 +467,6 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                               (credential) async {
                                                 if (credential != null) {
                                                   if (credential.user?.uid != null) {
-
                                                     await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
                                                       {
                                                         "email": credential.user?.email,
@@ -489,8 +488,6 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                                         Get.offAll(() => const RootPage());
                                                       },
                                                     );
-
-
                                                   }
                                                 }
                                               },

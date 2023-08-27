@@ -226,7 +226,7 @@ class RegisterPage extends GetView<RegisterController> {
                                         InkWell(
                                           onTap: () async {
                                             final ImagePicker picker = ImagePicker();
-                                            c.image1 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                            c.image1 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                             c.update();
                                           },
                                           child: Container(
@@ -264,7 +264,7 @@ class RegisterPage extends GetView<RegisterController> {
                                                   child: InkWell(
                                                     onTap: () async {
                                                       final ImagePicker picker = ImagePicker();
-                                                      c.image2 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                      c.image2 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                       c.update();
                                                     },
                                                     child: Container(
@@ -300,7 +300,7 @@ class RegisterPage extends GetView<RegisterController> {
                                                   child: InkWell(
                                                     onTap: () async {
                                                       final ImagePicker picker = ImagePicker();
-                                                      c.image3 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                      c.image3 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                       c.update();
                                                     },
                                                     child: Container(
@@ -336,7 +336,7 @@ class RegisterPage extends GetView<RegisterController> {
                                                   child: InkWell(
                                                     onTap: () async {
                                                       final ImagePicker picker = ImagePicker();
-                                                      c.image4 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                      c.image4 = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                       c.update();
                                                     },
                                                     child: Container(

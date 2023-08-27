@@ -454,7 +454,7 @@ class ChatPage extends GetView<ChatController> {
                                                         onPressed: () async {
                                                           Navigator.pop(context);
                                                           final ImagePicker picker = ImagePicker();
-                                                          XFile? image = await picker.pickImage(source: ImageSource.camera, imageQuality: 90);
+                                                          XFile? image = await picker.pickImage(source: ImageSource.camera, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                           String? downloadUrl = await uploadImage(image);
                                                           if (downloadUrl != "") {
                                                             c.sendMessage(isLiked: false, type: "image", message: downloadUrl!);
@@ -466,7 +466,7 @@ class ChatPage extends GetView<ChatController> {
                                                         onPressed: () async {
                                                           Navigator.pop(context);
                                                           final ImagePicker picker = ImagePicker();
-                                                          XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
+                                                          XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxHeight: 1000, maxWidth: 1000);
                                                           String? downloadUrl = await uploadImage(image);
                                                           if (downloadUrl != null) {
                                                             if (downloadUrl != "") {
