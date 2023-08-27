@@ -1,21 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:lindo/app/ui/pages/register_page/register_page_social.dart';
 import 'package:lindo/app/ui/pages/root_page/root_page.dart';
 import 'package:lindo/app/ui/utils/k_textformfield.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import '../../../../core/init/network/network_manager.dart';
 import '../../../../core/init/theme/color_manager.dart';
 import '../../../controllers/usercontroller.dart';
 import '../../utils/k_button.dart';
-import '../register_page/register_social_controller.dart';
 
 class LoginemailPage extends StatefulWidget {
   const LoginemailPage({super.key});

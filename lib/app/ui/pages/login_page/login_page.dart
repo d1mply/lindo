@@ -54,7 +54,19 @@ class _LoginPageState extends State<LoginPage> {
           _controller.value.isInitialized
               ? Opacity(
                   opacity: 0.5,
-                  child: VideoPlayer(_controller),
+                  child: SizedBox.expand(
+                    child: FittedBox(
+                      alignment: Alignment.center,
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        height: _controller.value.size.height,
+                        width: _controller.value.size.width,
+                        child: VideoPlayer(
+                          _controller,
+                        ),
+                      ),
+                    ),
+                  ),
                 )
               : const SizedBox(),
           SafeArea(
