@@ -393,7 +393,7 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                               (credential) async {
                                                 if (credential != null) {
                                                   if (credential.user?.uid != null) {
-                                                    DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+                                                    DataSnapshot? user = await NetworkManager.instance.getCurrentUserDetails();
 
                                                     if (user.value == null) {
                                                       await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
@@ -430,7 +430,7 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                               (credential) async {
                                                 if (credential != null) {
                                                   if (credential.user?.uid != null) {
-                                                    DataSnapshot user = await NetworkManager.instance.getCurrentUserDetails();
+                                                    DataSnapshot? user = await NetworkManager.instance.getCurrentUserDetails();
 
                                                     if (user.value == null) {
                                                       await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
@@ -467,6 +467,7 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                               (credential) async {
                                                 if (credential != null) {
                                                   if (credential.user?.uid != null) {
+
                                                     await NetworkManager.instance.usersRef.child(credential.user!.uid).set(
                                                       {
                                                         "email": credential.user?.email,
@@ -488,6 +489,8 @@ class RegisterPageSocial extends GetView<RegisterSocialController> {
                                                         Get.offAll(() => const RootPage());
                                                       },
                                                     );
+
+
                                                   }
                                                 }
                                               },

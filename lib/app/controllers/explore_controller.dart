@@ -17,8 +17,8 @@ import '../ui/utils/k_button.dart';
 
 class ExploreController extends GetxController {
   TextEditingController searchController = TextEditingController();
-  int pageSize = 300;
-  int searchPageSize = 300;
+  int pageSize = 70;
+  int searchPageSize = 30;
   ScrollController scrollController = ScrollController();
   bool onlyValidatedUsers = false;
   bool selectedOnlyValidatedUsers = false;
@@ -31,13 +31,19 @@ class ExploreController extends GetxController {
   int minAge = 18;
   int maxAge = 100;
   List<bool> selectedGenderSelections = [false, false];
+  DataSnapshot? lastUser;
 
   getUsers({String? start}) async {
     isLoading = true;
-    await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).once().then(
+    DataSnapshot currentUser = await NetworkManager.instance.getCurrentUserDetails();
+    final data = currentUser.value as Map<Object?, Object?>;
+
+    var gender = data["gender"];
+    await NetworkManager.instance.usersRef.limitToFirst(pageSize).once().then(
       (DatabaseEvent snapshot) {
         usersList = [];
         Object? vals = snapshot.snapshot.value;
+        lastUser = snapshot.snapshot.children.last;
         List<Map<dynamic, dynamic>> temp = [];
 
         if (vals != null) {
@@ -50,7 +56,9 @@ class ExploreController extends GetxController {
                 if (value != null) {
                   if (value["uid"] != null) {
                     if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
-                      temp.add(value);
+                      if (value["gender"] != gender) {
+                        temp.add(value);
+                      }
                     }
                   }
                 }
@@ -182,49 +190,59 @@ class ExploreController extends GetxController {
   }
 
   bool isLoading = false;
+  bool isMoreLoading = false;
 
   Object? lastvals;
   Future getMoreUsers() async {
-    isLoading = true;
+    isMoreLoading = true;
+    update();
     debugPrint("refreshed");
     if (searchController.text.isEmpty) {
       String? start = usersList.last["uid"];
       if (start != null) {
         List<Map<dynamic, dynamic>> temp = usersList;
-        pageSize = pageSize * 2;
-        await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).once().then(
-          (DatabaseEvent snapshot) {
+        pageSize = pageSize + 20;
+        DataSnapshot currentUser = await NetworkManager.instance.getCurrentUserDetails();
+        final data = currentUser.value as Map<Object?, Object?>;
+
+        var gender = data["gender"];
+
+        await NetworkManager.instance.usersRef.startAt(null, key: lastUser?.key).limitToFirst(pageSize).once().then(
+          (DatabaseEvent snapshot) async {
             Object? vals = snapshot.snapshot.value;
-            lastvals = vals;
-            if (vals != lastvals) {
-              if (vals != null) {
-                Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
-                UserController userController = Get.find();
-                values.forEach(
-                  (key, value) {
-                    if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
-                      temp.add(value);
+            lastUser = snapshot.snapshot.children.last;
+            if (vals != null) {
+              Map<dynamic, dynamic> values = snapshot.snapshot.value as Map<dynamic, dynamic>;
+              UserController userController = Get.find();
+              values.forEach(
+                (key, value) {
+                  if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
+                    if (value["uid"] != null) {
+                      if (value["gender"] != gender) {
+                        temp.add(value);
+                      }
                     }
-                  },
-                );
+                  }
+                },
+              );
+              Set<Map<dynamic, dynamic>> uniqueSet = {};
+              for (var element in temp) {
+                uniqueSet.add(element);
               }
+
+              List<Map<dynamic, dynamic>> uniqueList = uniqueSet.toList();
+              usersList = uniqueList;
+              await filterUsers();
             }
           },
         );
-        Set<Map<dynamic, dynamic>> uniqueSet = {};
-        for (var element in temp) {
-          uniqueSet.add(element);
-        }
-
-        List<Map<dynamic, dynamic>> uniqueList = uniqueSet.toList();
-        usersList = uniqueList;
-        await filterUsers();
       }
     } else {
       searchPageSize += searchPageSize + 20;
       await searchUsers();
     }
-    isLoading = false;
+    isMoreLoading = false;
+    update();
   }
 
   searchUsers() async {

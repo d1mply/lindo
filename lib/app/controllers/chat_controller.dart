@@ -149,17 +149,18 @@ class ChatController extends GetxController {
       await userController.getCurrentUserData();
       bool sendable = true;
       if (type == "text") {
-        if (userController.coin < 25) {
+        int calculator = (message.length / 100).ceil();
+        if (userController.coin < 25 * calculator) {
           sendable = false;
         } else {
-          await userController.removeCoin(25);
+          await userController.removeCoin(25 * calculator);
         }
       }
       if (type == "image") {
-        if (userController.coin < 300) {
+        if (userController.coin < 500) {
           sendable = false;
         } else {
-          await userController.removeCoin(300);
+          await userController.removeCoin(500);
         }
       }
       if (sendable) {
@@ -230,7 +231,8 @@ class ChatController extends GetxController {
             children: [
               const SizedBox(height: 12),
               const Text(
-                "Mesaj veya fotoğraf göndermek için altınınız yetersiz. Mesajlar 25, fotoğraflar 300 altın tüketir.",
+                "Mesaj veya fotoğraf göndermek için Altın Yetersiz 😢",
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               GetBuilder<UserController>(
@@ -252,12 +254,12 @@ class ChatController extends GetxController {
                       ),
                     );
                   },
-                  title: "Altın Yükle",
+                  title: "Markete Git",
                 ),
               ),
             ],
           ),
-          title: "Altın Yetersiz",
+          title: "Uyarı",
         );
       }
     }
