@@ -23,7 +23,11 @@ class SwipeController extends GetxController {
   SwipeController(this.context);
 
   getUsers({String? start}) async {
-    await NetworkManager.instance.usersRef.orderByChild("uid").limitToFirst(pageSize).once().then(
+    DataSnapshot currentUser = await NetworkManager.instance.getCurrentUserDetails();
+    final data = currentUser.value as Map<Object?, Object?>;
+
+    var gender = data["gender"];
+    await NetworkManager.instance.usersRef.once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
         if (vals != null) {
@@ -32,20 +36,18 @@ class SwipeController extends GetxController {
           values.forEach(
             (key, value) {
               if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
-                if (keyAdded == false) {
-                  value["kk"] = true;
-                  keyAdded = true;
+                if (value["gender"] != gender) {
+                  if (keyAdded == false) {
+                    value["kk"] = true;
+                    keyAdded = true;
+                  }
+                  usersList.add(value);
+                  update();
                 }
-                usersList.add(value);
-                update();
               }
             },
           );
-          usersList.removeWhere(
-            (element) {
-              return (element["gender"] == userController.gender);
-            },
-          );
+          
           cards = usersList.map(
             (e) {
               return usersList.isNotEmpty
