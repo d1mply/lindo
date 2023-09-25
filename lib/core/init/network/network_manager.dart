@@ -21,6 +21,7 @@ class NetworkManager {
   DatabaseReference boostRef = FirebaseDatabase.instance.ref().child('boost');
   DatabaseReference premiumRef = FirebaseDatabase.instance.ref().child('premium');
   DatabaseReference buyTransactionsRef = FirebaseDatabase.instance.ref().child('buy_transactions');
+  DatabaseReference forceUpdateRef = FirebaseDatabase.instance.ref().child('force_update');
 
   DatabaseReference getUserReference(String uid) {
     return FirebaseDatabase.instance.ref().child('users').child(uid);
