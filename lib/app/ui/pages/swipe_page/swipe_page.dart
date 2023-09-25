@@ -112,28 +112,32 @@ class _SwipePageState extends State<SwipePage> {
                   child: Center(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-                      child: SizedBox(
-                        height: Get.height,
-                        width: Get.width,
-                        child: SwipeStack(
-                          key: swipeKey,
-                          visibleCount: 10,
-                          onSwipe: (int index, SwiperPosition position) {
-                            if (position == SwiperPosition.Right) {
-                              swipeRight(c.usersList[index]["uid"], context);
-                            }
-                          },
-                          children: c.cards.map(
-                            (e) {
-                              return SwiperItem(
-                                builder: (p0, progress) {
-                                  return e;
+                      child: c.isLoading == true
+                          ? CircularProgressIndicator(
+                              color: ColorManager.instance.pink,
+                            )
+                          : SizedBox(
+                              height: Get.height,
+                              width: Get.width,
+                              child: SwipeStack(
+                                key: swipeKey,
+                                visibleCount: 10,
+                                onSwipe: (int index, SwiperPosition position) {
+                                  if (position == SwiperPosition.Right) {
+                                    swipeRight(c.usersList[index]["uid"], context);
+                                  }
                                 },
-                              );
-                            },
-                          ).toList(),
-                        ),
-                      ),
+                                children: c.cards.map(
+                                  (e) {
+                                    return SwiperItem(
+                                      builder: (p0, progress) {
+                                        return e;
+                                      },
+                                    );
+                                  },
+                                ).toList(),
+                              ),
+                            ),
                     ),
                   ),
                 ),

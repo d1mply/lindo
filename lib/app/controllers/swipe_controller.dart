@@ -22,7 +22,10 @@ class SwipeController extends GetxController {
   bool keyAdded = false;
   SwipeController(this.context);
 
+  bool isLoading = false;
   getUsers({String? start}) async {
+    isLoading = true;
+    update();
     DataSnapshot currentUser = await NetworkManager.instance.getCurrentUserDetails();
     final data = currentUser.value as Map<Object?, Object?>;
 
@@ -34,7 +37,7 @@ class SwipeController extends GetxController {
     } else {
       selectedGender = 1;
     }
-    await NetworkManager.instance.usersRef.orderByChild("gender").equalTo(selectedGender).orderByChild("lastActiveTime").limitToFirst(40).once().then(
+    await NetworkManager.instance.usersRef.orderByChild("gender").equalTo(selectedGender).limitToFirst(40).once().then(
       (DatabaseEvent snapshot) {
         Object? vals = snapshot.snapshot.value;
         if (vals != null) {
@@ -78,6 +81,7 @@ class SwipeController extends GetxController {
         }
       },
     );
+    isLoading = false;
     update();
     showShowCaseView();
   }
