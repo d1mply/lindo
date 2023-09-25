@@ -142,18 +142,21 @@ class ProfilePage extends GetView<ProfileController> {
                                                       String? downloadUrl = await c.uploadImage(image);
                                                       if (downloadUrl != null) {
                                                         c.images[1] = downloadUrl;
-                                                        String uid = FirebaseAuth.instance.currentUser!.uid;
+                                                        String? uid = FirebaseAuth.instance.currentUser?.uid;
                                                         List<String> imgs = [];
                                                         for (var element in c.images) {
                                                           if (element != null) {
                                                             imgs.add(element);
                                                           }
                                                         }
-                                                        await NetworkManager.instance.usersRef.child(uid).update(
-                                                          {
-                                                            "images": imgs,
-                                                          },
-                                                        );
+                                                        if (uid != null) {
+                                                          await NetworkManager.instance.usersRef.child(uid).update(
+                                                            {
+                                                              "images": imgs,
+                                                            },
+                                                          );
+                                                        }
+
                                                         c.getFirstData();
                                                       }
                                                       c.update();

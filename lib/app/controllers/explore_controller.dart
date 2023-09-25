@@ -82,7 +82,7 @@ class ExploreController extends GetxController {
   }
 
   Future getBoostedUsers() async {
-    await NetworkManager.instance.usersRef.once().then(
+    await NetworkManager.instance.usersRef.orderByChild("boostEndDate").startAt(DateTime.now().millisecondsSinceEpoch).once().then(
       (DatabaseEvent snapshot) {
         boostedUsers = [];
         Object? vals = snapshot.snapshot.value;
@@ -92,15 +92,20 @@ class ExploreController extends GetxController {
           UserController userController = Get.find();
           values.forEach(
             (key, value) {
+              print(key);
               if (FirebaseAuth.instance.currentUser != null) {
                 if (value != null) {
                   if (value["uid"] != null) {
                     if (value["uid"] != FirebaseAuth.instance.currentUser!.uid && !userController.blockedUsers.contains(value["uid"])) {
                       if (value["boostEndDate"] != null) {
-                        int boostEndDate = value["boostEndDate"] as int;
-                        if (DateTime.now().millisecondsSinceEpoch < boostEndDate) {
-                          boostedUsers.add(value);
-                        }
+                        try {
+                          if (value["boostEndDate"] is int) {
+                            int boostEndDate = value["boostEndDate"] as int;
+                            if (DateTime.now().millisecondsSinceEpoch < boostEndDate) {
+                              boostedUsers.add(value);
+                            }
+                          }
+                        } finally {}
                       }
                     }
                   }

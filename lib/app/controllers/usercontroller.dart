@@ -23,7 +23,7 @@ class UserController extends GetxController {
     if (FirebaseAuth.instance.currentUser != null) {
       if (FirebaseAuth.instance.currentUser?.uid != null) {
         Timer.periodic(
-          const Duration(seconds: 50),
+          const Duration(seconds: 60),
           (time) {
             if (FirebaseAuth.instance.currentUser != null) {
               if (FirebaseAuth.instance.currentUser?.uid != null) {
