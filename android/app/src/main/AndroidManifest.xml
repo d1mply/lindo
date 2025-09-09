@@ -6,6 +6,8 @@
    <application
         android:label="Lindo"
         android:name="${applicationName}"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

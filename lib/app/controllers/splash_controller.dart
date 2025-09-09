@@ -16,7 +16,8 @@ class SplashController extends GetxController {
 
   @override
   void onInit() {
-    init();
+    clearChatRoomsData();
+    //init();
     super.onInit();
   }
 
@@ -64,5 +65,98 @@ class SplashController extends GetxController {
         Get.offAll(() => const RootPage());
       }
     } finally {}
+  }
+
+  final int hour = 3600000;
+  int count = 100;
+  int removedDocCount = 0;
+  clearChatRoomsData() async {
+    await NetworkManager.instance.chatRooms.get().then(
+      (DataSnapshot value) async {
+        if (value.exists) {
+          Object? vals = value.value;
+          if (vals != null) {
+            Map<dynamic, dynamic> values = value.value as Map<dynamic, dynamic>;
+            DateTime now = DateTime.now();
+            int interval = ((hour * 24) * 10);
+            int intervalOneDay = ((hour * 24));
+
+            values.forEach(
+              (key, value) async {
+                try {
+                  bool senderIsFree = false;
+                  bool receiverIsfree = false;
+                  String docId = key;
+                  List<String> uids = docId.split("-");
+
+                  String? senderUid = uids.first;
+                  String? receiverUid = uids.last;
+                 // print("FIRST $senderUid");
+                 // print("SECOND $receiverUid");
+                  DataSnapshot senderDataSnapshot = await NetworkManager.instance.getUserDetailsWithId(senderUid);
+                  final senderUser = senderDataSnapshot.value as Map?;
+
+                  DataSnapshot? receiverDataSnapshot = await NetworkManager.instance.getUserDetailsWithId(receiverUid);
+                  final receiverUser = receiverDataSnapshot.value as Map?;
+
+                  int? senderPremiumEndDate = senderUser?["premiumEndDate"] as int?;
+                  int? receiverPremiumEndDate = receiverUser?["premiumEndDate"] as int?;
+                  
+                  if (senderPremiumEndDate == null) {
+                    senderIsFree = true;
+                  } else {
+                    if (senderPremiumEndDate < now.millisecondsSinceEpoch) {
+                      senderIsFree = true;
+                    } else {
+                      senderIsFree = false;
+                    }
+                  }
+
+                  if (receiverPremiumEndDate == null) {
+                    receiverIsfree = true;
+                  } else {
+                    if (receiverPremiumEndDate < now.millisecondsSinceEpoch) {
+                      receiverIsfree = true;
+                    } else {
+                      receiverIsfree = false;
+                    }
+                  }
+
+                  // Map<dynamic, dynamic> values = value as Map<dynamic, dynamic>;
+                  value.forEach(
+                    (key, data) async {
+                      try {
+                        if (senderIsFree == false || receiverIsfree == false) {
+                          if (data["timestamp"] + interval < now.millisecondsSinceEpoch) {
+                            NetworkManager.instance.chatRooms.child(docId).remove();
+                            removedDocCount = removedDocCount + 1;
+                            //   print("REMOVED $docId");
+                          }
+                        } else {
+                          if (data["timestamp"] + intervalOneDay < now.millisecondsSinceEpoch) {
+                            NetworkManager.instance.chatRooms.child(docId).remove();
+                            removedDocCount = removedDocCount + 1;
+                            //print("REMOVED $docId");
+                          }
+                        }
+                      } catch (e) {
+                        debugPrint(e.toString());
+                      }
+                    },
+                  );
+                  print("REMOVED DOC COUNT $removedDocCount");
+                } catch (e) {
+                  debugPrint(e.toString());
+                  print("ERROR VERDİ");
+                }
+              },
+            );
+          }
+          update();
+        }
+      },
+    );
+    print("REMOVED DOC COUNT $removedDocCount");
+  
   }
 }
